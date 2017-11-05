@@ -1,0 +1,47 @@
+<!--
+  Generated template for the RecommendPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>推荐</ion-title>
+    <ion-buttons end>
+      <button ion-button>播放中&nbsp;<ion-icon name="arrow-forward"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="ios-arrow-round-down-outline"
+      pullingText="下拉刷新"
+      refreshingSpinner="crescent" 
+      refreshingText="加载中...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list [virtualScroll]="catalogList" approxItemHeight="80px">
+    <button ion-item *virtualItem="let item" (click)="gotoBook(item)">
+      <ion-thumbnail item-left>
+        <!-- <img [src]="item.src"> -->
+        <!-- <ion-img src="{{item.src}}"></ion-img> -->
+        <img src="{{item.src}}">
+      </ion-thumbnail>
+      <h2 text-wrap>{{item.title}}</h2>
+      <p>{{item.author}}</p>
+      <p>{{item.time.split('\n')[1]}}</p>
+    </button>
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" [enabled]="hasMore">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="正在加载...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

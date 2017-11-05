@@ -1,0 +1,51 @@
+<!--
+  Generated template for the SearchResultPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{keyword}}</ion-title>
+  </ion-navbar>
+
+  <!-- <div class="dropdown-menu"> -->
+      <ion-row>
+          <ion-col col-6>
+            <ion-select [(ngModel)]="requestParams.server" (ionChange)="fetchData($event);">
+              <ion-option value="{{item}}" *ngFor="let item of servers">{{item}}</ion-option>
+            </ion-select>
+          </ion-col>
+          <ion-col col-6>
+            <ion-select [(ngModel)]="requestParams.category" (ionChange)="fetchData($event);">
+              <ion-option value="{{item}}" *ngFor="let item of categories">{{item}}</ion-option>
+            </ion-select>
+          </ion-col>
+        </ion-row>
+  <!-- </div> -->
+</ion-header>
+
+<ion-content>
+
+  <ion-list [virtualScroll]="dataList" approxItemHeight="80px">
+    <button ion-item *virtualItem="let item" (click)="gotoBook(item)">
+      <ion-thumbnail item-left>
+        <!-- <img [src]="item.src"> -->
+        <!-- <ion-img src="{{item.src}}"></ion-img> -->
+        <img src="{{item.src}}">
+      </ion-thumbnail>
+      <h2 text-wrap>{{item.title}}</h2>
+      <p>{{item.author}}</p>
+      <p>{{item.time.split('\n')[1]}}</p>
+    </button>
+  </ion-list>
+
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)" [enabled]="hasMore">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="正在加载...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>

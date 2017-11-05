@@ -1,0 +1,25 @@
+page-podcast {
+    .dropdown-menu {
+        background-color: rgb(248,248,248);
+        border-top: 1px solid rgb(221,221,221);
+        border-bottom: 1px solid rgb(221,221,221);
+        ion-col {
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            border-right: 1px solid rgb(221,221,221);
+        }
+        button {
+            color: rgb(120,120,120);
+        }
+    }
+
+    ion-select {
+        max-width: 100%;
+    }
+
+    .row {
+        border-top: 0.8px solid rgb(200,199,204);
+        border-bottom: 0.55px solid rgb(200,199,204);
+    }
+}

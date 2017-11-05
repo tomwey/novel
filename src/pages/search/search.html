@@ -1,0 +1,74 @@
+<!--
+  Generated template for the SearchPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>搜索</ion-title>
+    <ion-buttons end>
+      <button ion-button>播放中&nbsp;<ion-icon name="arrow-forward"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+  <ion-toolbar>
+    <!-- <ion-searchbar [(ngModel)]="keyword" placeholder="搜索"></ion-searchbar> -->
+    <form action=".">
+      <ion-searchbar
+        [(ngModel)]="keyword"
+        [ngModelOptions]="{standalone: true}"
+        [showCancelButton]="true"
+        (search)="startSearch(keyword)"
+        placeholder="搜索"
+        [animated]="false"
+        name="search"
+      >
+      </ion-searchbar>
+  </form>
+  </ion-toolbar>
+  <div class="search-types">
+    <ion-segment [(ngModel)]="searchType" color="light-gray">
+      <ion-segment-button value="hot">
+        热门搜索
+      </ion-segment-button>
+      <ion-segment-button value="history">
+        历史搜索
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+</ion-header>
+
+<ion-content>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="ios-arrow-round-down-outline"
+      pullingText="下拉刷新"
+      refreshingSpinner="crescent" 
+      refreshingText="加载中...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div [ngSwitch]="searchType">
+
+    <ion-list *ngSwitchCase="'hot'">
+        <ion-row class="keyword-row">
+          <ion-col col-4 *ngFor="let item of hotKeywords">
+              <!-- <button ion-button (click)="selectKeyword(item)">{{item}}</button> -->
+            <p tappable (tap)="selectKeyword(item)">{{item}}</p>
+          </ion-col>
+        </ion-row>
+    </ion-list>
+    
+    <ion-list *ngSwitchCase="'history'">
+      <!-- <ion-item class="keyword-row"> -->
+        <ion-row class="keyword-row">
+            <ion-col col-4 *ngFor="let item of searchHistories">
+              <!-- <button ion-button (click)="selectKeyword(item)">{{item}}</button> -->
+              <p tappable (tap)="selectKeyword(item)">{{item}}</p>
+            </ion-col>
+        </ion-row>
+      <!-- </ion-item> -->
+    </ion-list>
+  </div>
+</ion-content>
