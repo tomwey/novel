@@ -1,25 +1,22 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
-import { ITrackConstraint } from '../../components/audio-player/ionic-audio-interfaces';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
-// import { WebAudioTrack } from '../../components/audio-player/ionic-audio-web-track';
+
 /**
- * Generated class for the AudioplayerPage page.
+ * Generated class for the BookViewPage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-declare let window;
-window.globalAudioTack;
 
 @IonicPage()
 @Component({
-  selector: 'page-audioplayer',
-  templateUrl: 'audioplayer.html',
+  selector: 'page-book-view',
+  templateUrl: 'book-view.html',
 })
-export class AudioplayerPage {
-  currentTrack: ITrackConstraint;
+export class BookViewPage {
+
   bookdatas: any = [];
   paramData :any;
   currentIndex:number;
@@ -36,20 +33,18 @@ export class AudioplayerPage {
       ungz: 1
   };
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,  
+  constructor(public navCtrl: NavController, public navParams: NavParams,
     private api: ApiService,
-    private tool: ToolService,private app: App) {
+    private tool: ToolService,private app: App
+  ) {
     this.paramData = this.navParams.data;
     this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item) 
-    console.log(this.paramData);
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad AudioplayerPage');
-    console.log(window.globalAudioTack)
-    this.parseParam()
-    this.loadAudioData()
-    console.log("加载数据！！！");
+    // console.log('ionViewDidLoad BookViewPage');
+    this.parseParam();
+    this.loadData();
   }
 
   parseParam(){
@@ -64,21 +59,13 @@ export class AudioplayerPage {
     this.requestParams.chapterServer = item.chapterServer;
   }
 
-  loadAudioData(): Promise<any> {
+  loadData(): Promise<any> {
     return new Promise((resolve => {
       this.tool.showLoading('加载中...');
       this.api.get('getChapter.php', this.requestParams)
         .then(data => {
           this.tool.hideLoading();
           console.log(data);
-          
-          this.currentTrack = {
-            src: data.chapterSrcArr[0],
-            artist: data.title,
-            title: data.chapterTitle,
-            art: this.paramData.bookitem.src,
-            preload: 'metadata' // tell the plugin to preload metadata such as duration for this track, set to 'none' to turn off
-          }
           
           resolve(true);
         })
@@ -87,48 +74,6 @@ export class AudioplayerPage {
           resolve(false);
         })
     }));
-  }
-
-  // 添加书签
-  addBookmark(): void 
-  {
-
-  }
-
-  // 打开章节
-  openChapters(): void 
-  {
-    this.app.getRootNavs()[0].pop();
-  }
-
-  // 打开设置
-  openSettings(): void 
-  {
-    this.app.getRootNavs()[0].push('SettingPage', { flag: 1 });
-  } 
-
-  // 上一曲
-  gotoPrev(): void 
-  {
-    if (this.currentIndex > 0)
-    { 
-      this.currentIndex = this.currentIndex - 1;
-      this.parseParam()
-      this.loadAudioData()
-    }
-  }
-
-  // 下一曲
-  gotoNext(): void 
-  {
-    console.log("-------------------"+this.currentIndex)
-    if (this.currentIndex < this.paramData.chapters.length - 1)
-    { 
-      this.currentIndex = this.currentIndex + 1;
-      this.parseParam()
-      this.loadAudioData()
-      
-    }
   }
 
 }
