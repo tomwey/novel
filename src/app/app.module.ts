@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { HttpModule } from '@angular/http';
 import { MyApp } from './app.component';
+import { IonicStorageModule } from '@ionic/storage';
 
 // import { Keyboard } from '@ionic-native/keyboard';
 
@@ -22,6 +23,7 @@ import { ToolService } from '../providers/tool-service';
 import { Constants } from '../providers/constants';
 import { BooksService } from '../providers/books-service';
 import { PodCastsService } from '../providers/podcast-service';
+import { NewbieService } from '../providers/newbie-service';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { PodCastsService } from '../providers/podcast-service';
   imports: [
     BrowserModule,
     HttpModule,
+    IonicStorageModule.forRoot(),
     IonicModule.forRoot(MyApp, {
       // preloadModules: true,
       mode: 'ios',
@@ -63,7 +66,8 @@ import { PodCastsService } from '../providers/podcast-service';
     Constants,
     ToolService,
     BooksService,
-	  PodCastsService,
+    PodCastsService,
+    NewbieService,
   ]
 })
 export class AppModule {}
