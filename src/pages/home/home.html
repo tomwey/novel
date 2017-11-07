@@ -8,8 +8,42 @@
       <button ion-button>播放中&nbsp;<ion-icon name="arrow-forward"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
+
+  <div class="menubar">
+    <ion-scroll scrollX="true" class="top-menu">
+      <ul class="menus">
+        <li class="menu-item" *ngFor="let menu of menus; let i = index"
+          tappable (tap)="selectMenu(i);" [class.menu-active]="selectedMenu === menu.label" >{{menu.label}}</li>
+      </ul>
+    </ion-scroll>
+    <button ion-button icon-only clear small class="dropdown-btn" (click)="toggle(!isDropdown)">
+      <ion-icon name="{{ !isDropdown ? 'ios-arrow-down-outline' : 'ios-arrow-up-outline' }}"></ion-icon>
+    </button>
+  </div>
+
 </ion-header>
 
-<ion-content>
+<ion-content >
+  <div class="outer-content">
+    <div class="main-content">
+      <div id="{{menu.id}}" *ngFor="let menu of menus" 
+        [hidden]="selectedMenu !== menu.label">
+        <div class="empty-tip" *ngIf="menu.data.length === 0">
+          {{menu.empty}}
+        </div>
+        <div class="menu-data" *ngIf="menu.data.length > 0">
 
+        </div>
+      </div>
+    </div>
+    <div class="dropdown-content" [hidden]="!isDropdown">
+      <ion-item-divider color="light">导航栏目</ion-item-divider>
+      <ion-item-group reorder="true" (ionItemReorder)="reorderItems($event)">
+        <ion-item *ngFor="let menu of menus">&emsp;{{menu.label}}</ion-item>
+      </ion-item-group>
+      <ion-item-divider color="light">更多栏目</ion-item-divider>
+      <ion-item-group>
+      </ion-item-group>
+    </div>
+  </div>
 </ion-content>
