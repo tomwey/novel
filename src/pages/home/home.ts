@@ -9,22 +9,29 @@ export class HomePage {
   selectedMenu: string = '我的收藏';
   
   isDropdown: boolean = false;
-
+  isEdit: boolean = true;
   constructor(public navCtrl: NavController) {
     
   }
 
-  editOrDone() 
+  editOrDone(yesOrNo) 
   {
-    
+    if (this.isDropdown && !this.isEdit) {
+      this.isDropdown = false;
+    }
+
+    this.isEdit = yesOrNo;
   }
 
   selectMenu(i): void {
     this.selectedMenu = this.menus[i].label;
+
+    this.toggle(false);
   }
 
   toggle(yesOrNo): void {
     this.isDropdown = yesOrNo;
+    this.isEdit = !yesOrNo;
   }
 
   reorderItems(indexes): void {

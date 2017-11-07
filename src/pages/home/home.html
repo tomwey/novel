@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-buttons start>
-      <button ion-button (click)="editOrDone()">编辑</button>
+      <button ion-button (click)="editOrDone(!isEdit)">{{isEdit ? '编辑': '完成'}}</button>
     </ion-buttons>
     <ion-title>我的</ion-title>
     <ion-buttons end>
@@ -28,8 +28,15 @@
     <div class="main-content">
       <div id="{{menu.id}}" *ngFor="let menu of menus" 
         [hidden]="selectedMenu !== menu.label">
-        <div class="empty-tip" *ngIf="menu.data.length === 0">
+        <div class="empty-tip" *ngIf="menu.data.length === 0 && menu.empty.length > 0">
           {{menu.empty}}
+        </div>
+        <div class="empty-tip2" *ngIf="menu.data.length === 0 && menu.empty.length === 0">
+          <img src="assets/imgs/empty-img.png" >
+          <p>请在电脑上打开浏览器输入一下地址<br>http://10.19.2.211/<br>
+          支持txt及txt打包成zip或rar格式的压缩包上传<br>
+          上传结束前不能离开此页面
+          </p>
         </div>
         <div class="menu-data" *ngIf="menu.data.length > 0">
 

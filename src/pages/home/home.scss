@@ -72,7 +72,7 @@ page-home {
 
     .outer-content {
         position: relative;
-        background-color: white;
+        background-color: rgb(247, 247, 247);
     }
 
     .bottom-level {
@@ -104,6 +104,26 @@ page-home {
         margin-top: 50%;
         color: rgb(168, 168, 168);
         // background-color: red;
+    }
+
+    .empty-tip2 {
+        width: 100%;
+        height: 100%;
+        // background-color: rgb(247, 247, 247);
+        img {
+            width: 100%;
+            margin: 0 auto;
+            display: block;
+            margin-top: 2px;
+
+        }
+
+        p {
+            padding: 10px;
+            font-size: 16px;
+            // margin-top: 10px;
+            text-align: center;
+        }
     }
 
     .dropdown-content {
