@@ -134,14 +134,20 @@ export class BookPage {
       this.nbService.removeItems(NewbieService.FAVORITE_KEY, [this.book])
         .then(data => {
           this.hasFavorited = false;
+          this.tool.showToast('已取消收藏');
         })
-        .catch(error => {});
+        .catch(error => {
+          this.tool.showToast('取消收藏失败');
+        });
     } else {
       this.nbService.addItem(NewbieService.FAVORITE_KEY, this.book)
       .then(data => {
         this.hasFavorited = true;
+        this.tool.showToast('收藏成功');
       })
-      .catch(error => {});
+      .catch(error => {
+        this.tool.showToast('收藏失败');
+      });
     }
   }
 

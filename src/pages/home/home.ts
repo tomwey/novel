@@ -58,16 +58,34 @@ export class HomePage {
     return null;
   }
 
+  getImageUrl(menu,item): string {
+    if (item.bookitem) {
+      return item.bookitem.src;
+    }
+    return item.src;
+  }
+
   getTitle(menu, item): string {
+    if (item.bookitem) {
+      return item.bookitem.title;
+    }
     return item.title;
   }
 
   getContent1(menu, item): string {
+    // console.log(JSON.stringify(item));
+    if (item.bookitem) {
+      return item.bookitem.name;
+    }
     return item.author;
   }
 
   getContent2(menu, item): string {
     // return null;
+    if (item.item) {
+      return item.item.chapterTitle;
+    }
+
     if (item.time) {
       return item.time.split('\n')[1];
     }
@@ -75,9 +93,18 @@ export class HomePage {
   }
 
   forwardTo(menu, item): void {
-    if (menu.id === NewbieService.FAVORITE_KEY) {
+    // if (menu.id === NewbieService.FAVORITE_KEY) {
+    //   this.gotoBook(item);
+    // } else if 
+    if (item.bookitem) {
+      this.gotoBookDetail(item);
+    } else {
       this.gotoBook(item);
     }
+  }
+
+  gotoBookDetail(item) {
+    this.app.getRootNavs()[0].push('AudioplayerPage', item);
   }
 
   gotoBook(book): void {

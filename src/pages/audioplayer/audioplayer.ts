@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { ITrackConstraint } from '../../components/audio-player/ionic-audio-interfaces';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
+import { NewbieService } from '../../providers/newbie-service';
+
 // import { WebAudioTrack } from '../../components/audio-player/ionic-audio-web-track';
 /**
  * Generated class for the AudioplayerPage page.
@@ -22,7 +24,11 @@ export class AudioplayerPage {
   currentTrack: ITrackConstraint;
   bookdatas: any = [];
   paramData :any;
-  currentIndex:number;
+  currentIndex:number = -1;
+
+  saveItem: any = null;
+  hasAddedToBookmark: boolean = false;
+
   requestParams: any = { 
       openID:"e47d16be01ae009dbcdf696e62f9c1ecd5da4559",//设备唯一标识，可随意填一个
       isPlay : "1",
@@ -38,10 +44,38 @@ export class AudioplayerPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams,  
     private api: ApiService,
-    private tool: ToolService,private app: App) {
+    private tool: ToolService,private app: App,
+    private nbService: NewbieService,
+  ) {
     this.paramData = this.navParams.data;
-    this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item) 
+
+    for (var i=0; i<this.paramData.chapters.length; i++) {
+      let chapter = this.paramData.chapters[i];
+      if (chapter.chapterID === this.paramData.item.chapterID) {
+        this.currentIndex = i;
+        break;
+      }
+    }
+
+    // this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item) 
+    
+
     console.log(this.paramData);
+    console.log(this.currentIndex);
+  }
+
+  saveToHistory(item)
+  {
+    this.saveItem = JSON.parse(JSON.stringify(this.paramData));
+    this.saveItem.ID = this.paramData.bookitem.ID;
+    this.saveItem.item = item;
+    this.saveItem.progress = this.paramData.progress || '00:00';
+    
+    this.nbService.removeItems(NewbieService.HISTORY_KEY, [this.saveItem])
+      .then(data => {
+        this.nbService.addItem(NewbieService.HISTORY_KEY, this.saveItem);
+      })
+      .catch(error => {});
   }
 
   ionViewDidLoad() {
@@ -62,6 +96,16 @@ export class AudioplayerPage {
     this.requestParams.chapterTitle = item.chapterTitle;
     this.requestParams.chapterHref = this.paramData.bookitem.chapterpre + item.chapterHref;
     this.requestParams.chapterServer = item.chapterServer;
+
+    // 保存浏览历史
+    this.saveToHistory(item);
+
+    // 判断当前是否收藏了章节
+    // this.nbService.hasAdded(NewbieService.BOOKMARK_KEY, this.saveItem)
+    //   .then(yesOrNo => {
+    //     this.hasAddedToBookmark = yesOrNo;
+    //   })
+    //   .catch();
   }
 
   loadAudioData(): Promise<any> {
@@ -92,7 +136,30 @@ export class AudioplayerPage {
   // 添加书签
   addBookmark(): void 
   {
-    
+    // alert(JSON.stringify(this.saveItem));
+
+    // if (this.hasAddedToBookmark) {
+    //   // 删除书签
+    //   this.nbService.removeItems(NewbieService.BOOKMARK_KEY, [this.saveItem])
+    //     .then(data => {
+    //       this.hasAddedToBookmark = false;
+    //       this.tool.showToast('已移除书签');
+    //     }).catch(error => {
+    //       this.tool.showToast('书签删除失败');
+    //     });
+    // } else {
+      // 新增书签
+      // this.saveItem.progress = this.currentTrack.progress;
+
+      this.nbService.addItem(NewbieService.BOOKMARK_KEY, this.saveItem)
+        .then(data => {
+          // this.hasAddedToBookmark = true;
+          this.tool.showToast('已添加到我的书签');
+        })
+        .catch(error => {
+          this.tool.showToast('添加书签失败');
+        });
+    // }
   }
 
   // 打开章节

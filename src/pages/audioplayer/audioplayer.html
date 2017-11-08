@@ -36,7 +36,7 @@
     <div class="btn-container">
       <div class="custom-btn" tappable (tap)="addBookmark()">
         <p class="icon-container">
-          <ion-icon name="ios-bookmark-outline"></ion-icon>
+          <ion-icon name="{{hasAddedToBookmark ? 'ios-bookmark' : 'ios-bookmark-outline'}}"></ion-icon>
         </p>
         <p class="label">书签</p>
       </div>
