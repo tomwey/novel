@@ -101,15 +101,20 @@ export class NewbieService {
     return new Promise((resolve, reject) => {
       this.getItems(key)
         .then(data => {
-          let temp = [];
+          let temp = JSON.parse(JSON.stringify(data));
           for (var i = 0; i < data.length; i++) {
             var obj = data[i];
             for (var j = 0; j < items.length; j++) {
-              if (obj.ID !== items[j].ID) {
-                temp.push(obj);
+              if (obj.ID === items[j].ID) {
+                // temp.push(obj);
+                temp.splice(i, 1);
+                break;
               }
             }
           }
+          // alert(key);
+          // alert(JSON.stringify(temp));
+
           this.saveObject(key, temp)
             .then(data => resolve(true))
             .catch(error => reject(error));

@@ -8,7 +8,7 @@ import { NewbieService } from '../../providers/newbie-service';
 })
 export class HomePage {
   selectedMenu: string = '我的收藏';
-  // selectedMenuID: string = NewbieService.FAVORITE_KEY;
+  selectedMenuID: string = NewbieService.FAVORITE_KEY;
 
   isDropdown: boolean = false;
   isEdit: boolean = true;
@@ -122,7 +122,12 @@ export class HomePage {
 
   // 批量删除
   removeItems() {
-
+    this.nbService.removeItems(this.selectedMenuID, this.selectedData)
+      .then(data => {
+        this.selectedData = [];
+        this.isEdit = true;
+      })
+      .catch(error => {});
   }
 
   // 播放中或者阅读中
@@ -177,6 +182,7 @@ export class HomePage {
     if (this.selectedMenu === this.menus[i].label) return;
 
     this.selectedMenu = this.menus[i].label;
+    this.selectedMenuID = this.menus[i].id;
 
     this.toggle(false);
 
