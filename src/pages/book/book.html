@@ -23,7 +23,7 @@
         <h2>{{bookItem.title}}</h2>
         <p>{{bookItem.author}}</p>
         <p>分类：{{bookItem.name}} {{bookItem.category}}</p>
-        <button ion-button small>收藏</button>
+        <button ion-button small (click)="doFavorite()">{{ hasFavorited ? '取消收藏' : '收藏' }}</button>
         <button ion-button small>批量下载</button>
       </ion-item>
     </ion-list>

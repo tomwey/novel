@@ -39,7 +39,18 @@
           </p>
         </div>
         <div class="menu-data" *ngIf="menu.data.length > 0">
-
+          <ion-list>
+            <button ion-item *ngFor="let item of menu.data" (click)="forwardTo(menu,item);">
+              <ion-thumbnail item-left>
+                <!-- <img [src]="item.src"> -->
+                <!-- <ion-img src="{{item.src}}"></ion-img> -->
+                <img src="{{item.src}}">
+              </ion-thumbnail>
+              <h2 text-wrap>{{getTitle(menu, item)}}</h2>
+              <p>{{getContent1(menu, item)}}</p>
+              <p>{{getContent2(menu, item)}}</p>
+            </button>
+          </ion-list>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { ToolService } from "../../providers/tool-service";
 import { ApiService } from "../../providers/api-service";
 import { Constants } from '../../providers/constants';
+import { NewbieService } from '../../providers/newbie-service';
 /**
  * Generated class for the BookPage page.
  *
@@ -20,18 +21,30 @@ export class BookPage {
   firstLoaded: boolean = false;
   bookItem: any = null;
 
+  hasFavorited: boolean = false;
+
   dataType: string = 'chapter';
   chapters: any = [];
   brief: string = '';
   otherSources: any = [];
+
+  book: any = null;
+
   constructor(public navCtrl: NavController, 
               public navParams: NavParams, 
               private api: ApiService,
               private tool: ToolService,
-              private app: App
+              private app: App,
+              private nbService: NewbieService,
     ) {
       this.bookItem = this.navParams.data;
       // console.log(this.bookItem);
+      this.book = JSON.parse(JSON.stringify(this.bookItem));
+
+      this.nbService.hasAdded(NewbieService.FAVORITE_KEY, this.book)
+        .then(yesOrNo => {
+          this.hasFavorited = yesOrNo;
+        });
   }
 
   // ionViewDidLoad() {
@@ -112,6 +125,24 @@ export class BookPage {
       { bookitem:this.bookItem, chapters: this.chapters, item: item });
     }
     
+  }
+
+  doFavorite(): void {
+    // alert(JSON.stringify(bookItem));
+
+    if (this.hasFavorited) {
+      this.nbService.removeItems(NewbieService.FAVORITE_KEY, [this.book])
+        .then(data => {
+          this.hasFavorited = false;
+        })
+        .catch(error => {});
+    } else {
+      this.nbService.addItem(NewbieService.FAVORITE_KEY, this.book)
+      .then(data => {
+        this.hasFavorited = true;
+      })
+      .catch(error => {});
+    }
   }
 
 }

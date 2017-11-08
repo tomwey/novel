@@ -1,10 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { Events } from 'ionic-angular';
 
 @Injectable()
 export class NewbieService {
   
-  constructor(private store: Storage) {
+  public static FAVORITE_KEY = 'favorites';
+  public static UPLOADED_KEY = 'uploaded';
+  public static BOOKMARK_KEY = 'bookmarks';
+  public static HISTORY_KEY  = 'histories';
+  public static DOWNLOADED_KEY = 'downloaded';
+  public static DOWNLOADING_KEY = 'downloading';
+
+  constructor(private store: Storage, private events: Events) {
     // console.log('Hello ToolService Provider');
   }
 
@@ -24,26 +32,31 @@ export class NewbieService {
     this.saveObject('menues', menues);
   }
 
-  // 获取所有的收藏
-  getAllFavorites(): Promise<any> {
+  // 移动数据到某个文件夹
+  moveItemsToDir(items, dir): Promise<any> {
+    return new Promise((resolve, reject) => {});
+  }
+
+  // 获取数据
+  getItems(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getObject('favorites')
+      this.getObject(key)
         .then(data => resolve(data || []))
         .catch(error => reject(error));
     });
   }
-  
-  // 是否已经收藏过
-  hasFavorited(item): Promise<any> {
+
+  // 判断是否已经添加过
+  hasAdded(key: string, item): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getAllFavorites()
+      this.getItems(key)
         .then(data => {
           if (data.length === 0) {
             resolve(false);
           } else {
             for (var i = 0; i < data.length; i++) {
               var obj = data[i];
-              if (obj.title === item.title) {
+              if (obj.ID === item.ID) {
                 resolve(true);
                 break;
               }
@@ -58,35 +71,42 @@ export class NewbieService {
     });
   }
 
-  // 收藏
-  addFavorite(item): Promise<any> {
+  // 添加数据
+  addItem(key: string, item): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getAllFavorites()
+      // console.log(key);
+
+      this.getItems(key)
         .then(data => {
           if (item) {
             data.unshift(item);
-            this.saveObject('favorites', data)
+            console.log(key);
+            console.log(item);
+            this.saveObject(key, data)
               .then(data => resolve(true))
               .catch(error => reject(error));
+            // resolve(true);
           }
         })
         .catch(error => reject(error));
     });
   }
-  // 取消收藏
-  removeFavorite(item): Promise<any> {
+
+  // 删除数据
+  removeItems(key: string, items): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getAllFavorites()
+      this.getItems(key)
         .then(data => {
           let temp = [];
           for (var i = 0; i < data.length; i++) {
             var obj = data[i];
-            if (obj.title !== item.title) {
-              temp.push(obj);
+            for (var j = 0; j < items.length; j++) {
+              if (obj.ID !== items[j].ID) {
+                temp.push(obj);
+              }
             }
           }
-
-          this.saveObject('favorites', temp)
+          this.saveObject(key, temp)
             .then(data => resolve(true))
             .catch(error => reject(error));
         })
@@ -94,21 +114,25 @@ export class NewbieService {
     });
   }
 
-  // 删除所有收藏
-  removeAllFavorites(): Promise<any> {
-    return this.saveObject('favorites', null);
+  // 删除所有数据
+  removeAllItems(key: string): Promise<any> {
+    return this.saveObject(key, null);
   }
 
-  // 移动数据到某个文件夹
-  moveItemsToDir(items, dir): Promise<any> {
-    return new Promise((resolve, reject) => {});
-  }
-
-  saveObject(key: string, obj: any) {
+  saveObject(key: string, obj: any): Promise<any> {
     if (!obj) {
-      return this.store.remove(key);
+      return this.store.remove(key).then(data => {
+        if (key !== 'menues') {
+          this.events.publish(`${key}:changed`);
+        }
+      });
     } else {
-      return this.store.set(key, JSON.stringify(obj))
+      return this.store.set(key, JSON.stringify(obj)).then(data => {
+        // console.log(data);
+        if (key !== 'menues') {
+          this.events.publish(`${key}:changed`);
+        }
+      });
     }
   }
 
@@ -128,40 +152,39 @@ export class NewbieService {
     });
   }
 
-
   private initMenues: any = [
     {
-      id: 'favorites',
+      id: NewbieService.FAVORITE_KEY,
       label: '我的收藏',
       empty: '目前没有收藏',
       data: [],
     },
     {
-      id: 'uploaded',
+      id: NewbieService.UPLOADED_KEY,
       label: '电脑上传',
       empty: '',
       data: [],
     },
     {
-      id: 'histories',
+      id: NewbieService.HISTORY_KEY,
       label: '历史记录',
       empty: '目前没有历史记录',
       data: [],
     },
     {
-      id: 'downloaded',
+      id: NewbieService.DOWNLOADED_KEY,
       label: '下载完成',
       empty: '目前没有下载缓存',
       data: [],
     },
     {
-      id: 'downloading',
+      id: NewbieService.DOWNLOADING_KEY,
       label: '正在下载',
       empty: '目前没有下载任务',
       data: [],
     },
     {
-      id: 'bookmarks',
+      id: NewbieService.BOOKMARK_KEY,
       label: '我的书签',
       empty: '目前没有书签',
       data: [],
