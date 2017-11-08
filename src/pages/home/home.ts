@@ -196,6 +196,8 @@ export class HomePage {
       item.selected = false;
     }
     this.selectedData = [];
+
+    this.disabled = true;
   }
 
   toggle(yesOrNo): void {
