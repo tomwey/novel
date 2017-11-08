@@ -5,7 +5,9 @@
     </ion-buttons>
     <ion-title>我的</ion-title>
     <ion-buttons end>
-      <button ion-button>播放中&nbsp;<ion-icon name="arrow-forward"></ion-icon></button>
+      <button ion-button *ngIf="!isEdit && selectedMenu === '我的收藏'" [disabled]="disabled" (click)="moveItems()">移动到</button>
+      <button ion-button *ngIf="!isEdit" [disabled]="disabled" (click)="removeItems();">批量删除</button>
+      <button ion-button *ngIf="isEdit" (click)="gotoPlayer()">播放中&nbsp;<ion-icon name="arrow-forward"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 
@@ -46,7 +48,7 @@
               <ion-thumbnail item-left [class.edited]="!isEdit">
                 <!-- <img [src]="item.src"> -->
                 <!-- <ion-img src="{{item.src}}"></ion-img> -->
-                <input type="checkbox" name="selectedItem" class="item-cb" *ngIf="!isEdit" (click)="$event.stopPropagation();">
+                <div class="item-cb" *ngIf="!isEdit"><ion-icon name="ios-checkmark-outline" *ngIf="item.selected"></ion-icon></div>
                 <img src="{{getImageUrl(menu,item)}}">
               </ion-thumbnail>
               <h2 text-wrap>{{getTitle(menu,item)}}</h2>

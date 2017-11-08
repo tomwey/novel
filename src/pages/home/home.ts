@@ -14,6 +14,10 @@ export class HomePage {
   isEdit: boolean = true;
   
   // currentData: any = [];
+  
+  disabled: boolean = true
+
+  selectedData: any = [];
 
   constructor(public navCtrl: NavController, 
               private nbService: NewbieService,
@@ -92,11 +96,46 @@ export class HomePage {
     return null;
   }
 
+  // 选中或取消选中某个条目
+  selectItem(item): void {
+    item.selected = !item.selected;
+    if (item.selected) {
+      this.selectedData.push(item);
+    } else {
+      // this.selectedItems.splice()
+      for(var i=0; i<this.selectedData.length; i++) {
+        let obj = this.selectedData[i];
+        if (obj.ID === item.ID) {
+          this.selectedData.splice(i,1);
+          break;
+        }
+      }
+    }
+
+    this.disabled = this.selectedData.length === 0;
+  }
+
+  // 批量移动
+  moveItems() {
+
+  }
+
+  // 批量删除
+  removeItems() {
+
+  }
+
+  // 播放中或者阅读中
+  gotoPlayer() {
+
+  }
+
+  // 点击一个条目跳转
   forwardTo(menu, item): void {
-    // alert(JSON.stringify(ev));
-    // if (menu.id === NewbieService.FAVORITE_KEY) {
-    //   this.gotoBook(item);
-    // } else if 
+    if (!this.isEdit) {
+      this.selectItem(item);
+      return;
+    }
     if (item.bookitem) {
       this.gotoBookDetail(item);
     } else {
@@ -104,18 +143,22 @@ export class HomePage {
     }
   }
 
+  // 删除某个条目
   deleteItem(menu,item): void {
     this.nbService.removeItems(menu.id,[item]);
   }
 
+  // 跳到播放或者阅读界面
   gotoBookDetail(item) {
     this.app.getRootNavs()[0].push('AudioplayerPage', item);
   }
 
+  // 跳到小说详情
   gotoBook(book): void {
     this.app.getRootNavs()[0].push('BookPage', book);
   }
 
+  // 编辑按钮切换
   editOrDone(yesOrNo) 
   {
     if (this.isDropdown && !this.isEdit) {
@@ -123,12 +166,30 @@ export class HomePage {
     }
 
     this.isEdit = yesOrNo;
+
+    if (this.isEdit) {
+      this.clearSelectedData();
+    }
   }
 
+  // 选择菜单
   selectMenu(i): void {
+    if (this.selectedMenu === this.menus[i].label) return;
+
     this.selectedMenu = this.menus[i].label;
 
     this.toggle(false);
+
+    this.clearSelectedData();
+  }
+
+  clearSelectedData() {
+    // 清空全局选中条目
+    for(var index=0; index<this.selectedData.length; index++) {
+      let item = this.selectedData[index];
+      item.selected = false;
+    }
+    this.selectedData = [];
   }
 
   toggle(yesOrNo): void {
@@ -136,6 +197,7 @@ export class HomePage {
     this.isEdit = !yesOrNo;
   }
 
+  // 移动菜单顺序
   reorderItems(indexes): void {
     let menu = this.menus[indexes.from];
     this.menus.splice(indexes.from, 1);
@@ -144,6 +206,7 @@ export class HomePage {
     this.nbService.saveMenues(this.menus);
   }
 
+  // 移动某个条目顺序
   reorderItems2(indexes,menu): void {
     let item = menu.data[indexes.from];
     menu.data.splice(indexes.from, 1);
