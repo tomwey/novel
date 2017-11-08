@@ -9,11 +9,11 @@ import { NewbieService } from '../../providers/newbie-service';
 export class HomePage {
   selectedMenu: string = '我的收藏';
   selectedMenuID: string = NewbieService.FAVORITE_KEY;
+  
+  allowMove: boolean = true;
 
   isDropdown: boolean = false;
   isEdit: boolean = true;
-  
-  // currentData: any = [];
   
   disabled: boolean = true
 
@@ -31,16 +31,26 @@ export class HomePage {
         this.addSubscribes();
 
       }).catch(error => {});
+    
+    this.events.subscribe('menu:select', data => {
+      this.doMoveItems(data);
+    });
   }
 
   addSubscribes() {
+    this.customMenues = [];
     for (var i=0; i<this.menus.length; i++) {
       let menu = this.menus[i];
 
+      if (menu.custom) {
+        this.customMenues.push(menu);
+      }
+
       this.nbService.getItems(menu.id).then(data => {
-        // alert(JSON.stringify(data));
         menu.data = data 
       });
+
+      this.events.unsubscribe(`${menu.id}:changed`);
 
       this.events.subscribe(`${menu.id}:changed`, () => {
         // alert(123);
@@ -56,6 +66,16 @@ export class HomePage {
     for (var i=0; i<this.menus.length; i++) {
       let menu = this.menus[i];
       if (menu.id === key) {
+        return menu;
+      }
+    }
+    return null;
+  }
+
+  getMenuForLabel(label: string): any {
+    for (var i=0; i<this.menus.length; i++) {
+      let menu = this.menus[i];
+      if (menu.label === label) {
         return menu;
       }
     }
@@ -117,7 +137,155 @@ export class HomePage {
 
   // 批量移动
   moveItems() {
+    // let menu = this.getMenuForKey(this.selectedMenuID);
+    this.app.getRootNavs()[0].push('SelectFolderPage', this.customMenues);
+  }
 
+  // 处理批量移动
+  doMoveItems(name) {
+    let menu = this.getMenuForLabel(name);
+    let oldMenu = this.getMenuForLabel(this.selectedMenu);
+
+    if (!menu) {
+      this.createMenuAndMove(oldMenu, name);
+    } else {
+      if (oldMenu.id === menu.id) {
+        let index = this.getMenuIndex(menu);
+        this.selectMenu(index);
+
+        this.clearSelectedData();
+        this.isEdit = true;
+
+      } else {
+        // 数据移动
+        this.moveItemsBetween(oldMenu, menu);
+      }
+    }
+  }
+
+  moveItemsBetween(oldMenu, menu) {
+    // console.log(oldMenu);
+    // console.log(menu);
+
+    // 如果全部移除，那么把目录删掉
+    if (oldMenu.data.length <= this.selectedData.length) { 
+      if (oldMenu.id !== NewbieService.FAVORITE_KEY) {
+        // 删除自定义的目录
+        let index = this.getMenuIndex(oldMenu);
+        if (index !== -1) {
+          this.menus.splice(index, 1);
+          // this.customMenues.splice()
+          for (var i=0; i<this.customMenues.length; i++) {
+            let m = this.customMenues[i];
+            if (m.id === oldMenu.id) {
+              this.customMenues.splice(i, 1);
+              break;
+            }
+          }
+
+          // 重置目录
+          this.resetMenues();
+        }
+      }
+    } 
+
+    // 删除旧目录的数据
+    this.nbService.removeItems(oldMenu.id, this.selectedData)
+      .then(data => {
+        if (data) {
+          // 新增数据到新目录
+
+          // 重置选中
+          for(var index=0; index<this.selectedData.length; index++) {
+            let item = this.selectedData[index];
+            item.selected = false;
+            item.save_key = menu.id;
+          }
+
+          this.nbService.addItems(menu.id, this.selectedData)
+            .then(data => {
+              // 切换到新目录
+              let index = this.getMenuIndex(menu);
+              this.selectMenu(index);
+            }).catch();
+        }
+      }).catch(error => {});
+  }
+
+  // 创建菜单项并移动条目
+  createMenuAndMove(oldMenu, name): void {
+    // 创建菜单
+    this.createMenu(name).then(menu => {
+      // 数据移动
+      this.moveItemsBetween(oldMenu, menu);
+    });
+  }
+
+  // 创建菜单
+  createMenu(name): Promise<any> {
+    return new Promise((resolve) => {
+      let menu = {
+        id: name,
+        label: name,
+        empty: '',
+        custom: 1,
+        data: []
+      };
+  
+      // 更新菜单
+      this.customMenues.push(menu);
+
+      this.resetMenues().then(data => {
+        if (data) {
+          resolve(menu);
+        }
+      });
+    });
+  }
+
+  // 重置菜单项
+  resetMenues(): Promise<any> {
+    return new Promise((resolve) => {
+      this.customMenues.sort((o1,o2) => {
+        return o1.id < o2.id;
+      });
+      
+      // 获取初始菜单项，并排序
+      let temp = [];
+      for(var i=0;i<this.menus.length; i++) {
+        let m = this.menus[i];
+        if (!m.custom) {
+          temp.push(m);
+        }
+      }
+      // 排序
+      temp.sort((o1,o2) => {
+        return o1.s - o2.s;
+      });
+
+      for (var j=0; j<this.customMenues.length; j++) {
+        temp.splice(1, 0, this.customMenues[j]);
+      }
+      
+      this.menus = temp;
+
+      console.log(this.menus);
+      
+      this.nbService.saveMenues(this.menus).then(data => {
+        this.addSubscribes();
+        resolve(true);
+      }).catch(error => { resolve(false) });
+    });
+  }
+
+  getMenuIndex(menu): number {
+    for(var i=0; i<this.menus.length; i++) {
+      let o = this.menus[i];
+      if (menu.id === o.id) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   // 批量删除
@@ -179,10 +347,14 @@ export class HomePage {
 
   // 选择菜单
   selectMenu(i): void {
+    if (i === -1) return;
+
     if (this.selectedMenu === this.menus[i].label) return;
 
     this.selectedMenu = this.menus[i].label;
     this.selectedMenuID = this.menus[i].id;
+
+    this.allowMove = (!!this.menus[i].custom || this.selectedMenuID === NewbieService.FAVORITE_KEY);
 
     this.toggle(false);
 
@@ -224,5 +396,5 @@ export class HomePage {
   }
 
   menus: any = [];
-
+  customMenues: any = [];
 }

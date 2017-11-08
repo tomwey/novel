@@ -21,7 +21,11 @@ export class NewbieService {
     return new Promise((resolve, reject) => {
       this.getObject('menues')
         .then(data => {
-          resolve(data || this.initMenues);
+          let temp = data || [];
+          if (temp.length === 0) {
+            temp = this.initMenues;
+          }
+          resolve(temp);
         })
         .catch(error => reject(error));
     });
@@ -29,7 +33,7 @@ export class NewbieService {
 
   // 保存菜单项
   saveMenues(menues) {
-    this.saveObject('menues', menues);
+    return this.saveObject('menues', menues);
   }
 
   // 移动数据到某个文件夹
@@ -77,20 +81,21 @@ export class NewbieService {
 
   // 添加数据
   addItem(key: string, item): Promise<any> {
-    return new Promise((resolve, reject) => {
-      // console.log(key);
+    return this.addItems(key, [item]);
+  }
 
+  // 添加一批数据
+  addItems(key: string, items): Promise<any> {
+    return new Promise((resolve, reject) => {
       this.getItems(key)
         .then(data => {
-          if (item) {
+          for(var i=0; i<items.length; i++) {
+            let item = items[i];
             data.unshift(item);
-            console.log(key);
-            console.log(item);
-            this.saveObject(key, data)
-              .then(data => resolve(true))
-              .catch(error => reject(error));
-            // resolve(true);
           }
+          this.saveObject(key, data)
+            .then(data => resolve(true))
+            .catch(error => reject(error));
         })
         .catch(error => reject(error));
     });
@@ -101,23 +106,34 @@ export class NewbieService {
     return new Promise((resolve, reject) => {
       this.getItems(key)
         .then(data => {
-          let temp = JSON.parse(JSON.stringify(data));
-          for (var i = 0; i < data.length; i++) {
-            var obj = data[i];
-            for (var j = 0; j < items.length; j++) {
-              if (obj.ID === items[j].ID) {
-                // temp.push(obj);
-                temp.splice(i, 1);
-                break;
+          if (items && items.length > 0) {
+
+            // console.log(data);
+
+            let temp = [];
+            for (var i=0; i<data.length; i++) { // 1,2,3,4
+              let old = data[i];
+              let count = 0;
+              // console.log(old.id);
+              for (var j=0; j<items.length; j++) { // 1, 3
+                let del = items[j]; 
+                 
+                if (old.ID === del.ID) {
+                  count++;
+                }   
+              }
+              if (count === 0) {
+                temp.push(old);
               }
             }
+            
+            // console.log(temp);
+            this.saveObject(key, temp)
+              .then(data => resolve(true))
+              .catch(error => reject(error));
+          } else {
+            resolve(true);
           }
-          // alert(key);
-          // alert(JSON.stringify(temp));
-
-          this.saveObject(key, temp)
-            .then(data => resolve(true))
-            .catch(error => reject(error));
         })
         .catch(error => reject(error));
     });
@@ -167,36 +183,42 @@ export class NewbieService {
       label: '我的收藏',
       empty: '目前没有收藏',
       data: [],
+      s: 0
     },
     {
       id: NewbieService.UPLOADED_KEY,
       label: '电脑上传',
       empty: '',
       data: [],
+      s: 1
     },
     {
       id: NewbieService.HISTORY_KEY,
       label: '历史记录',
       empty: '目前没有历史记录',
       data: [],
+      s: 2
     },
     {
       id: NewbieService.DOWNLOADED_KEY,
       label: '下载完成',
       empty: '目前没有下载缓存',
       data: [],
+      s: 3
     },
     {
       id: NewbieService.DOWNLOADING_KEY,
       label: '正在下载',
       empty: '目前没有下载任务',
       data: [],
+      s: 4
     },
     {
       id: NewbieService.BOOKMARK_KEY,
       label: '我的书签',
       empty: '目前没有书签',
       data: [],
+      s: 5
     },
   ];
 

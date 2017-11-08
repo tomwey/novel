@@ -1,0 +1,32 @@
+<!--
+  Generated template for the SelectFolderPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>请选择目标文件夹</ion-title>
+    <ion-buttons end>
+      <button ion-button (click)="newFolder();">
+        新建
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <button ion-item (click)="selectFolder2();">
+      我的收藏
+    </button>
+    <button ion-item *ngFor="let menu of menues" (click)="selectFolder(menu);">
+      {{menu.label}}
+    </button>
+    <button ion-item (click)="newFolder();">
+      新建文件夹
+    </button>
+  </ion-list>
+</ion-content>

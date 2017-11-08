@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>我的</ion-title>
     <ion-buttons end>
-      <button ion-button *ngIf="!isEdit && selectedMenu === '我的收藏'" [disabled]="disabled" (click)="moveItems()">移动到</button>
+      <button ion-button *ngIf="!isEdit && allowMove" [disabled]="disabled" (click)="moveItems()">移动到</button>
       <button ion-button *ngIf="!isEdit" [disabled]="disabled" (click)="removeItems();">批量删除</button>
       <button ion-button *ngIf="isEdit" (click)="gotoPlayer()">播放中&nbsp;<ion-icon name="arrow-forward"></ion-icon></button>
     </ion-buttons>
@@ -33,7 +33,7 @@
         <div class="empty-tip" *ngIf="menu.data.length === 0 && menu.empty.length > 0">
           {{menu.empty}}
         </div>
-        <div class="empty-tip2" *ngIf="menu.data.length === 0 && menu.empty.length === 0">
+        <div class="empty-tip2" *ngIf="!menu.custom && menu.data.length === 0 && menu.empty.length === 0">
           <img src="assets/imgs/empty-img.png" >
           <p>请在电脑上打开浏览器输入一下地址<br>http://10.19.2.211/<br>
           支持txt及txt打包成zip或rar格式的压缩包上传<br>

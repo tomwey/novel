@@ -41,7 +41,7 @@ export class BookPage {
       // console.log(this.bookItem);
       this.book = JSON.parse(JSON.stringify(this.bookItem));
 
-      this.nbService.hasAdded(NewbieService.FAVORITE_KEY, this.book)
+      this.nbService.hasAdded(this.book.save_key, this.book)
         .then(yesOrNo => {
           this.hasFavorited = yesOrNo;
         });
@@ -131,7 +131,7 @@ export class BookPage {
     // alert(JSON.stringify(bookItem));
 
     if (this.hasFavorited) {
-      this.nbService.removeItems(NewbieService.FAVORITE_KEY, [this.book])
+      this.nbService.removeItems(this.book.save_key, [this.book])
         .then(data => {
           this.hasFavorited = false;
           this.tool.showToast('已取消收藏');
@@ -140,6 +140,7 @@ export class BookPage {
           this.tool.showToast('取消收藏失败');
         });
     } else {
+      this.book.save_key = NewbieService.FAVORITE_KEY;
       this.nbService.addItem(NewbieService.FAVORITE_KEY, this.book)
       .then(data => {
         this.hasFavorited = true;
