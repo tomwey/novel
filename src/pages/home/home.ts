@@ -93,6 +93,7 @@ export class HomePage {
   }
 
   forwardTo(menu, item): void {
+    // alert(JSON.stringify(ev));
     // if (menu.id === NewbieService.FAVORITE_KEY) {
     //   this.gotoBook(item);
     // } else if 
@@ -101,6 +102,10 @@ export class HomePage {
     } else {
       this.gotoBook(item);
     }
+  }
+
+  deleteItem(menu,item): void {
+    this.nbService.removeItems(menu.id,[item]);
   }
 
   gotoBookDetail(item) {
@@ -137,6 +142,14 @@ export class HomePage {
     this.menus.splice(indexes.to, 0, menu);
 
     this.nbService.saveMenues(this.menus);
+  }
+
+  reorderItems2(indexes,menu): void {
+    let item = menu.data[indexes.from];
+    menu.data.splice(indexes.from, 1);
+    menu.data.splice(indexes.to, 0, item);
+
+    this.nbService.saveItems(menu.id, menu.data);
   }
 
   menus: any = [];

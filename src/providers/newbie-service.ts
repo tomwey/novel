@@ -46,6 +46,10 @@ export class NewbieService {
     });
   }
 
+  saveItems(key: string, items) {
+    this.saveObject(key, items);
+  }
+
   // 判断是否已经添加过
   hasAdded(key: string, item): Promise<any> {
     return new Promise((resolve, reject) => {

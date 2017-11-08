@@ -39,17 +39,26 @@
           </p>
         </div>
         <div class="menu-data" *ngIf="menu.data.length > 0">
-          <ion-list>
-            <button ion-item *ngFor="let item of menu.data" (click)="forwardTo(menu,item);">
-              <ion-thumbnail item-left>
+          <ion-list [reorder]="!isEdit" (ionItemReorder)="reorderItems2($event,menu)">
+            <ion-item-sliding *ngFor="let item of menu.data">
+            <button ion-item (click)="forwardTo(menu,item);">
+              <!-- <ion-checkbox color="dark"></ion-checkbox> -->
+              <ion-thumbnail item-left [class.edited]="!isEdit">
                 <!-- <img [src]="item.src"> -->
                 <!-- <ion-img src="{{item.src}}"></ion-img> -->
+                <input type="checkbox" name="selectedItem" class="item-cb" *ngIf="!isEdit" (click)="$event.stopPropagation();">
                 <img src="{{getImageUrl(menu,item)}}">
               </ion-thumbnail>
               <h2 text-wrap>{{getTitle(menu,item)}}</h2>
               <p>{{getContent1(menu,item)}}</p>
               <p>{{getContent2(menu,item)}}</p>
             </button>
+            <ion-item-options side="right">
+              <button ion-button color="danger" (click)="deleteItem(menu,item)">
+                删除
+              </button>
+            </ion-item-options>
+            </ion-item-sliding>
           </ion-list>
         </div>
       </div>
