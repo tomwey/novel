@@ -5,9 +5,9 @@
     </ion-buttons>
     <ion-title>我的</ion-title>
     <ion-buttons end>
-      <button ion-button *ngIf="!isEdit && allowMove" [disabled]="disabled" (click)="moveItems()">移动到</button>
-      <button ion-button *ngIf="!isEdit" [disabled]="disabled" (click)="removeItems();">批量删除</button>
-      <button ion-button *ngIf="isEdit" (click)="gotoPlayer()">播放中&nbsp;<ion-icon name="arrow-forward"></ion-icon></button>
+      <button ion-button *ngIf="!isEdit && allowMove && !isDropdown" [disabled]="disabled" (click)="moveItems()">移动到</button>
+      <button ion-button *ngIf="!isEdit && !isDropdown" [disabled]="disabled" (click)="removeItems();">批量删除</button>
+      <button ion-button *ngIf="isEdit || isDropdown" (click)="gotoPlayer()">播放中&nbsp;<ion-icon name="arrow-forward"></ion-icon></button>
     </ion-buttons>
   </ion-navbar>
 
