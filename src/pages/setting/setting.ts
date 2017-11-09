@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
+import { GlobalPlayService } from '../../providers/global-play-service';
 
 /**
  * Generated class for the SettingPage page.
@@ -18,6 +19,7 @@ export class SettingPage {
   flag: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
+    public globalService: GlobalPlayService,
   private app: App) {
     this.flag = this.navParams.data.flag && this.navParams.data.flag === 1;
   }

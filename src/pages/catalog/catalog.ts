@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { BooksService } from "../../providers/books-service";
 import { ToolService } from "../../providers/tool-service";
+import { GlobalPlayService } from '../../providers/global-play-service';
 
 /**
  * Generated class for the CatalogPage page.
@@ -37,6 +38,7 @@ export class CatalogPage {
     private books: BooksService,
     private tool:  ToolService,
     private app: App,
+    public globalService: GlobalPlayService,
     ) {
   }
 

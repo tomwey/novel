@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { ToolService } from "../../providers/tool-service";
 import { BooksService } from "../../providers/books-service";
+import { GlobalPlayService } from '../../providers/global-play-service';
 
 /**
  * Generated class for the RecommendPage page.
@@ -27,6 +28,7 @@ export class RecommendPage {
               private app: App,
               private tool:  ToolService,
               private books: BooksService,
+              public globalService: GlobalPlayService,
             ) {
     this.requestParams.server = this.navParams.data.server;
     this.requestParams.category = this.navParams.data.category;

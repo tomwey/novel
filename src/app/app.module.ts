@@ -25,6 +25,7 @@ import { BooksService } from '../providers/books-service';
 import { PodCastsService } from '../providers/podcast-service';
 import { NewbieService } from '../providers/newbie-service';
 import { SearchService } from '../providers/search-service';
+import { GlobalPlayService } from '../providers/global-play-service';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { SearchService } from '../providers/search-service';
     PodCastsService,
     NewbieService,
     SearchService,
+    GlobalPlayService,
   ]
 })
 export class AppModule {}

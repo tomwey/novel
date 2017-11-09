@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
 import { SearchService } from '../../providers/search-service';
+import { GlobalPlayService } from '../../providers/global-play-service';
 // import { Keyboard } from '@ionic-native/keyboard';
 
 /**
@@ -29,6 +30,7 @@ export class SearchPage {
               private tool: ToolService,
               private app: App,
               private searchService: SearchService,
+              public globalService: GlobalPlayService,
               // private keyboard: Keyboard,
             ) {
     this.loadSearchKeywords();

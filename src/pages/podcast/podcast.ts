@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { PodCastsService } from "../../providers/podcast-service";
 import { ToolService } from "../../providers/tool-service";
+import { GlobalPlayService } from '../../providers/global-play-service';
 
 /**
  * Generated class for the PodcastPage page.
@@ -35,6 +36,7 @@ export class PodcastPage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private podcasts: PodCastsService,
     private tool:  ToolService,
+    public globalService: GlobalPlayService,
     private app: App,
   ) {
   }

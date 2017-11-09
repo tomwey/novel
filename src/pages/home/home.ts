@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, Events, App } from 'ionic-angular';
 import { NewbieService } from '../../providers/newbie-service';
+import { GlobalPlayService } from '../../providers/global-play-service';
 
 @Component({
   selector: 'page-home',
@@ -23,6 +24,7 @@ export class HomePage {
               private nbService: NewbieService,
               private events: Events,
               private app: App,
+              public globalService: GlobalPlayService,
             ) {
     this.nbService.getMenues()
       .then(data => {
@@ -297,12 +299,7 @@ export class HomePage {
       })
       .catch(error => {});
   }
-
-  // 播放中或者阅读中
-  gotoPlayer() {
-
-  }
-
+  
   // 点击一个条目跳转
   forwardTo(menu, item): void {
     if (!this.isEdit) {
