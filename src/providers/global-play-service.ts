@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Events } from 'ionic-angular';
+import { Events, App } from 'ionic-angular';
 import { Constants } from './constants';
 
 @Injectable()
 export class GlobalPlayService {
   
-  constructor(private store: Storage, private events: Events) {
+  constructor(private store: Storage, 
+              private events: Events,
+              private app: App,
+            ) {
     // console.log('Hello ToolService Provider');
   }
 
@@ -23,7 +26,7 @@ export class GlobalPlayService {
   }
 
   gotoPlay() {
-    alert(123);
+    // alert(123);
   }
 
 }
