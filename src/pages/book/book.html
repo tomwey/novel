@@ -61,7 +61,7 @@
   </div>
 
   <ion-list *ngIf="dataType === 'other'">
-    <button ion-item *ngFor="let source of otherSources">
+    <button ion-item *ngFor="let source of otherSources" (click)="gotoBook(source);">
       <ion-thumbnail item-left>
         <img [src]="source.src">
       </ion-thumbnail>

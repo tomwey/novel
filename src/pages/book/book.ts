@@ -152,4 +152,8 @@ export class BookPage {
     }
   }
 
+  gotoBook(book): void {
+    this.app.getRootNavs()[0].push('BookPage', book);
+  }
+
 }
