@@ -28,6 +28,7 @@ export class PodcastDetailPage {
   currentItem: any = null;
   
   hasAdded: boolean = false;
+  isPlaying: boolean = false;
 
   constructor(
     public navCtrl: NavController, 
@@ -58,6 +59,7 @@ export class PodcastDetailPage {
       this.hasAdded = yesOrNo;
     }).catch();
 
+    this.isPlaying = !!this._isPlaying();
   }
 
   ionViewDidLoad() {
@@ -124,8 +126,35 @@ export class PodcastDetailPage {
     }, 10);
   }
 
+  _isPlaying() {
+    var $statusNode = document.evaluate("//div[@class='play-btn playing']", document, null, 7, null).snapshotItem(0);
+    if ($statusNode) {
+      return "1";
+    }
+    return null;
+  }
+
   play() {
 
+    // if (this.isPlaying) {
+    //   this.pause();
+    // } else {
+    //   var $playBtnNode = document.evaluate("//div[@class='cover stroke lazy']", document,null, 7, null).snapshotItem(0);
+    //   if ($playBtnNode) {
+    //     $playBtnNode.click();
+    //     //window.setTimeout(function(){go()},1000);//1秒后执行函数go
+    //     return "1";
+    //   }
+    // }
+    
+  }
+
+  pause() {
+    // var $playBtnNode = document.evaluate("//div[@class='cover stroke lazy']", document,null, 7, null).snapshotItem(0);
+    // if ($playBtnNode) {
+    //   $playBtnNode.click();
+    //   return "1";
+    // }
   }
 
   doFavorite() {

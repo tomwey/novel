@@ -36,7 +36,7 @@
   <ion-toolbar>
     <ion-buttons start>
       <button ion-button icon-only (click)="play()">
-        &nbsp;<ion-icon name="ios-play-outline"></ion-icon>
+        &nbsp;<ion-icon name="{{isPlaying ? 'ios-pause-outline' : 'ios-play-outline'}}"></ion-icon>
       </button>
     </ion-buttons>
     <ion-buttons end>
