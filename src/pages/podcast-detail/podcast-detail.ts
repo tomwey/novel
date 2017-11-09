@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { DomSanitizer } from "@angular/platform-browser";
+import { NewbieService } from '../../providers/newbie-service';
+import { ToolService } from '../../providers/tool-service';
 
 /**
  * Generated class for the PodcastDetailPage page.
@@ -15,7 +17,6 @@ import { DomSanitizer } from "@angular/platform-browser";
   templateUrl: 'podcast-detail.html',
 })
 export class PodcastDetailPage {
-
   browser: any = {
     isLoaded: false,
     proObj: null,
@@ -24,13 +25,24 @@ export class PodcastDetailPage {
     title: '加载中',
     url: '',
   };
+  currentItem: any = null;
+  
+  hasAdded: boolean = false;
+
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
     private sanitizer: DomSanitizer,
     private app: App,
+    private nbService: NewbieService,
+    private tool: ToolService,
   ) {
     let browser = this.navParams.data;
+    // console.log(browser);
+    this.currentItem = JSON.parse(JSON.stringify(this.navParams.data.item));
+    this.currentItem.save_key = this.currentItem.save_key || NewbieService.FAVORITE_KEY;
+    this.currentItem._type = 'podcast';
+    
     if (browser) {
       this.browser.title = browser.title;
       this.browser.url   = browser.url;
@@ -40,6 +52,12 @@ export class PodcastDetailPage {
     }
 
     this.reload();
+
+    // 检查是否已经收藏过
+    this.nbService.hasAdded(this.currentItem.save_key, this.currentItem).then(yesOrNo => {
+      this.hasAdded = yesOrNo;
+    }).catch();
+
   }
 
   ionViewDidLoad() {
@@ -111,7 +129,24 @@ export class PodcastDetailPage {
   }
 
   doFavorite() {
-
+    if (this.hasAdded) {
+      // 取消收藏
+      this.nbService.removeItems(this.currentItem.save_key, [this.currentItem])
+        .then(data => {
+          this.hasAdded = false;
+          this.tool.showToast('已取消收藏');
+        })
+        .catch();
+    } else {
+      // 收藏
+      this.currentItem.save_key = NewbieService.FAVORITE_KEY;
+      this.nbService.addItem(NewbieService.FAVORITE_KEY, this.currentItem)
+        .then(data => {
+          this.hasAdded = true;
+          this.tool.showToast('收藏成功');
+        })
+        .catch();
+    }
   }
 
   openVolume() {

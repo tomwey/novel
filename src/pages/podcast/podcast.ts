@@ -179,7 +179,9 @@ export class PodcastPage {
     }
     this.app.getRootNavs()[0].push('PodcastDetailPage', { 
       title: item.title,
-      url: item.href});
+      url: item.href, 
+      item: item, // 临时加的
+    });
   }
 
   showRecommended() {

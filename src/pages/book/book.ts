@@ -41,7 +41,7 @@ export class BookPage {
       // console.log(this.bookItem);
       this.book = JSON.parse(JSON.stringify(this.bookItem));
 
-      this.nbService.hasAdded(this.book.save_key, this.book)
+      this.nbService.hasAdded(this.book.save_key || NewbieService.FAVORITE_KEY, this.book)
         .then(yesOrNo => {
           this.hasFavorited = yesOrNo;
         });

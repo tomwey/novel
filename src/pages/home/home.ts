@@ -309,11 +309,30 @@ export class HomePage {
       this.selectItem(item);
       return;
     }
-    if (item.bookitem) {
-      this.gotoBookDetail(item);
+
+    if (item._type && item._type === 'podcast') {
+      this.gotoPodcast(item);
     } else {
-      this.gotoBook(item);
+      if (item.bookitem) {
+        this.gotoBookDetail(item);
+      } else {
+        this.gotoBook(item);
+      }
     }
+  }
+
+  gotoPodcast(item): void{
+    if (item.href == null){
+      item.href = item.chapterUrlArr[0]
+    }
+    // if (window.globalAudioTack){
+    //   window.globalAudioTack.pause()
+    // }
+    this.app.getRootNavs()[0].push('PodcastDetailPage', { 
+      title: item.title,
+      url: item.href, 
+      item: item, // 临时加的
+    });
   }
 
   // 删除某个条目
