@@ -24,6 +24,7 @@ import { Constants } from '../providers/constants';
 import { BooksService } from '../providers/books-service';
 import { PodCastsService } from '../providers/podcast-service';
 import { NewbieService } from '../providers/newbie-service';
+import { SearchService } from '../providers/search-service';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { NewbieService } from '../providers/newbie-service';
     BooksService,
     PodCastsService,
     NewbieService,
+    SearchService,
   ]
 })
 export class AppModule {}

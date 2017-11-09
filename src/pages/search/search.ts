@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
+import { SearchService } from '../../providers/search-service';
 // import { Keyboard } from '@ionic-native/keyboard';
 
 /**
@@ -27,13 +28,28 @@ export class SearchPage {
               private api: ApiService,
               private tool: ToolService,
               private app: App,
+              private searchService: SearchService,
               // private keyboard: Keyboard,
             ) {
+    this.loadSearchKeywords();
   }
 
   ionViewDidLoad() {
     // console.log('ionViewDidLoad SearchPage');
     this.loadHotKeywords();
+  }
+
+  loadSearchKeywords(refresher = null): void {
+    this.searchService.getKeywords().then(data => {
+      this.searchHistories = data;
+      if (refresher) {
+        refresher.complete();
+      }
+    }).catch((error => {
+      if (refresher) {
+        refresher.complete();
+      }
+    }));
   }
 
   selectKeyword(kw): void {
@@ -46,6 +62,12 @@ export class SearchPage {
   startSearch(kw): void {
     // console.log(kw);
     this.app.getRootNavs()[0].push('SearchResultPage', { keyword: kw });
+
+    if (!!kw) {
+      this.searchService.addKeyword(kw).then(data => {
+        this.loadSearchKeywords();
+      }).catch();
+    }
   }
 
   // onCancel(ev) {
@@ -71,14 +93,15 @@ export class SearchPage {
   }
 
   doRefresh(refresher): void {
-    this.loadHotKeywords().then(data => {
-      if (refresher)
-        refresher.complete();
-    })
-  }
-
-  getItems(event): void {
-
+    if (this.searchType === 'hot') {
+      this.loadHotKeywords().then(data => {
+        if (refresher)
+          refresher.complete();
+      })
+    } else {
+      this.loadSearchKeywords(refresher);
+    }
+    
   }
 
 }
