@@ -28,9 +28,7 @@ export class DownloadPage {
   ) {
     
     console.log(this.navParams)
-    this.chapters = this.navParams.data.chapters;
-    this.bookitem = this.navParams.data.bookitem;
-    this.catalogs = new CataloggroupProvider(this.bookitem, this.chapters);
+    this.catalogs = this.navParams.data.catalogs;
   }
 
   ionViewDidLoad() {
@@ -67,7 +65,7 @@ export class DownloadPage {
   }
 
   cancelAll(){
-    
+    this.catalogs.cancelAll();
   }
 
 

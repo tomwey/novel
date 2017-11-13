@@ -2,6 +2,12 @@ import { Component } from '@angular/core';
 import { NavController, Events, App } from 'ionic-angular';
 import { NewbieService } from '../../providers/newbie-service';
 import { GlobalPlayService } from '../../providers/global-play-service';
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
+import { ApiService } from '../../providers/api-service'
+import { DownloadServiceProvider } from '../../providers/download-service';
+declare let window;
+window.downloadTool;
 
 @Component({
   selector: 'page-home',
@@ -25,7 +31,10 @@ export class HomePage {
               private events: Events,
               private app: App,
               public globalService: GlobalPlayService,
+              private api : ApiService,
+              private file : File
             ) {
+    if (window.downloadTool == null) window.downloadTool = new DownloadServiceProvider(this.api, new FileTransfer(), this.file);
     this.nbService.getMenues()
       .then(data => {
         this.menus = data;

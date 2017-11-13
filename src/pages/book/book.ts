@@ -4,6 +4,7 @@ import { ToolService } from "../../providers/tool-service";
 import { ApiService } from "../../providers/api-service";
 import { Constants } from '../../providers/constants';
 import { NewbieService } from '../../providers/newbie-service';
+import { CataloggroupProvider } from '../../providers/cataloggroup';
 /**
  * Generated class for the BookPage page.
  *
@@ -27,8 +28,9 @@ export class BookPage {
   chapters: any = [];
   brief: string = '';
   otherSources: any = [];
-
+  catalogs : CataloggroupProvider;
   book: any = null;
+  catalogcapters : any = null;
 
   constructor(public navCtrl: NavController, 
               public navParams: NavParams, 
@@ -104,7 +106,9 @@ export class BookPage {
         this.bookItem.href = data.href;
         this.bookItem.time2 = data.time;
         this.bookItem.ts = data.ts;
-
+        this.catalogs = new CataloggroupProvider(this.bookItem, this.chapters);
+        this.catalogcapters = this.catalogs.chapters;
+        console.log(this.catalogs)
         // this.bookItem.chapters = data.partArr[0].chapterArr;
 
         this.tool.hideLoading();
@@ -118,11 +122,11 @@ export class BookPage {
     if (Constants.APP_TYPE === 1) {
       // 有声小说
       this.app.getRootNavs()[0].push('AudioplayerPage', 
-      {bookitem:this.bookItem, chapters: this.chapters, item: item});
+      {bookitem:this.bookItem, chapters: this.chapters, item: item.chapterItem});
     } else if (Constants.APP_TYPE === 2) {
       // 追书小说
       this.app.getRootNavs()[0].push('BookViewPage', 
-      { bookitem:this.bookItem, chapters: this.chapters, item: item });
+      { bookitem:this.bookItem, chapters: this.chapters, item: item.chapterItem });
     }
     
   }
@@ -157,7 +161,12 @@ export class BookPage {
   }
 
   doDwonalod(): void{
-    this.app.getRootNavs()[0].push('DownloadPage', {bookitem:this.bookItem, chapters: this.chapters});   
+    this.app.getRootNavs()[0].push('DownloadPage', {catalogs:this.catalogs});   
+  }
+
+  downloaditem(item):void{
+    item.isSelected = true;
+    this.catalogs.downloadSelectItems();
   }
 
 }
