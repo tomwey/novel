@@ -14,12 +14,12 @@
 
 
 <ion-content padding>
-  <ion-list  [virtualScroll]="chapters" approxItemHeight="50px">
-    <button ion-item *virtualItem="let item" (click) = "download(item)">
+  <ion-list  [virtualScroll]="catalogs.chapters" approxItemHeight="50px">
+    <button ion-item *virtualItem="let item" (click) = "select(item)">
         <h2>{{item.chapterTitle}}</h2>
         <ion-note item-right>
           <button ion-button icon-only clear >
-            <ion-icon name="ios-download-outline"></ion-icon>
+            <ion-checkbox dark checked ="item.isSelected"> </ion-checkbox>
           </button>
         </ion-note>
       </button>

@@ -26,6 +26,12 @@ import { PodCastsService } from '../providers/podcast-service';
 import { NewbieService } from '../providers/newbie-service';
 import { SearchService } from '../providers/search-service';
 import { GlobalPlayService } from '../providers/global-play-service';
+import { DownloadServiceProvider } from '../providers/download-service';
+import { CataloggroupProvider } from '../providers/cataloggroup';
+import { CatalogitemProvider } from '../providers/catalogitem';
+import { FileTransfer } from '@ionic-native/file-transfer';
+declare let window;
+window.donwloadTool = new DownloadServiceProvider(new ApiService(null), new FileTransfer());
 
 @NgModule({
   declarations: [
@@ -72,6 +78,9 @@ import { GlobalPlayService } from '../providers/global-play-service';
     NewbieService,
     SearchService,
     GlobalPlayService,
+    DownloadServiceProvider,
+    CataloggroupProvider,
+    CatalogitemProvider,
   ]
 })
 export class AppModule {}
