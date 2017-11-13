@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { CatalogitemProvider } from '../providers/catalogitem';
+
+
 declare let window;
-window.donwloadTool;
+window.downloadTool;
 /*
   Generated class for the CataloggroupProvider provider.
 
@@ -28,7 +30,7 @@ export class CataloggroupProvider {
   downloadSelectItems(){
     this.chapters.forEach(element => {
       if (element.isSelected){
-        window.donwloadTool.addtoDownloadList(element, this.book);
+        window.downloadTool.addtoDownloadList(element, this.book);
       }
     });
   }
@@ -66,6 +68,6 @@ export class CataloggroupProvider {
   }
 
   cancelAll(){
-
+    window.downloadTool.cancelBook(this.book)
   }
 }

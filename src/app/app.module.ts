@@ -27,11 +27,10 @@ import { NewbieService } from '../providers/newbie-service';
 import { SearchService } from '../providers/search-service';
 import { GlobalPlayService } from '../providers/global-play-service';
 import { DownloadServiceProvider } from '../providers/download-service';
-import { CataloggroupProvider } from '../providers/cataloggroup';
-import { CatalogitemProvider } from '../providers/catalogitem';
-import { FileTransfer } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
+
 declare let window;
-window.donwloadTool = new DownloadServiceProvider(new ApiService(null), new FileTransfer());
+window.downloadTool = null;
 
 @NgModule({
   declarations: [
@@ -66,6 +65,7 @@ window.donwloadTool = new DownloadServiceProvider(new ApiService(null), new File
     TabsPage
   ],
   providers: [
+    File,
     StatusBar,
     SplashScreen,
     // Keyboard,
@@ -79,8 +79,6 @@ window.donwloadTool = new DownloadServiceProvider(new ApiService(null), new File
     SearchService,
     GlobalPlayService,
     DownloadServiceProvider,
-    CataloggroupProvider,
-    CatalogitemProvider,
   ]
 })
 export class AppModule {}

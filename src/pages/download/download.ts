@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams , App} from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
-import { File } from '@ionic-native/file';
 import { CataloggroupProvider } from '../../providers/cataloggroup';
 /**
  * Generated class for the DownloadPage page.
@@ -24,13 +22,10 @@ export class DownloadPage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private api: ApiService,
     private tool: ToolService,private app: App,
-    private transfer: FileTransfer, private file: File
   ) {
     
     console.log(this.navParams)
-    this.chapters = this.navParams.data.chapters;
-    this.bookitem = this.navParams.data.bookitem;
-    this.catalogs = new CataloggroupProvider(this.bookitem, this.chapters);
+    this.catalogs = this.navParams.data.catalogs;
   }
 
   ionViewDidLoad() {
@@ -67,7 +62,7 @@ export class DownloadPage {
   }
 
   cancelAll(){
-    
+    this.catalogs.cancelAll();
   }
 
 

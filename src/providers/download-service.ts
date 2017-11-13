@@ -14,16 +14,15 @@ import { CatalogitemProvider } from '../providers/catalogitem';
 @Injectable()
 export class DownloadServiceProvider {
 
-  downloadList : {[id:string]: any};
+  downloadList = new Map();
   downloadBooks : any = [];
-  downloadedList : {[id:string]: any};
   downloadedBooks : any = [];
   downloading : boolean = false; //当前是否在下载
   fileTransfer : FileTransferObject;
   curDownloadItem :CatalogitemProvider = null;
   curProgress : number;
   downloadIndex: number = 0;
-  constructor(private api: ApiService, private transfer : FileTransfer) {
+  constructor(private api: ApiService, private transfer : FileTransfer, private file: File) {
     console.log('Hello DownloadServiceProvider Provider');
     this.fileTransfer = this.transfer.create();
     this.fileTransfer.onProgress((e)=>{
@@ -41,8 +40,9 @@ export class DownloadServiceProvider {
 
   addtoDownloadList(chapterItem, bookItem):void{
     var isExist : boolean = false;
-    if (this.downloadList[bookItem.ID] != null){
-      this.downloadList[bookItem.ID].forEach(element => {
+    
+    if (this.downloadList.has(bookItem.ID)){
+      this.downloadList.get(bookItem.ID).forEach(element => {
         if (element.isEqual(chapterItem)){
           isExist = true;
           return false
@@ -54,16 +54,20 @@ export class DownloadServiceProvider {
     }
     
     if (isExist == false){
-      this.downloadList[bookItem].push(chapterItem)
+      chapterItem.iswaiting = 1
+      this.downloadList[bookItem.ID].push(chapterItem)
     }
     this.startDownLoad()
   }
 
   startDownLoad(){
+    console.log("--------------下载列表----------------")
+    console.log(this.downloadList)
     while(true && this.downloadBooks.length > 0){
       let firstBookId = this.downloadBooks[0].ID;
       if (this.downloading == false && this.downloadList[firstBookId].length > this.downloadIndex){
         var item = this.downloadList[firstBookId][this.downloadIndex]
+        item.iswaiting = 2;
         this.curDownloadItem = item;
         this.curProgress = 0;
         this.downloadItem(item);
@@ -76,14 +80,18 @@ export class DownloadServiceProvider {
   }
 
   downloadItem(chapterItem): Promise<any> {
+    console.log("-------------------开始下载---------------")
+    console.log(chapterItem)
     this.downloading = true
     chapterItem.downloading = true;
     return new Promise((resolve => {
-      this.api.get('getChapter.php', chapterItem.requestParams)
+      this.api.get('getChapter.php', chapterItem.requestParam)
         .then(data => {
           console.log(data);
-          var fileurl = 'cdvfile://localhost/persistent/'+ chapterItem.requestParams.title + '/' + chapterItem.requestParams.chapterID + '.mp3';
-          this.fileTransfer.download(data.chapterSrcArr[0], fileurl, true).then((fileEntry)=>{
+          var fileurl = this.file.dataDirectory + chapterItem.requestParam.title + '/' + chapterItem.requestParam.chapterID + '.mp3';
+          var uri = encodeURI(data.chapterSrcArr[0]);
+          console.log(fileurl)
+          this.fileTransfer.download(uri, fileurl, true, {"headers":{'Access-Control-Allow-Origin' : '*'}}).then((fileEntry)=>{
             console.log('下载音频文件: ' + fileEntry.toURL());
             this.curDownloadItem.downloadSucceed(fileEntry.toURL());
             this.startDownLoad();
@@ -97,6 +105,7 @@ export class DownloadServiceProvider {
           resolve(true);
         })
         .catch(error => {
+          console.log("下载失败"+error)
           resolve(false);
         })
     }));
@@ -108,6 +117,16 @@ export class DownloadServiceProvider {
 
   getCurProgress():number{
     return this.curProgress;
+  }
+
+  cancelBook(bookitem){
+    var index = this.downloadBooks.indexOf(bookitem)
+    if (index == 0) this.fileTransfer.abort();
+    if (index >= 0){
+      this.downloadList.delete(bookitem.ID);
+      this.downloadBooks.splice(index, 1)
+    }
+    if (index == 0) this.startDownLoad()
   }
 
 }
