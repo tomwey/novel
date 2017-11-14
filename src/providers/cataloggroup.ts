@@ -50,10 +50,10 @@ export class CataloggroupProvider {
     });
   }
 
-  //不选
+  //反选
   unselectAll(){
     this.chapters.forEach(element => {
-      element.isSelected = false;
+      element.isSelected = !element.isSelected;
     });
   }
 

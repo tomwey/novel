@@ -8,20 +8,48 @@
 
   <ion-navbar>
     <ion-title>批量下载</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="rightBtnClick();">
+        {{rightBtn}}
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
-  <ion-list  [virtualScroll]="catalogs.chapters" approxItemHeight="50px">
-    <button ion-item *virtualItem="let item" (click) = "select(item)">
-        <h2>{{item.chapterTitle}}</h2>
-        <ion-note item-right>
-          <button ion-button icon-only clear >
-            <ion-checkbox dark checked ="item.isSelected"> </ion-checkbox>
-          </button>
-        </ion-note>
-      </button>
+<ion-content>
+  <ion-list approxItemHeight="50px">
+    <ion-item *ngFor="let item of catalogs.chapters" (click) = "select(item)">
+      <h2 item-left>{{item.chapterTitle}}</h2>
+      <ion-note item-right ng-bind="item.isSelected">
+        <ion-checkbox dark checked ="item.isSelected"> </ion-checkbox>
+      </ion-note>
+    </ion-item>
   </ion-list>
 </ion-content>
+<ion-footer>
+    <div class="button-bar"> 
+      <button ion-button outline (click)="selectMutil()">
+        <ion-icon name="ios-button-outline">连选</ion-icon>
+      </button>
+
+      <button ion-button outline (click)="reverse()">
+        <ion-icon name="ios-button-outline">反序</ion-icon>
+      </button>
+
+      <button ion-button outline (click)="unselectAll()">
+        <ion-icon name="ios-button-outline">反选</ion-icon>
+      </button>
+
+
+      <button ion-button outline (click)="selectAll()">
+        <ion-icon name="ios-button-outline">全选</ion-icon>
+      </button>
+
+
+      <button ion-button outline (click)="downloadAll()">
+        <ion-icon name="ios-button-outline">下载选中章节</ion-icon>
+      </button>
+    </div>
+</ion-footer>

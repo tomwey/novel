@@ -41,7 +41,7 @@ export class DownloadPage {
     this.catalogs.selectAll()
   }
 
-  //不选
+  //反选
   unselectAll(){
     this.catalogs.unselectAll()
   }
