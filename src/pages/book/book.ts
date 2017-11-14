@@ -4,6 +4,7 @@ import { ToolService } from "../../providers/tool-service";
 import { ApiService } from "../../providers/api-service";
 import { Constants } from '../../providers/constants';
 import { NewbieService } from '../../providers/newbie-service';
+import { File } from '@ionic-native/file';
 import { CataloggroupProvider } from '../../providers/cataloggroup';
 /**
  * Generated class for the BookPage page.
@@ -38,6 +39,7 @@ export class BookPage {
               private tool: ToolService,
               private app: App,
               private nbService: NewbieService,
+              private file:File
     ) {
       this.bookItem = this.navParams.data;
       // console.log(this.bookItem);
@@ -93,7 +95,8 @@ export class BookPage {
 
     this.bookItem.openID = '187cc0fff2b361dce805e8b0c11c7fedc30a8034';
     this.bookItem.ungz = 1;
-    
+    console.log("下载数据-----------")
+    console.log(this.bookItem)
     this.api.get('getBook.php', this.bookItem)
       .then(data => {
         console.log(data);
@@ -106,7 +109,7 @@ export class BookPage {
         this.bookItem.href = data.href;
         this.bookItem.time2 = data.time;
         this.bookItem.ts = data.ts;
-        this.catalogs = new CataloggroupProvider(this.bookItem, this.chapters);
+        this.catalogs = new CataloggroupProvider(this.bookItem, this.chapters, this.file);
         this.catalogcapters = this.catalogs.chapters;
         console.log(this.catalogs)
         // this.bookItem.chapters = data.partArr[0].chapterArr;
@@ -165,8 +168,11 @@ export class BookPage {
   }
 
   downloaditem(item):void{
-    item.isSelected = true;
-    this.catalogs.downloadSelectItems();
+    this.catalogs.downloadOneItem(item)
+  }
+
+  deleteItem(item): void{
+    item.deleteself()
   }
 
 }

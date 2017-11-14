@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { CatalogitemProvider } from '../providers/catalogitem';
-
-
+import { File } from '@ionic-native/file';
 declare let window;
 window.downloadTool;
 /*
@@ -18,11 +17,12 @@ export class CataloggroupProvider {
   chapters : any = [];
   book : any;
 
-  constructor(private bookitem: any, private bookchapters : any) {
+  constructor(private bookitem: any, private bookchapters : any, private file:File) {
     console.log('Hello CataloggroupProvider Provider');
     this.book = bookitem;
     bookchapters.forEach(element => {
-      var citem = new CatalogitemProvider(element, this.book);
+      var citem = new CatalogitemProvider(element, this.book, file);
+      //window.downloadTool.refreshItem(citem)
       this.chapters.push(citem);
     });
   }
@@ -33,6 +33,14 @@ export class CataloggroupProvider {
         window.downloadTool.addtoDownloadList(element, this.book);
       }
     });
+  }
+
+  downloadOneItem(item){
+    item.isSelected = true;
+    if (window.downloadTool){
+        console.log("加入播放列表")
+        window.downloadTool.addtoDownloadList(item, this.book)
+    }
   }
 
   //选中所有

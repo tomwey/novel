@@ -62,8 +62,7 @@ export class DownloadServiceProvider {
 
   startDownLoad(){
     console.log("--------------下载列表----------------")
-    console.log(this.downloadList)
-    while(true && this.downloadBooks.length > 0){
+    while(true && this.downloadBooks.length > 0 && this.downloading == false){
       let firstBookId = this.downloadBooks[0].ID;
       if (this.downloading == false && this.downloadList[firstBookId].length > this.downloadIndex){
         var item = this.downloadList[firstBookId][this.downloadIndex]
@@ -73,7 +72,8 @@ export class DownloadServiceProvider {
         this.downloadItem(item);
         break;
       }
-      if (this.downloadList[firstBookId].length <= 0){
+      if (this.downloadList[firstBookId].length <= this.downloadIndex){
+        this.downloadIndex = 0
         this.downloadedBooks.push(this.downloadBooks.shift())
       }
     }
@@ -81,7 +81,6 @@ export class DownloadServiceProvider {
 
   downloadItem(chapterItem): Promise<any> {
     console.log("-------------------开始下载---------------")
-    console.log(chapterItem)
     this.downloading = true
     chapterItem.downloading = true;
     return new Promise((resolve => {
@@ -127,6 +126,40 @@ export class DownloadServiceProvider {
       this.downloadBooks.splice(index, 1)
     }
     if (index == 0) this.startDownLoad()
+  }
+
+  removeDownloadedItem(item, bookid){
+    if (this.downloadList.has(bookid)){
+      var index = -1;
+      for(var i = 0; i < this.downloadList.get(bookid).length; ++i){
+        if (this.downloadList.get(bookid)[i].isEqual(item)){
+          index = i;
+          break;
+        }
+      }
+      if (index >= 0){
+        this.downloadList.get(bookid).splice(index, 1);
+      }
+    }
+  }
+
+  refreshItem(item, bookid){ //判断是否在下载列表中存在
+    if (this.downloadList.has(bookid)){
+      var index = -1;
+      for(var i = 0; i < this.downloadList.get(bookid).length; ++i){
+        if (this.downloadList.get(bookid)[i].isEqual(item)){
+          index = i;
+          break;
+        }
+      } 
+      if (index >= 0){
+        item.refreshItem(this.downloadList.get(bookid)[index]);
+        this.downloadList.get(bookid).splice(index, 1, item);
+        if (item.isEqual(this.curDownloadItem)){
+          this.curDownloadItem = item;
+        }
+      }
+    }
   }
 
 }

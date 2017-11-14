@@ -48,10 +48,17 @@
   <ion-list [hidden]="dataType !== 'chapter'" [virtualScroll]="catalogcapters" approxItemHeight="50px">
     <button ion-item *virtualItem="let item" >
         <h2>{{item.chapterTitle}}</h2>
-        <ion-note item-right>
-          <button ion-button icon-only clear (click)="downloaditem(item)">
+        <ion-note [hidden]="item.downloaded" item-right>
+          <button [hidden] = "item.isSelected !== false" ion-button icon-only clear (click)="downloaditem(item)">
             <ion-icon name="ios-download-outline"></ion-icon>
           </button>
+          <h2 [hidden]="item.isSelected !== true">{{item.status}}</h2>
+        </ion-note>
+
+        <ion-note *ngIf ="item.downloaded" item-right>
+            <button ion-button icon-only clear (click)="deleteItem(item)">
+                <ion-icon name="ios-download-outline"></ion-icon>
+            </button>
         </ion-note>
       </button>
   </ion-list>
