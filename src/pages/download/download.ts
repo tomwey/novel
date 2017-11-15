@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams , App} from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
 import { CataloggroupProvider } from '../../providers/cataloggroup';
+
 /**
  * Generated class for the DownloadPage page.
  *
@@ -64,6 +65,5 @@ export class DownloadPage {
   cancelAll(){
     this.catalogs.cancelAll();
   }
-
-
+  
 }
