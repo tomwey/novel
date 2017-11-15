@@ -81,6 +81,7 @@ export class DownloadServiceProvider {
 
   downloadItem(chapterItem): Promise<any> {
     console.log("-------------------开始下载---------------")
+    console.log(chapterItem)
     this.downloading = true
     chapterItem.downloading = true;
     return new Promise((resolve => {
@@ -90,7 +91,7 @@ export class DownloadServiceProvider {
           var fileurl = this.file.dataDirectory + chapterItem.requestParam.title + '/' + chapterItem.requestParam.chapterID + '.mp3';
           var uri = encodeURI(data.chapterSrcArr[0]);
           console.log(fileurl)
-          this.fileTransfer.download(uri, fileurl, true, {"headers":{'Access-Control-Allow-Origin' : '*'}}).then((fileEntry)=>{
+          this.fileTransfer.download(uri, fileurl, true).then((fileEntry)=>{
             console.log('下载音频文件: ' + fileEntry.toURL());
             this.curDownloadItem.downloadSucceed(fileEntry.toURL());
             this.startDownLoad();

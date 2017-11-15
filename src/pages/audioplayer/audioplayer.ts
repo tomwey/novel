@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 import { ITrackConstraint } from '../../components/audio-player/ionic-audio-interfaces';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
@@ -46,6 +47,7 @@ export class AudioplayerPage {
     private api: ApiService,
     private tool: ToolService,private app: App,
     private nbService: NewbieService,
+    private store: Storage
   ) {
     this.paramData = this.navParams.data;
 
@@ -69,7 +71,8 @@ export class AudioplayerPage {
     this.saveItem = JSON.parse(JSON.stringify(this.paramData));
     this.saveItem.ID = this.paramData.bookitem.ID;
     this.saveItem.item = item;
-    this.saveItem.progress = this.paramData.progress || '00:00';
+    this.saveItem.progress = 0;
+    this.saveItem.type = "audio";
     
     this.nbService.removeItems(NewbieService.HISTORY_KEY, [this.saveItem])
       .then(data => {
