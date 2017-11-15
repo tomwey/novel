@@ -52,7 +52,7 @@ export class ApiService {
     // this.tool.showLoading('加载中...');
     // 参数签名
     // searchParams.set('sign', ApiService.signParams(params));
-
+    console.log(url)
     return this.http.get(url, new RequestOptions({ search: searchParams }))
       .toPromise()
       .then(this.handleSuccess)

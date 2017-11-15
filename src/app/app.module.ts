@@ -26,6 +26,11 @@ import { PodCastsService } from '../providers/podcast-service';
 import { NewbieService } from '../providers/newbie-service';
 import { SearchService } from '../providers/search-service';
 import { GlobalPlayService } from '../providers/global-play-service';
+import { DownloadServiceProvider } from '../providers/download-service';
+import { File } from '@ionic-native/file';
+
+declare let window;
+window.downloadTool = null;
 
 @NgModule({
   declarations: [
@@ -60,6 +65,7 @@ import { GlobalPlayService } from '../providers/global-play-service';
     TabsPage
   ],
   providers: [
+    File,
     StatusBar,
     SplashScreen,
     // Keyboard,
@@ -72,6 +78,7 @@ import { GlobalPlayService } from '../providers/global-play-service';
     NewbieService,
     SearchService,
     GlobalPlayService,
+    DownloadServiceProvider,
   ]
 })
 export class AppModule {}
