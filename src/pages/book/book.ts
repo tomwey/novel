@@ -156,4 +156,8 @@ export class BookPage {
     this.app.getRootNavs()[0].push('BookPage', book);
   }
 
+  doDwonalod(): void{
+    this.app.getRootNavs()[0].push('DownloadPage', {bookitem:this.bookItem, chapters: this.chapters});   
+  }
+
 }
