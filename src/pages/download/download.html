@@ -8,33 +8,15 @@
 
   <ion-navbar>
     <ion-title>批量下载</ion-title>
-<<<<<<< HEAD
-=======
     <ion-buttons end>
       <button ion-button icon-only (click)="rightBtnClick();">
         {{rightBtn}}
       </button>
     </ion-buttons>
->>>>>>> 1c3dca30a0d2a29523c053fde9a1781352c8fd25
   </ion-navbar>
 
 </ion-header>
 
-
-<<<<<<< HEAD
-<ion-content padding>
-  <ion-list  [virtualScroll]="chapters" approxItemHeight="50px">
-    <button ion-item *virtualItem="let item" (click) = "download(item)">
-        <h2>{{item.chapterTitle}}</h2>
-        <ion-note item-right>
-          <button ion-button icon-only clear >
-            <ion-icon name="ios-download-outline"></ion-icon>
-          </button>
-        </ion-note>
-      </button>
-  </ion-list>
-</ion-content>
-=======
 <ion-content>
   <ion-list approxItemHeight="50px">
     <ion-item *ngFor="let item of catalogs.chapters" (click) = "select(item)">
@@ -70,4 +52,3 @@
       </button>
     </div>
 </ion-footer>
->>>>>>> 1c3dca30a0d2a29523c053fde9a1781352c8fd25

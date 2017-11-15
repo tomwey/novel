@@ -164,9 +164,6 @@ export class BookPage {
   }
 
   doDwonalod(): void{
-<<<<<<< HEAD
-    this.app.getRootNavs()[0].push('DownloadPage', {bookitem:this.bookItem, chapters: this.chapters});   
-=======
     this.app.getRootNavs()[0].push('DownloadPage', {catalogs:this.catalogs});   
   }
 
@@ -176,7 +173,6 @@ export class BookPage {
 
   deleteItem(item): void{
     item.deleteself()
->>>>>>> 1c3dca30a0d2a29523c053fde9a1781352c8fd25
   }
 
 }
