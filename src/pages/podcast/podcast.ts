@@ -178,6 +178,8 @@ export class PodcastPage {
     }
     if (window.globalAudioTack){
       window.globalAudioTack.pause()
+      window.globalAudioTack.stop()
+      window.globalAudioTack = null;
     }
     this.app.getRootNavs()[0].push('PodcastDetailPage', { 
       title: item.title,

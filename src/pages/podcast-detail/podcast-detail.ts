@@ -59,7 +59,22 @@ export class PodcastDetailPage {
       this.hasAdded = yesOrNo;
     }).catch();
 
+    this.savePodCast()
+
     // this.isPlaying = !!this._isPlaying();
+  }
+
+
+  savePodCast(){
+    var saveItem = JSON.parse(JSON.stringify(this.navParams.data));
+    saveItem.browser = this.browser;
+    saveItem.type = "podcast";
+    
+    this.nbService.removeItems(NewbieService.HISTORY_KEY, [saveItem])
+      .then(data => {
+        this.nbService.addItem(NewbieService.HISTORY_KEY, saveItem);
+      })
+      .catch(error => {});
   }
 
   ionViewDidLoad() {

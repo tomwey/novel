@@ -27,7 +27,6 @@ export class DownloadServiceProvider {
     this.fileTransfer = this.transfer.create();
     this.fileTransfer.onProgress((e)=>{
       console.info(e);  
-      alert(JSON.stringify(e));
       if (e.lengthComputable) {  
           console.log('当前进度：' + e.loaded / e.total);  
           this.curProgress = e.loaded / e.total;
@@ -82,25 +81,23 @@ export class DownloadServiceProvider {
 
   downloadItem(chapterItem): Promise<any> {
     console.log("-------------------开始下载---------------")
+    console.log(chapterItem)
     this.downloading = true
     chapterItem.downloading = true;
     return new Promise((resolve => {
       this.api.get('getChapter.php', chapterItem.requestParam)
         .then(data => {
           console.log(data);
-          var fileurl = this.file.dataDirectory + '/' + chapterItem.requestParam.chapterID + '.mp3';
+          var fileurl = this.file.dataDirectory + chapterItem.requestParam.title + '/' + chapterItem.requestParam.chapterID + '.mp3';
           var uri = encodeURI(data.chapterSrcArr[0]);
           console.log(fileurl)
-          // alert(uri);
-          this.fileTransfer.download(uri, fileurl).then((fileEntry)=>{
+          this.fileTransfer.download(uri, fileurl, true).then((fileEntry)=>{
             console.log('下载音频文件: ' + fileEntry.toURL());
-            alert(fileEntry.toURL());
             this.curDownloadItem.downloadSucceed(fileEntry.toURL());
             this.startDownLoad();
             this.downloadIndex ++;
           }).catch((error)=>{
             console.log("Error:"+error);
-            alert(JSON.stringify(error));
             this.curDownloadItem.downloadFailed();
             this.startDownLoad();
             this.downloadIndex ++;

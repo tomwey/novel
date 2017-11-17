@@ -4,6 +4,7 @@ import {WebAudioTrack} from './ionic-audio-web-track';
 import {CordovaAudioTrack} from './ionic-audio-cordova-track'; 
 
 import {Component, DoCheck, OnChanges, SimpleChanges, EventEmitter, Output, Input} from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 declare let window;
 window.globalAudioTack = null;
@@ -56,7 +57,7 @@ export class AudioTrackComponent implements OnChanges, DoCheck {
   
   private _audioTrack: IAudioTrack;
   
-  constructor(private _audioProvider: AudioProvider) {}
+  constructor(private _audioProvider: AudioProvider, private store : Storage) {}
   
   ngOnInit() {
     if (!this.track) return;
@@ -221,7 +222,6 @@ export class AudioTrackComponent implements OnChanges, DoCheck {
     window.globalAudioTack =  this._audioProvider.create(changes.track.currentValue);
     this._audioTrack = window.globalAudioTack;
     console.log("ngOnChanges -> new audio track", this._audioTrack);
-    
     this.autoplay && this._audioTrack.play();
   }
 }

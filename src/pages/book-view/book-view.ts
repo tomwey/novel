@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
+import { NewbieService } from '../../providers/newbie-service';
 
 /**
  * Generated class for the BookViewPage page.
@@ -20,6 +21,7 @@ export class BookViewPage {
   bookdatas: any = [];
   paramData :any;
   currentIndex:number;
+  saveItem: any = null;
   requestParams: any = { 
       openID:"e47d16be01ae009dbcdf696e62f9c1ecd5da4559",//设备唯一标识，可随意填一个
       isPlay : "1",
@@ -35,7 +37,8 @@ export class BookViewPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private api: ApiService,
-    private tool: ToolService,private app: App
+    private tool: ToolService,private app: App,
+    private nbService:NewbieService
   ) {
     this.paramData = this.navParams.data;
     this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item) 
@@ -57,7 +60,24 @@ export class BookViewPage {
     this.requestParams.chapterTitle = item.chapterTitle;
     this.requestParams.chapterHref = this.paramData.bookitem.chapterpre + item.chapterHref;
     this.requestParams.chapterServer = item.chapterServer;
+    this.saveItem(item)
   }
+
+  saveToHistory(item)
+  {
+    this.saveItem = JSON.parse(JSON.stringify(this.paramData));
+    this.saveItem.ID = this.paramData.bookitem.ID;
+    this.saveItem.item = item;
+    this.saveItem.progress = 0;
+    this.saveItem.type = "read";
+    
+    this.nbService.removeItems(NewbieService.HISTORY_KEY, [this.saveItem])
+      .then(data => {
+        this.nbService.addItem(NewbieService.HISTORY_KEY, this.saveItem);
+      })
+      .catch(error => {});
+  }
+
 
   loadData(): Promise<any> {
     return new Promise((resolve => {
