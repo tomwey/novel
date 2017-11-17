@@ -175,4 +175,9 @@ export class BookPage {
     item.deleteself()
   }
 
+  handleDownload(event, item): void {
+    console.log(item);
+    event.stopPropagation();
+  }
+
 }

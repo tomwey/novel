@@ -45,22 +45,28 @@
 
 <ion-content>
 
-  <ion-list [hidden]="dataType !== 'chapter'" [virtualScroll]="catalogcapters" approxItemHeight="50px">
-    <button ion-item *virtualItem="let item" (click)="playAudio(item)">
-        <h2>{{item.chapterTitle}}</h2>
-        <ion-note [hidden]="item.downloaded" item-right>
-          <button [hidden] = "item.isSelected !== false" ion-button icon-only clear (click)="downloaditem(item)">
-            <ion-icon name="ios-download-outline"></ion-icon>
-          </button>
-          <h2 [hidden]="item.isSelected !== true">{{item.status}}</h2>
-        </ion-note>
+  <ion-list [hidden]="dataType !== 'chapter'" [virtualScroll]="catalogcapters" approxItemHeight="60px">
+    <button ion-item *virtualItem="let item" (click)="playAudio(item)" detail-none>
+      <h2>{{item.chapterTitle}}</h2>
+      <ion-note item-right class="download-box">
+        <button ion-button icon-only clear (click)="handleDownload($event,item);">
+          <ion-icon name="ios-download-outline"></ion-icon>
+        </button>
+        <p class="download-state">下载</p>
+      </ion-note>
+      <!-- <ion-note [hidden]="item.downloaded" item-right>
+        <button [hidden] = "item.isSelected !== false" ion-button icon-only clear (click)="downloaditem(item)">
+          <ion-icon name="ios-download-outline"></ion-icon>
+        </button>
+        <h2 [hidden]="item.isSelected !== true">{{item.status}}</h2>
+      </ion-note>
 
-        <ion-note *ngIf ="item.downloaded" item-right>
-            <button ion-button icon-only clear (click)="deleteItem(item)">
-                <ion-icon name="ios-download-outline"></ion-icon>
-            </button>
-        </ion-note>
-      </button>
+      <ion-note *ngIf ="item.downloaded" item-right>
+        <button ion-button icon-only clear (click)="deleteItem(item)">
+            <ion-icon name="ios-download-outline"></ion-icon>
+        </button>
+      </ion-note> -->
+    </button>
   </ion-list>
 
   <div class="brief" padding *ngIf="dataType === 'brief'">

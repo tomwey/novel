@@ -15,4 +15,21 @@ page-book {
        max-width: 46px !important;
        max-height: 60px !important;
     }
+
+    .download-box {
+        // background-color: red;
+        text-align: center;
+        button {
+            margin: 0;
+            ion-icon {
+                color: rgb(18,18,18);
+            }
+            // padding: 0;
+        }
+        .download-state {
+            margin: 0;
+            padding: 0;
+            color: rgb(18,18,18);
+        }
+    }
 }
