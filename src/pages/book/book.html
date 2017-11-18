@@ -45,14 +45,14 @@
 
 <ion-content>
 
-  <ion-list [hidden]="dataType !== 'chapter'" [virtualScroll]="catalogcapters" approxItemHeight="60px">
+  <ion-list [hidden]="dataType !== 'chapter'" [virtualScroll]="chapters" approxItemHeight="60px">
     <button ion-item *virtualItem="let item" (click)="playAudio(item)" detail-none>
       <h2>{{item.chapterTitle}}</h2>
       <ion-note item-right class="download-box">
         <button ion-button icon-only clear (click)="handleDownload($event,item);">
           <ion-icon name="ios-download-outline"></ion-icon>
         </button>
-        <p class="download-state">下载</p>
+        <p class="download-state">{{downloadService.getDownloadStateDesc(bookItem, itme)}}</p>
       </ion-note>
       <!-- <ion-note [hidden]="item.downloaded" item-right>
         <button [hidden] = "item.isSelected !== false" ion-button icon-only clear (click)="downloaditem(item)">

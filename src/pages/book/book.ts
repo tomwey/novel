@@ -6,6 +6,8 @@ import { Constants } from '../../providers/constants';
 import { NewbieService } from '../../providers/newbie-service';
 import { File } from '@ionic-native/file';
 import { CataloggroupProvider } from '../../providers/cataloggroup';
+import { DownloadService } from '../../providers/download';
+import { stagger } from '@angular/core/src/animation/dsl';
 /**
  * Generated class for the BookPage page.
  *
@@ -39,7 +41,8 @@ export class BookPage {
               private tool: ToolService,
               private app: App,
               private nbService: NewbieService,
-              private file:File
+              private file:File,
+              public downloadService: DownloadService,
     ) {
       this.bookItem = this.navParams.data;
       // console.log(this.bookItem);
@@ -100,7 +103,13 @@ export class BookPage {
     this.api.get('getBook.php', this.bookItem)
       .then(data => {
         console.log(data);
-        this.chapters = data.partArr[0].chapterArr;
+        if (this.downloadService.getChapters(this.bookItem.ID)) {
+          this.chapters = this.downloadService.getChapters(this.bookItem.ID);
+        } else {
+          this.chapters = data.partArr[0].chapterArr;
+          this.downloadService.saveChapters(this.bookItem.ID, this.chapters);
+        }
+        
         this.brief = data.brief;
 
         this.bookItem.bookName = data.bookName;
@@ -176,8 +185,31 @@ export class BookPage {
   }
 
   handleDownload(event, item): void {
-    console.log(item);
+    // console.log(item);
     event.stopPropagation();
+
+    let state = item._s || 0;
+
+    if (state === 0) { // 默认状态
+      this._download(item);
+    } else if (state === 4) { // 下载完成
+      this._deleteDownload(item);
+    } else { // 取消下载
+      this._cancelDownload(item);
+    }
+  }
+
+  private _download(item) {
+    item._s = 1; // 等待下载
+    this.downloadService.addToDownloadQueue(this.bookItem, [item]);
+  }
+
+  private _deleteDownload(item) {
+
+  }
+
+  private _cancelDownload(item) {
+
   }
 
 }

@@ -29,6 +29,7 @@ import { GlobalPlayService } from '../providers/global-play-service';
 import { DownloadServiceProvider } from '../providers/download-service';
 import { File } from '@ionic-native/file';
 import { FileTransfer } from '@ionic-native/file-transfer';
+import { DownloadService } from '../providers/download';
 
 declare let window;
 window.downloadTool = null;
@@ -81,6 +82,7 @@ window.downloadTool = null;
     SearchService,
     GlobalPlayService,
     DownloadServiceProvider,
+    DownloadService,
   ]
 })
 export class AppModule {}
