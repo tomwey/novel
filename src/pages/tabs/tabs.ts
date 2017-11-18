@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { HomePage } from '../home/home';
 import { NewbieService } from '../../providers/newbie-service';
+import { Events } from 'ionic-angular/util/events';
 declare let window;
 window.globalAudioTack;
 // import { CatalogPage } from '../catalog/catalog';
@@ -20,10 +21,19 @@ export class TabsPage {
   tab4Root = 'SearchPage';
   tab5Root = 'SettingPage';
 
-  constructor(private nbService: NewbieService) {
+  badge: string = '';
+
+  constructor(private nbService: NewbieService,
+    private events: Events,
+  ) {
     document.addEventListener("ontimeupdate", ()=>{
       this.ontimer()
     })
+
+    this.events.subscribe('chapter:downloading', (data) => {
+      console.log(data);
+      this.badge = data === 0 ? '' : data.toString();
+    });
   }
 
   //保存音频播放数据

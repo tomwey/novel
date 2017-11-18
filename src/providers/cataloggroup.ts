@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { CatalogitemProvider } from '../providers/catalogitem';
 import { File } from '@ionic-native/file';
+import { NewbieService } from './newbie-service';
 declare let window;
 window.downloadTool;
 /*
@@ -17,11 +18,11 @@ export class CataloggroupProvider {
   chapters : any = [];
   book : any;
 
-  constructor(private bookitem: any, private bookchapters : any, private file:File) {
+  constructor(private bookitem: any, private bookchapters : any, private file:File, private nbservice : NewbieService) {
     console.log('Hello CataloggroupProvider Provider');
     this.book = bookitem;
     bookchapters.forEach(element => {
-      var citem = new CatalogitemProvider(element, this.book, file);
+      var citem = new CatalogitemProvider(element, this.book, file, nbservice);
       //window.downloadTool.refreshItem(citem)
       this.chapters.push(citem);
     });
@@ -39,7 +40,17 @@ export class CataloggroupProvider {
     item.isSelected = true;
     if (window.downloadTool){
         console.log("加入播放列表")
-        window.downloadTool.addtoDownloadList(item, this.book)
+        if (item.downloaded) {
+          console.log('删除');
+          item.deleteself();
+        } else {
+          if (item.iswaiting === 0) {
+            window.downloadTool.addtoDownloadList(item, this.book)
+          } else {
+            console.log('取消下载');
+            this.cancelItem(item);
+          }
+        }
     }
   }
 
@@ -77,5 +88,9 @@ export class CataloggroupProvider {
 
   cancelAll(){
     window.downloadTool.cancelBook(this.book)
+  }
+
+  cancelItem(item){
+    window.downloadTool.cancelChapter(item, this.book.ID);
   }
 }

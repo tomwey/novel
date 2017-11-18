@@ -103,13 +103,16 @@ export class BookPage {
     this.api.get('getBook.php', this.bookItem)
       .then(data => {
         console.log(data);
-        if (this.downloadService.getChapters(this.bookItem.ID)) {
-          this.chapters = this.downloadService.getChapters(this.bookItem.ID);
-        } else {
-          this.chapters = data.partArr[0].chapterArr;
-          this.downloadService.saveChapters(this.bookItem.ID, this.chapters);
-        }
-        
+        // if (this.downloadService.getChapters(this.bookItem.ID)) {
+        //   this.chapters = this.downloadService.getChapters(this.bookItem.ID);
+        // } else {
+        //   this.chapters = data.partArr[0].chapterArr;
+        //   this.chapters.forEach(element => {
+        //     element._s = 5; //默认状态
+        //   });
+        //   this.downloadService.saveChapters(this.bookItem.ID, this.chapters);
+        // }
+        this.chapters = data.partArr[0].chapterArr;
         this.brief = data.brief;
 
         this.bookItem.bookName = data.bookName;
@@ -118,7 +121,7 @@ export class BookPage {
         this.bookItem.href = data.href;
         this.bookItem.time2 = data.time;
         this.bookItem.ts = data.ts;
-        this.catalogs = new CataloggroupProvider(this.bookItem, this.chapters, this.file);
+        this.catalogs = new CataloggroupProvider(this.bookItem, this.chapters, this.file, this.nbService);
         this.catalogcapters = this.catalogs.chapters;
         console.log(this.catalogs)
         // this.bookItem.chapters = data.partArr[0].chapterArr;
@@ -187,16 +190,16 @@ export class BookPage {
   handleDownload(event, item): void {
     // console.log(item);
     event.stopPropagation();
+    this.catalogs.downloadOneItem(item)
+    // let state = item._s || 0;
 
-    let state = item._s || 0;
-
-    if (state === 0) { // 默认状态
-      this._download(item);
-    } else if (state === 4) { // 下载完成
-      this._deleteDownload(item);
-    } else { // 取消下载
-      this._cancelDownload(item);
-    }
+    // if (state === 0) { // 默认状态
+    //   this._download(item);
+    // } else if (state === 4) { // 下载完成
+    //   this._deleteDownload(item);
+    // } else { // 取消下载
+    //   this._cancelDownload(item);
+    // }
   }
 
   private _download(item) {

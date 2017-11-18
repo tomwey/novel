@@ -18,7 +18,7 @@ page-book {
 
     .download-box {
         // background-color: red;
-        text-align: center;
+        text-align: right;
         button {
             margin: 0;
             ion-icon {
@@ -29,6 +29,7 @@ page-book {
         .download-state {
             margin: 0;
             padding: 0;
+            font-size: 14px;
             color: rgb(18,18,18);
         }
     }

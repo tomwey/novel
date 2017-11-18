@@ -32,9 +32,9 @@ export class HomePage {
               private app: App,
               public globalService: GlobalPlayService,
               private api : ApiService,
-              private file : File
+              private file : File,
             ) {
-    if (window.downloadTool == null) window.downloadTool = new DownloadServiceProvider(this.api, new FileTransfer(), this.file);
+    if (window.downloadTool == null) window.downloadTool = new DownloadServiceProvider(this.api, new FileTransfer(), this.file, this.events);
     this.nbService.getMenues()
       .then(data => {
         this.menus = data;

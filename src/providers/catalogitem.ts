@@ -1,6 +1,7 @@
 import { Injectable, state } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { File, RemoveResult } from '@ionic-native/file';
+import { NewbieService } from './newbie-service';
 declare let window;
 window.downloadTool;
 /*
@@ -15,16 +16,22 @@ export class CatalogitemProvider {
   downloading : boolean; //是否在下载中
   chapterItem : any; //章节数据
   isSelected : boolean; //是否选中
-  private _total : number = 0; //总大小
-  private _loaded : number = 0; //已经下载大小
+  private _total : string = "0"; //总大小
+  private _loaded : string = "0"; //已经下载大小
+  private totalSize:number = 0;
+  private loadSize:number = 0;
   requestParam : any; //请求参数
   audioFile : string; //音频文件路径
-  downloaded : boolean;  //下载已经完成
+  private _downloaded : boolean;  //下载已经完成
   private _iswaiting : number; //等待状态, 0 --- 未开始下载， 1 --- 进入下载列表， 2 --- 开始下载
-  isFailed : boolean = false;
+  private _isFailed : boolean = false;
   status:string;
   bookId:string;
-  constructor(private item : any, private bookitem: any, private file:File) {
+  lcount :number = 0;
+  
+  icon_name: string = 'ios-download-outline';
+  
+  constructor(private item : any, private bookitem: any, private file:File, private nbService: NewbieService) {
     this.chapterItem = item;
     this.chapterTitle = item.chapterTitle;
     this.downloading = false;
@@ -64,8 +71,9 @@ export class CatalogitemProvider {
   }
 
   public set total(value){
-    this._total = value;
-    this.status = this.getdesc()
+    this._total = this.changeTwoDecimal_f(parseFloat(value) / 1024 / 1024);
+    //this.status = this.getdesc()
+    this.totalSize = parseInt(value)
   }
 
   public get loaded(){
@@ -73,8 +81,19 @@ export class CatalogitemProvider {
   }
 
   public set loaded(value){
-    this._loaded = value;
-    this.status = this.getdesc()
+    if (parseInt(value) < this.loadSize){
+      return;
+    }
+    console.log("正在下载-----")
+    this.lcount ++;
+    this._loaded = this.changeTwoDecimal_f(parseFloat(value) / 1024 / 1024);
+    this.loadSize = parseInt(value);
+    // if (this.lcount > 10 || this.loadSize >= this.totalSize){
+      // setTimeout(() => {
+        this.status = this.getdesc()
+      // }, 0);
+      this.lcount = 0;
+    // }
   }
 
   public set iswaiting(value){
@@ -85,6 +104,38 @@ export class CatalogitemProvider {
   public get iswaiting(){
     return this._iswaiting;
   }
+
+  private get downloaded(){
+    return this._downloaded;
+  }
+
+  private set downloaded(value){
+    this._downloaded = value;
+    this.status = this.getdesc();
+  }
+
+  private get isFailed(){
+    return this._isFailed;
+  }
+
+  private set isFailed(value){
+    this._isFailed = value;
+    this.status = this.getdesc();
+  }
+
+  changeTwoDecimal_f(x) {
+    var f_x = Math.round(x * 100) / 100;
+    var s_x = f_x.toString();
+    var pos_decimal = s_x.indexOf('.');
+    if (pos_decimal < 0) {
+        pos_decimal = s_x.length;
+        s_x += '.';
+    }
+    while (s_x.length <= pos_decimal + 2) {
+        s_x += '0';
+    }
+    return s_x;
+}
 
   isEqual(chapter:CatalogitemProvider):any{
     if (this.requestParam.chapterHref == chapter.requestParam.chapterHref){
@@ -97,6 +148,8 @@ export class CatalogitemProvider {
     this.downloaded = true;
     this.audioFile = filepath;
     this.isFailed = false;
+    this.chapterItem.audioFile = filepath;
+    this.updateStorge()
   }
 
   downloadFailed(){
@@ -113,18 +166,23 @@ export class CatalogitemProvider {
   getdesc(){
     if (this.isSelected == true){
       if (this.iswaiting == 1){
+        this.icon_name = 'ios-close-outline';
         return "等待下载"
       }else if (this.iswaiting == 2){
         if (this.downloaded == false && this.isFailed == false){
-          return this.loaded + "/" + this.total
+          this.icon_name = 'ios-close-outline';
+          return "正在下载：" + this.loaded + "M/" + this.total + "M"
         }else if (this.isFailed){
+          this.icon_name = 'ios-trash-outline';
           return "下载失败"
         }else if (this.downloaded){
+          this.icon_name = 'ios-trash-outline';
           return "下载成功"
         }
       }
     }
-    return "未知状态"
+    this.icon_name = 'ios-download-outline';
+    return "下载"
   }
 
   deleteself(){
@@ -138,12 +196,13 @@ export class CatalogitemProvider {
             this.iswaiting = 0;
             this.isSelected = false;
             this.isFailed = false;
-            this.total = 0;
-            this.loaded = 0;
+            this.total = "0";
+            this.loaded = "0";
             this.audioFile = null;
             if (window.downloadTool){
               window.downloadTool.removeDownloadedItem(this, this.bookId)
             }
+            this.updateStorge()
           }
         }).catch((error)=>{
           console.log("删除文件出错")
@@ -162,6 +221,44 @@ export class CatalogitemProvider {
     this.iswaiting = newItem.iswaiting;
     this.isFailed = newItem.isFailed;
     this.status = newItem.status;
+  }
+
+  updateStorge(){
+    this.nbService.getItems(NewbieService.DOWNLOADED_KEY).then(data => {
+      var isExsit = false;
+      if (data && data.length > 0){
+        data.forEach(chapters => {
+          if (chapters.ID == this.bookitem.ID){
+            isExsit = true;
+            if (chapters.downloadedChapter && chapters.downloadedChapter.length >= 0){
+              for (var i = 0; i < chapters.downloadedChapter.length; ++i){
+                if (chapters.downloadedChapter[i].chapterID == this.chapterItem.chapterID){
+                  chapters.downloadedChapter.splice(i, 1);
+                  break;
+                } 
+              }
+              if (this.chapterItem.audioFile){
+                chapters.downloadedChapter.push(this.chapterItem)
+              }
+            }else {
+              chapters.downloadedChapter = [];
+              chapters.downloadedChapter.push(this.chapterItem)
+            }
+            return false;
+          }
+        });
+      }
+      if (!isExsit){
+        this.bookitem.downloadedChapter = [];
+        this.bookitem.downloadedChapter.push(this.chapterItem)
+        data.push(this.bookitem)
+      }
+      this.nbService.removeItems(NewbieService.DOWNLOADED_KEY, [data]).then(()=>{
+        this.nbService.saveObject(NewbieService.DOWNLOADED_KEY, data);
+      }).catch(()=>{
+
+      })
+    })
   }
 
 }
