@@ -48,7 +48,7 @@ export class BookPage {
     ) {
       this.bookItem = this.navParams.data;
       // console.log(this.bookItem);
-      this.book = JSON.parse(JSON.stringify(this.bookItem));
+      this.book = JSON.parse(JSON.stringify(this.navParams.data));
 
       this.nbService.hasAdded(this.book.save_key || NewbieService.FAVORITE_KEY, this.book)
         .then(yesOrNo => {
@@ -97,14 +97,32 @@ export class BookPage {
 
   refresh(): void {
     this.tool.showLoading('加载中...');
+    let request = {
+      title: this.book.title,
+      filter_title: this.book.filter_title,
+      ID: this.book.ID,
+      href: this.book.href,
+      author:this.book.author,
+      new:this.book.new,
+      time:this.book.time,
+      category:this.book.category,
+      bookType: this.book.bookType,
+      name:this.book.name,
+      pre:this.book.pre,
+      bookjs: this.book.bookjs,
+      chapterjs: this.book.chapterjs,
+      src:this.book.src,
+      openID:'187cc0fff2b361dce805e8b0c11c7fedc30a8034',
+      ungz:1
+    };
 
     this.bookItem.openID = '187cc0fff2b361dce805e8b0c11c7fedc30a8034';
     this.bookItem.ungz = 1;
     console.log("下载数据-----------")
     console.log(this.bookItem)
-    this.api.get('getBook.php', this.bookItem)
+    this.api.get('getBook.php', request)
       .then(data => {
-        console.log(data);
+        // console.log(JSON.stringify(data));
         // if (this.downloadService.getChapters(this.bookItem.ID)) {
         //   this.chapters = this.downloadService.getChapters(this.bookItem.ID);
         // } else {
@@ -131,7 +149,11 @@ export class BookPage {
         this.tool.hideLoading();
       })
       .catch(error => {
+        // console.log(error);
         this.tool.hideLoading();
+        setTimeout(() => {
+          this.tool.showToast('加载章节出错');
+        }, 100);
       });
   }
 
@@ -198,6 +220,19 @@ export class BookPage {
     // console.log(item);
     event.stopPropagation();
     this.catalogs.downloadOneItem(item)
+
+    if (!this.hasFavorited) {
+      this.book.save_key = NewbieService.FAVORITE_KEY;
+      this.nbService.addItem(NewbieService.FAVORITE_KEY, this.book)
+      .then(data => {
+        this.hasFavorited = true;
+        // this.tool.showToast('收藏成功');
+      })
+      .catch(error => {
+        // this.tool.showToast('收藏失败');
+      });
+    }
+
     // let state = item._s || 0;
 
     // if (state === 0) { // 默认状态

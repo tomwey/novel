@@ -12,7 +12,11 @@ export class NewbieService {
   public static DOWNLOADED_KEY = 'downloaded';
   public static DOWNLOADING_KEY = 'downloading';
 
-  constructor(private store: Storage, private events: Events) {
+  private downloadingBooks: any = []; // 缓存正在下载的小说
+
+  constructor(private store: Storage, 
+              private events: Events,
+            ) {
     // console.log('Hello ToolService Provider');
   }
 
@@ -44,9 +48,14 @@ export class NewbieService {
   // 获取数据
   getItems(key: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getObject(key)
-        .then(data => resolve(data || []))
-        .catch(error => reject(error));
+      if (key === NewbieService.DOWNLOADING_KEY) {
+        // 正在下载的菜单，数据是保存到内存里面的
+        resolve(this.downloadingBooks);
+      } else {
+        this.getObject(key)
+          .then(data => resolve(data || []))
+          .catch(error => reject(error));
+      }
     });
   }
 
@@ -146,12 +155,25 @@ export class NewbieService {
 
   saveObject(key: string, obj: any): Promise<any> {
     if (!obj) {
+      if (key === NewbieService.DOWNLOADING_KEY) { // 正在下载
+        return new Promise(resolve => {
+          this.downloadingBooks = [];
+          this.events.publish(`${key}:changed`);
+        });
+      }
       return this.store.remove(key).then(data => {
         if (key !== 'menues') {
           this.events.publish(`${key}:changed`);
         }
       });
     } else {
+      if (key === NewbieService.DOWNLOADING_KEY) { // 正在下载
+        return new Promise(resolve => {
+          this.downloadingBooks = obj;
+          this.events.publish(`${key}:changed`);
+        });
+      }
+
       return this.store.set(key, JSON.stringify(obj)).then(data => {
         // console.log(data);
         if (key !== 'menues') {

@@ -20,6 +20,7 @@ export class DownloadPage {
   chapters: any = [];
   bookitem: any;
   catalogs : CataloggroupProvider;
+  rightBtn: string = '全部下载';
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private api: ApiService,
     private tool: ToolService,private app: App,
@@ -31,6 +32,10 @@ export class DownloadPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad DownloadPage');
+  }
+
+  rightBtnClick() {
+
   }
 
   select(chapterItem){
@@ -59,7 +64,7 @@ export class DownloadPage {
 
   //连续选中
   selectMutil(){
-    this.catalogs.selectMutil()
+    this.catalogs.selectMutil();
   }
 
   cancelAll(){

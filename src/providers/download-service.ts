@@ -66,6 +66,7 @@ export class DownloadServiceProvider {
     });
     if (bookExsit == false){
       this.downloadBooks.push(bookItem)
+      this.events.publish('book.downloading.add', bookItem);
       if (!this.downloadList.has(bookItem.ID)){
         this.downloadList.set(bookItem.ID, []);
       }
@@ -246,6 +247,7 @@ export class DownloadServiceProvider {
         this.downloadList.delete(bookitem.ID);
       }
       this.downloadBooks.splice(index, 1)
+      this.events.publish('book.downloading.cancel', bookitem);
     }
     if (index == 0) this.startDownLoad()
   }
