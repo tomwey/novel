@@ -5,7 +5,19 @@ page-book {
             max-width: 100%;
         }
     }
+    .base-info {
+        ion-segment {
+            padding: 0 50px;
+            // width: 70%;
+            // position: absolute;
+            // left: 50%;
+        }
 
+        .small-btn {
+            font-size: 14px;
+            color: rgb(18,18,18);
+        }
+    }
     .item-ios ion-thumbnail {
         min-width: 46px !important;
     }
@@ -21,6 +33,7 @@ page-book {
         text-align: right;
         button {
             margin: 0;
+            margin-right: -10px;
             ion-icon {
                 color: rgb(18,18,18);
             }

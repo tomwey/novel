@@ -91,4 +91,5 @@
     <engine name="browser" spec="~5.0.1" />
     <plugin name="cordova-plugin-file-transfer" spec="^1.7.0" />
     <allow-navigation href="http://10.19.0.135:8100" />
+    <allow-navigation href="http://192.168.0.103:8100" />
 </widget>

@@ -34,7 +34,7 @@ export class BookPage {
   catalogs : CataloggroupProvider;
   book: any = null;
   catalogcapters : any = null;
-
+  isReverse: boolean = false;
   constructor(public navCtrl: NavController, 
               public navParams: NavParams, 
               private api: ApiService,
@@ -173,6 +173,11 @@ export class BookPage {
 
   gotoBook(book): void {
     this.app.getRootNavs()[0].push('BookPage', book);
+  }
+
+  reverse() {
+    this.isReverse = !this.isReverse;
+    this.catalogs.chapters.reverse();
   }
 
   doDwonalod(): void{

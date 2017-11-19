@@ -39,6 +39,12 @@
           其他资源
         </ion-segment-button>
       </ion-segment>
+      <ion-buttons end>
+        <button ion-button class="small-btn" *ngIf="dataType === 'chapter'" (click)="reverse();">
+          <ion-icon name="{{isReverse ? 'ios-arrow-round-down-outline' : 'ios-arrow-round-up-outline'}}"></ion-icon>反序
+        </button>
+      </ion-buttons>
+      
     </ion-toolbar>
   </div>
 </ion-header>
