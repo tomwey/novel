@@ -322,12 +322,22 @@ export class HomePage {
     if (item._type && item._type === 'podcast') {
       this.gotoPodcast(item);
     } else {
-      if (item.bookitem) {
-        this.gotoBookDetail(item);
+      if (menu.id === NewbieService.DOWNLOADING_KEY || 
+          menu.id === NewbieService.DOWNLOADED_KEY) {
+        // console.log('11111');
+        this.gotoChapters(item);
       } else {
-        this.gotoBook(item);
+        if (item.bookitem) {
+          this.gotoBookDetail(item);
+        } else {
+          this.gotoBook(item);
+        }
       }
     }
+  }
+
+  gotoChapters(book) {
+    this.app.getRootNavs()[0].push('ChapterListPage', book);
   }
 
   gotoPodcast(item): void{
