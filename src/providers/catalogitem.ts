@@ -2,8 +2,7 @@ import { Injectable, state } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { File, RemoveResult } from '@ionic-native/file';
 import { NewbieService } from './newbie-service';
-declare let window;
-window.downloadTool;
+import { DownloadServiceProvider } from '../providers/download-service';
 /*
   Generated class for the CatalogitemProvider provider.
 
@@ -31,7 +30,7 @@ export class CatalogitemProvider {
   
   icon_name: string = 'ios-download-outline';
   
-  constructor(private item : any, private bookitem: any, private file:File, private nbService: NewbieService) {
+  constructor(private item : any, private bookitem: any, private file:File, private nbService: NewbieService, private downloadTool:DownloadServiceProvider) {
     this.chapterItem = item;
     this.chapterTitle = item.chapterTitle;
     this.downloading = false;
@@ -84,7 +83,6 @@ export class CatalogitemProvider {
     if (parseInt(value) < this.loadSize){
       return;
     }
-    console.log("正在下载-----")
     this.lcount ++;
     this._loaded = this.changeTwoDecimal_f(parseFloat(value) / 1024 / 1024);
     this.loadSize = parseInt(value);
@@ -157,6 +155,10 @@ export class CatalogitemProvider {
     this.downloaded = false;
     this.audioFile = null;
     this.isFailed = true;
+    this._total = "0";
+    this._loaded = "0";
+    this.totalSize = 0;
+    this.loadSize = 0;
   }
 
   selectItem(){
@@ -185,6 +187,21 @@ export class CatalogitemProvider {
     return "下载"
   }
 
+  cancelSelf(){
+    if (this._downloaded){
+      return;
+    }
+    this._downloaded = false;
+    this._isFailed = false;
+    this.iswaiting = 0;
+    this.audioFile = null;
+    this.isSelected = false;
+    this._total = "0";
+    this._loaded = "0";
+    this.totalSize = 0;
+    this.loadSize = 0;
+  }
+
   deleteself(){
     if (this.downloaded && this.audioFile){
       var path = this.file.dataDirectory + this.requestParam.title + '/';
@@ -199,8 +216,8 @@ export class CatalogitemProvider {
             this.total = "0";
             this.loaded = "0";
             this.audioFile = null;
-            if (window.downloadTool){
-              window.downloadTool.removeDownloadedItem(this, this.bookId)
+            if (this.downloadTool){
+              this.downloadTool.removeDownloadedItem(this, this.bookId)
             }
             this.updateStorge()
           }

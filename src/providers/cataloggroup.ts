@@ -4,8 +4,7 @@ import 'rxjs/add/operator/map';
 import { CatalogitemProvider } from '../providers/catalogitem';
 import { File } from '@ionic-native/file';
 import { NewbieService } from './newbie-service';
-declare let window;
-window.downloadTool;
+import { DownloadServiceProvider } from '../providers/download-service';
 /*
   Generated class for the CataloggroupProvider provider.
 
@@ -18,12 +17,13 @@ export class CataloggroupProvider {
   chapters : any = [];
   book : any;
 
-  constructor(private bookitem: any, private bookchapters : any, private file:File, private nbservice : NewbieService) {
+  constructor(private bookitem: any, private bookchapters : any, private file:File, private nbservice : NewbieService,
+  private downloadTool : DownloadServiceProvider) {
     console.log('Hello CataloggroupProvider Provider');
     this.book = bookitem;
     bookchapters.forEach(element => {
-      var citem = new CatalogitemProvider(element, this.book, file, nbservice);
-      //window.downloadTool.refreshItem(citem)
+      var citem = new CatalogitemProvider(element, this.book, file, nbservice, this.downloadTool);
+      this.downloadTool.refreshItem(citem, this.book.ID)
       this.chapters.push(citem);
     });
   }
@@ -31,24 +31,29 @@ export class CataloggroupProvider {
   downloadSelectItems(){
     this.chapters.forEach(element => {
       if (element.isSelected){
-        window.downloadTool.addtoDownloadList(element, this.book);
+        this.downloadTool.addtoDownloadList(element, this.book);
       }
     });
   }
 
   downloadOneItem(item){
     item.isSelected = true;
-    if (window.downloadTool){
-        console.log("加入播放列表")
+    if (this.downloadTool){
         if (item.downloaded) {
-          console.log('删除');
           item.deleteself();
         } else {
           if (item.iswaiting === 0) {
-            window.downloadTool.addtoDownloadList(item, this.book)
+            console.log("开始下载")
+            this.downloadTool.addtoDownloadList(item, this.book)
           } else {
-            console.log('取消下载');
-            this.cancelItem(item);
+            
+            if (item.isFailed){
+              console.log("删除下载失败内容")
+              this.removeFailedItem(item);
+            }else{
+              console.log('取消下载');
+              this.cancelItem(item);
+            }
           }
         }
     }
@@ -87,10 +92,14 @@ export class CataloggroupProvider {
   }
 
   cancelAll(){
-    window.downloadTool.cancelBook(this.book)
+    this.downloadTool.cancelBook(this.book)
   }
 
   cancelItem(item){
-    window.downloadTool.cancelChapter(item, this.book.ID);
+    this.downloadTool.cancelChapter(item, this.book.ID);
+  }
+
+  removeFailedItem(item){
+    this.downloadTool.removeFailedItem(item, this.book.ID);
   }
 }

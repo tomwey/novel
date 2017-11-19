@@ -31,9 +31,6 @@ import { File } from '@ionic-native/file';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { DownloadService } from '../providers/download';
 
-declare let window;
-window.downloadTool = null;
-
 @NgModule({
   declarations: [
     MyApp,

@@ -16,23 +16,24 @@ import { Events } from 'ionic-angular/util/events';
 export class DownloadServiceProvider {
   private _downloadingCount: number = 0;
   downloadList = new Map();
+  downloadedList = new Map();
   downloadBooks : any = [];
   downloadedBooks : any = [];
   downloading : boolean = false; //当前是否在下载
   fileTransfer : FileTransferObject;
   curDownloadItem :CatalogitemProvider = null;
   curProgress : number;
-  downloadIndex: number = 0;
-  private ngZone: NgZone = new NgZone({enableLongStackTrace: false});
+  //downloadIndex: number = 0;
   constructor(private api: ApiService, private transfer : FileTransfer, 
               private file: File,
               private events: Events,
+              private ngZone: NgZone
             ) {
     this.fileTransfer = this.transfer.create();
     this.fileTransfer.onProgress((e)=>{
       // this.ngZone.run(() => {
         if (e.lengthComputable) {  
-          console.log('当前进度：' + e.loaded / e.total);  
+          //console.log('当前进度：' + e.loaded / e.total);  
           this.curProgress = e.loaded / e.total;
           this.ngZone.run(() => {
             if (this.curDownloadItem != null){
@@ -69,6 +70,9 @@ export class DownloadServiceProvider {
       if (!this.downloadList.has(bookItem.ID)){
         this.downloadList.set(bookItem.ID, []);
       }
+      if (!this.downloadedList.has(bookItem.ID)){
+         this.downloadedList.set(bookItem.ID, []);
+      }
     }
     
     if (isExist == false){
@@ -91,20 +95,35 @@ export class DownloadServiceProvider {
   }
 
   startDownLoad(){
+    
     while(true && this.downloadBooks.length > 0 && this.downloading == false){
+      console.log("----------------startDownLoad11")
       let firstBookId = this.downloadBooks[0].ID;
-      if (this.downloading == false && this.downloadList.get(firstBookId).length > this.downloadIndex){
-        var item = this.downloadList.get(firstBookId)[this.downloadIndex]
+      if (this.downloading == false && this.downloadList.get(firstBookId).length > 0){
+        var item = this.downloadList.get(firstBookId)[0]
         item.iswaiting = 2;
         this.fileTransfer.abort();
         this.curDownloadItem = item;
         this.curProgress = 0;
+        this.downloading = true;
+        console.log("-----------------------开始下载："+item.requestParam.chapterID);
         this.downloadItem(item);
         break;
       }
-      if (this.downloadList.get(firstBookId).length <= this.downloadIndex){
-        this.downloadIndex = 0
-        this.downloadedBooks.push(this.downloadBooks.shift())
+      if (this.downloadList.get(firstBookId).length <= 0){
+        var exsit = false;
+        this.downloadedBooks.forEach(element => {
+          if (element.ID == firstBookId){
+            exsit = true;
+            return false;
+          }
+        });
+        if (exsit == false){
+          console.log("----------------装载下载完成-----------")
+          this.downloadedBooks.push(this.downloadBooks.shift())
+        }else{
+          this.downloadBooks.shift()
+        }
       }
     }
   }
@@ -112,7 +131,6 @@ export class DownloadServiceProvider {
   downloadItem(chapterItem):Promise<any> {
 
     if (chapterItem.downloaded || chapterItem.isFailed){
-      this.downloadIndex += 1;
       this.downloading = false;
       this.startDownLoad()
       return;
@@ -123,30 +141,38 @@ export class DownloadServiceProvider {
         .then(data => {
           console.log(data);
           var title = chapterItem.requestParam.title.replace(/^\s+|\s+$/g,"");
-          this.file.checkDir(this.file.documentsDirectory, title).then(hasExsit=>{
+          var path = "D:\\" ; //this.file.documentsDirectory
+          this.file.checkDir(path, title).then(hasExsit=>{
             if (!hasExsit){
-              this.file.createDir(this.file.documentsDirectory, title, false).catch(()=>{
+              this.file.createDir(path, title, false).catch(()=>{
 
               });
             }
           }).catch(()=>{
 
           })
-          var fileurl = this.file.documentsDirectory + title + "/" + chapterItem.requestParam.chapterID + '.mp3';
+          var fileurl = path + chapterItem.requestParam.chapterID + '.mp3';
           var uri = encodeURI(data.chapterSrcArr[0]);
-          console.log(fileurl)
+         
           this.fileTransfer.abort();
           this.fileTransfer.download(uri, fileurl, true).then((fileEntry)=>{
             console.log('下载音频文件: ' + fileEntry.toURL());
             this.curDownloadItem.downloadSucceed(fileEntry.toURL());
-            this.downloadIndex ++;
+            let firstBookId = this.downloadBooks[0].ID;
+            this.downloadedList.get(firstBookId).push(this.curDownloadItem)
+            this.downloadList.get(firstBookId).shift()
             this.downloading = false;
             this.startDownLoad();
           }).catch((error :FileTransferError)=>{
             console.log("下载报错Error:-------------");
             console.log(error)
-            this.curDownloadItem.downloadFailed();
-            this.downloadIndex ++;
+            if (error.code != 4){
+              this.curDownloadItem.downloadFailed();
+              let firstBookId = this.downloadBooks[0].ID;
+              this.downloadedList.get(firstBookId).push(this.curDownloadItem)
+              console.log(this.curDownloadItem)
+              this.downloadList.get(firstBookId).shift()
+            }
             this.downloading = false;
             this.startDownLoad();
           });
@@ -176,21 +202,50 @@ export class DownloadServiceProvider {
           break;
         }
       }
-      if (chapterItem.isEqual(this.curDownloadItem)){
-        this.fileTransfer.abort();
+      if (index >= 0){
+        if (chapterItem.isEqual(this.curDownloadItem)){
+          this.fileTransfer.abort();
+          this.downloading = false;
+          this.curDownloadItem = null;
+        }
+        chapterItem.cancelSelf()
+        this.downloadList.get(bookid).splice(index, 1)
         this.startDownLoad();
+        console.log("---------------------书本Length="+this.downloadBooks.length+", 章节="+this.downloadList.get(bookid).length);
+      }
+    }
+  }
+
+  removeFailedItem(item, bookid){
+    if (this.downloadedList.has(bookid)){
+      var index = 0;
+      for(var i = 0; i < this.downloadedList.get(bookid).length; ++i){
+        if (this.downloadedList.get(bookid)[i].isEqual(item)){
+          index = i;
+          break;
+        }
       }
       if (index >= 0){
-        this.downloadList.get(bookid).splice(index, 1)
+        item.cancelSelf()
+        this.downloadedList.get(bookid).splice(index, 1)
       }
     }
   }
 
   cancelBook(bookitem){
     var index = this.downloadBooks.indexOf(bookitem)
-    if (index == 0) this.fileTransfer.abort();
+    if (index == 0) {
+      this.fileTransfer.abort();
+      this.downloading = false;
+      this.curDownloadItem = null;
+    }
     if (index >= 0){
-      this.downloadList.delete(bookitem.ID);
+      if (this.downloadList.has(bookitem.ID)){
+        this.downloadList.get(bookitem.ID).forEach(element => {
+          element.cancelSelf();
+        });
+        this.downloadList.delete(bookitem.ID);
+      }
       this.downloadBooks.splice(index, 1)
       this.events.publish('book.downloading.cancel', bookitem);
     }

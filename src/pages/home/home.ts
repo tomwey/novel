@@ -5,10 +5,6 @@ import { GlobalPlayService } from '../../providers/global-play-service';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
 import { ApiService } from '../../providers/api-service'
-import { DownloadServiceProvider } from '../../providers/download-service';
-declare let window;
-window.downloadTool;
-
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -34,7 +30,6 @@ export class HomePage {
               private api : ApiService,
               private file : File,
             ) {
-    if (window.downloadTool == null) window.downloadTool = new DownloadServiceProvider(this.api, new FileTransfer(), this.file, this.events);
     this.nbService.getMenues()
       .then(data => {
         this.menus = data;

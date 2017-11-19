@@ -8,6 +8,7 @@ import { File } from '@ionic-native/file';
 import { CataloggroupProvider } from '../../providers/cataloggroup';
 import { DownloadService } from '../../providers/download';
 import { stagger } from '@angular/core/src/animation/dsl';
+import { DownloadServiceProvider } from '../../providers/download-service';
 /**
  * Generated class for the BookPage page.
  *
@@ -43,6 +44,7 @@ export class BookPage {
               private nbService: NewbieService,
               private file:File,
               public downloadService: DownloadService,
+              private downloadTool:DownloadServiceProvider
     ) {
       this.bookItem = this.navParams.data;
       // console.log(this.bookItem);
@@ -139,7 +141,7 @@ export class BookPage {
         this.bookItem.href = data.href;
         this.bookItem.time2 = data.time;
         this.bookItem.ts = data.ts;
-        this.catalogs = new CataloggroupProvider(this.bookItem, this.chapters, this.file, this.nbService);
+        this.catalogs = new CataloggroupProvider(this.bookItem, this.chapters, this.file, this.nbService, this.downloadTool);
         this.catalogcapters = this.catalogs.chapters;
         console.log(this.catalogs)
         // this.bookItem.chapters = data.partArr[0].chapterArr;
