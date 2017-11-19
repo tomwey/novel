@@ -44,7 +44,12 @@ export class HomePage {
 
     // 小说下载操作监听
     this.events.subscribe('book.downloading.add', item => {
-      this.nbService.addItems(NewbieService.DOWNLOADING_KEY, [item]);
+      this.nbService.hasAdded(NewbieService.DOWNLOADING_KEY, item)
+        .then(value => {
+          if (!value) {
+            this.nbService.addItems(NewbieService.DOWNLOADING_KEY, [item]);
+          }
+        }).catch();
     });
     this.events.subscribe('book.downloading.cancel', item => {
       this.nbService.removeItems(NewbieService.DOWNLOADING_KEY, [item]);

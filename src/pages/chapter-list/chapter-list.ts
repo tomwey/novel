@@ -34,7 +34,7 @@ export class ChapterListPage {
     if (key === 'downloading') {
       this.chapters = this.download.downloadList.get(this.book.ID);
     } else {
-      this.chapters = this.download.downloadedList.get(this.book.ID);
+      this.chapters = this.book.downloadedChapter;
     }
     
   }

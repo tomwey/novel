@@ -159,6 +159,7 @@ export class DownloadServiceProvider {
           this.fileTransfer.abort();
           this.fileTransfer.download(uri, fileurl, true).then((fileEntry)=>{
             console.log('下载音频文件: ' + fileEntry.toURL());
+            this.downloadingCount --;
             this.curDownloadItem.downloadSucceed(fileEntry.toURL());
             let firstBookId = this.downloadBooks[0].ID;
             this.downloadedList.get(firstBookId).push(this.curDownloadItem)
@@ -168,8 +169,11 @@ export class DownloadServiceProvider {
           }).catch((error :FileTransferError)=>{
             console.log("下载报错Error:-------------");
             console.log(error)
+            this.downloadingCount --;
+
             if (error.code != 4){
               this.curDownloadItem.downloadFailed();
+
               let firstBookId = this.downloadBooks[0].ID;
               this.downloadedList.get(firstBookId).push(this.curDownloadItem)
               console.log(this.curDownloadItem)
