@@ -28,8 +28,15 @@ export class ChapterListPage {
               // private catalogs: CataloggroupProvider,
               private app: App,
             ) {
-    this.book = this.navParams.data;
-    this.chapters = this.download.downloadList.get(this.book.ID);
+    this.book = this.navParams.data.book;
+    let key = this.navParams.data.key;
+
+    if (key === 'downloading') {
+      this.chapters = this.download.downloadList.get(this.book.ID);
+    } else {
+      this.chapters = this.download.downloadedList.get(this.book.ID);
+    }
+    
   }
 
   ionViewDidLoad() {

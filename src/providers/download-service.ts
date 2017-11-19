@@ -141,7 +141,7 @@ export class DownloadServiceProvider {
         .then(data => {
           console.log(data);
           var title = chapterItem.requestParam.title.replace(/^\s+|\s+$/g,"");
-          var path = "D:\\" ; //this.file.documentsDirectory
+          var path = this.file.documentsDirectory;//"D:\\" ; //this.file.documentsDirectory
           this.file.checkDir(path, title).then(hasExsit=>{
             if (!hasExsit){
               this.file.createDir(path, title, false).catch(()=>{
@@ -151,7 +151,9 @@ export class DownloadServiceProvider {
           }).catch(()=>{
 
           })
-          var fileurl = path + chapterItem.requestParam.chapterID + '.mp3';
+          // var fileurl = path + chapterItem.requestParam.chapterID + '.mp3';
+          var fileurl = path + title + "/" + chapterItem.requestParam.chapterID + '.mp3';
+          
           var uri = encodeURI(data.chapterSrcArr[0]);
          
           this.fileTransfer.abort();

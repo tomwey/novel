@@ -325,7 +325,7 @@ export class HomePage {
       if (menu.id === NewbieService.DOWNLOADING_KEY || 
           menu.id === NewbieService.DOWNLOADED_KEY) {
         // console.log('11111');
-        this.gotoChapters(item);
+        this.gotoChapters(item, menu);
       } else {
         if (item.bookitem) {
           this.gotoBookDetail(item);
@@ -336,8 +336,10 @@ export class HomePage {
     }
   }
 
-  gotoChapters(book) {
-    this.app.getRootNavs()[0].push('ChapterListPage', book);
+  gotoChapters(book, menu) {
+    this.app.getRootNavs()[0].push('ChapterListPage', 
+      {book: book, 
+        key: menu.id === NewbieService.DOWNLOADING_KEY ? 'downloading' : 'downloaded'});
   }
 
   gotoPodcast(item): void{
