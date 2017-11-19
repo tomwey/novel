@@ -5,7 +5,10 @@ page-book {
             max-width: 100%;
         }
     }
-    .base-info {
+    .base-info-head {
+        border-top: 0.88px solid rgb(221,221,221);
+        padding-top: 1px;
+        background-color: white;
         ion-segment {
             padding: 0 50px;
             // width: 70%;
