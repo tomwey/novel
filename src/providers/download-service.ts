@@ -26,7 +26,7 @@ export class DownloadServiceProvider {
   private ngZone: NgZone = new NgZone({enableLongStackTrace: false});
   constructor(private api: ApiService, private transfer : FileTransfer, 
               private file: File,
-              private events: Events
+              private events: Events,
             ) {
     this.fileTransfer = this.transfer.create();
     this.fileTransfer.onProgress((e)=>{
@@ -65,6 +65,7 @@ export class DownloadServiceProvider {
     });
     if (bookExsit == false){
       this.downloadBooks.push(bookItem)
+      this.events.publish('book.downloading.add', bookItem);
       if (!this.downloadList.has(bookItem.ID)){
         this.downloadList.set(bookItem.ID, []);
       }
@@ -191,6 +192,7 @@ export class DownloadServiceProvider {
     if (index >= 0){
       this.downloadList.delete(bookitem.ID);
       this.downloadBooks.splice(index, 1)
+      this.events.publish('book.downloading.cancel', bookitem);
     }
     if (index == 0) this.startDownLoad()
   }
