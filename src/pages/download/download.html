@@ -18,7 +18,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list [virtualScroll]="catalogs.chapters" approxItemHeight="50px">
+  <ion-list *ngIf="!!catalogs" [virtualScroll]="catalogs.chapters" approxItemHeight="50px">
     <button ion-item *virtualItem="let item" (click)="select(item)" detail-none>
       <h2>{{item.chapterTitle}}</h2>
       <!-- <ion-note item-right class="cb-box"> -->
