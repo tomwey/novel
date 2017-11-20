@@ -5,6 +5,7 @@ import { GlobalPlayService } from '../../providers/global-play-service';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
 import { ApiService } from '../../providers/api-service'
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -117,6 +118,10 @@ export class HomePage {
 
   getContent1(menu, item): string {
     // console.log(JSON.stringify(item));
+    if (menu.id === NewbieService.DOWNLOADED_KEY) {
+      return '';
+    }
+
     if (item.bookitem) {
       return item.bookitem.name;
     }
@@ -124,6 +129,22 @@ export class HomePage {
   }
 
   getContent2(menu, item): string {
+    if (menu.id === NewbieService.DOWNLOADED_KEY) {
+      let count = item.downloadedChapter.length;
+      if (count === 0) return '';
+
+      let arr = item.downloadedChapter;
+
+      count = Math.min(arr.length, 4);
+
+      let string = '';
+      for (var i=arr.length - 1; i>= arr.length - count; i--) {
+        string += arr[i].chapterTitle + '   ';
+      }
+
+      return string;
+    }
+
     // return null;
     if (item.item) {
       return item.item.chapterTitle;

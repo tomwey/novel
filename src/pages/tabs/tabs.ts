@@ -32,7 +32,7 @@ export class TabsPage {
 
     this.events.subscribe('chapter:downloading', (data) => {
       console.log(data);
-      this.badge = data === 0 ? '' : data.toString();
+      this.badge = data <= 0 ? '' : data.toString();
     });
   }
 
