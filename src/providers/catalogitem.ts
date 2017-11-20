@@ -204,7 +204,7 @@ export class CatalogitemProvider {
 
   deleteself(){
     if (this.downloaded && this.audioFile){
-      var path = this.file.dataDirectory + this.requestParam.title + '/';
+      var path = this.file.documentsDirectory + this.requestParam.title + '/';
       var filename = this.requestParam.chapterID + '.mp3';
       if (this.file.checkFile(path, filename)){
         this.file.removeFile(path, filename).then((e:RemoveResult)=>{
