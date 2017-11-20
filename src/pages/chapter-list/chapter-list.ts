@@ -68,12 +68,13 @@ export class ChapterListPage {
     // alert(JSON.stringify(item));
     if (Constants.APP_TYPE === 1) {
       // 有声小说
+      // alert(JSON.stringify(item.chapterItem));
       this.app.getRootNavs()[0].push('AudioplayerPage', 
-      {bookitem:this.book, chapters: this.chapters, item: (item.chapterItem || item)});
+      {bookitem:this.book, chapters: this.chapters, item: item.chapterItem || item});
     } else if (Constants.APP_TYPE === 2) {
       // 追书小说
       this.app.getRootNavs()[0].push('BookViewPage', 
-      { bookitem:this.book, chapters: this.chapters, item: (item.chapterItem || item) });
+      { bookitem:this.book, chapters: this.chapters, item: item.chapterItem || item });
     }
     
   }
