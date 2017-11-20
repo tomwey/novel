@@ -27,7 +27,7 @@ export class DownloadServiceProvider {
   constructor(private api: ApiService, private transfer : FileTransfer, 
               private file: File,
               private events: Events,
-              private ngZone: NgZone
+              private ngZone: NgZone,
             ) {
     this.fileTransfer = this.transfer.create();
     this.fileTransfer.onProgress((e)=>{
@@ -118,11 +118,17 @@ export class DownloadServiceProvider {
             return false;
           }
         });
+        
+        let book;
         if (exsit == false){
           console.log("----------------装载下载完成-----------")
-          this.downloadedBooks.push(this.downloadBooks.shift())
+          book = this.downloadBooks.shift();
+          this.downloadedBooks.push(book);
         }else{
-          this.downloadBooks.shift()
+          book = this.downloadBooks.shift();
+        }
+        if (book) {
+          this.events.publish('downloading.book.remove', book);
         }
       }
     }
@@ -169,7 +175,6 @@ export class DownloadServiceProvider {
           }).catch((error :FileTransferError)=>{
             console.log("下载报错Error:-------------");
             console.log(error)
-            this.downloadingCount --;
 
             if (error.code != 4){
               this.curDownloadItem.downloadFailed();
@@ -216,6 +221,7 @@ export class DownloadServiceProvider {
         }
         chapterItem.cancelSelf()
         this.downloadList.get(bookid).splice(index, 1)
+        this.downloadingCount --;
         this.startDownLoad();
         console.log("---------------------书本Length="+this.downloadBooks.length+", 章节="+this.downloadList.get(bookid).length);
       }
@@ -234,6 +240,8 @@ export class DownloadServiceProvider {
       if (index >= 0){
         item.cancelSelf()
         this.downloadedList.get(bookid).splice(index, 1)
+
+        this.downloadingCount --;
       }
     }
   }

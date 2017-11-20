@@ -6,6 +6,7 @@ import { Constants } from '../../providers/constants';
 import { App } from 'ionic-angular/components/app/app';
 import { File, RemoveResult } from '@ionic-native/file';
 import { NewbieService } from '../../providers/newbie-service';
+import { CataloggroupProvider } from '../../providers/cataloggroup';
 
 /**
  * Generated class for the ChapterListPage page.
@@ -25,11 +26,10 @@ export class ChapterListPage {
   chapters: any = null;
   menuID: any = null;
   isEdit: boolean = false;
-
+  catalogs: CataloggroupProvider;
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private download: DownloadServiceProvider,
-              // private catalogs: CataloggroupProvider,
               private app: App,
               private file: File,
               private nbService: NewbieService,
@@ -56,7 +56,8 @@ export class ChapterListPage {
 
   handleDownload(event, item) {
     event.stopPropagation();
-    // this.catalogs.downloadOneItem(item)
+    // this.catalogs.downloadOneItem(item);
+    this.download.cancelChapter(item, this.book.ID);
   }
 
   playAudio(item): void {

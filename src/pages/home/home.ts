@@ -55,6 +55,12 @@ export class HomePage {
     this.events.subscribe('book.downloading.cancel', item => {
       this.nbService.removeItems(NewbieService.DOWNLOADING_KEY, [item]);
     });
+
+    // 监听某本小说的所有在下载的队列为空
+    this.events.subscribe('downloading.book.remove', item => {
+      this.nbService.removeItems(NewbieService.DOWNLOADING_KEY, [item]);
+    });
+    
   }
 
   addSubscribes() {
