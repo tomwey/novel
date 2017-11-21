@@ -30,7 +30,7 @@ export class CataloggroupProvider {
 
   downloadSelectItems(){
     this.chapters.forEach(element => {
-      if (element.isSelected){
+      if (element.isSelected && element.iswaiting === 0){
         this.downloadTool.addtoDownloadList(element, this.book);
       }
     });
@@ -87,8 +87,26 @@ export class CataloggroupProvider {
   }
 
   //连续选中
-  selectMutil(){
+  selectMutil(fid, lid){
     console.log("还未实现该方法")
+    var fIndex = -1;
+    var lIndex = -1;
+    for(var i = 0; i < this.chapters.length; ++i){
+      if (this.chapters[i].requestParam.chapterID == fid){
+        fIndex = i;
+      }
+      if (this.chapters[i].requestParam.chapterID == lid){
+        lIndex = i;
+      }
+      if (lIndex != -1 && fIndex != -1){
+        break;
+      }
+    }
+    if (lIndex != -1 && fIndex != -1){
+      for (var j = Math.min(lIndex, fIndex) + 1; j < Math.max(lIndex, fIndex); ++j){
+        this.chapters[j].isSelected = true;
+      }
+    }
   }
 
   cancelAll(){

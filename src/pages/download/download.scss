@@ -37,6 +37,24 @@ page-download {
         border-top: 0.88px solid rgb(200,199,204);
         padding: 10px; 
     }
+    .download-box {
+        // background-color: red;
+        text-align: right;
+        button {
+            margin: 0;
+            margin-right: -10px;
+            ion-icon {
+                color: rgb(18,18,18);
+            }
+            // padding: 0;
+        }
+        .download-state {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            color: rgb(18,18,18);
+        }
+    }
     .button-bar {
         width: 100%;
         .custom-btn {

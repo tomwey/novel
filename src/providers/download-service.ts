@@ -39,6 +39,9 @@ export class DownloadServiceProvider {
             if (this.curDownloadItem != null){
               this.curDownloadItem.loaded = e.loaded.toString();
               this.curDownloadItem.total = e.total.toString();
+              if (this.downloadBooks.length > 0){
+                this.downloadBooks[0].status = this.curDownloadItem.status;
+              }
               // this.curDownloadItem.status = `正在下载：${e.loaded} / ${e.total}`;
             }
           });
@@ -65,6 +68,7 @@ export class DownloadServiceProvider {
       }
     });
     if (bookExsit == false){
+      bookItem.status = "等待下载"
       this.downloadBooks.push(bookItem)
       this.events.publish('book.downloading.add', bookItem);
       if (!this.downloadList.has(bookItem.ID)){
@@ -102,8 +106,7 @@ export class DownloadServiceProvider {
       if (this.downloading == false && this.downloadList.get(firstBookId).length > 0){
         var item = this.downloadList.get(firstBookId)[0]
         item.iswaiting = 2;
-        this.fileTransfer.abort();
-        this.curDownloadItem = item;
+        this.curDownloadItem = item;   this.curDownloadItem = item;
         this.curProgress = 0;
         this.downloading = true;
         console.log("-----------------------开始下载："+item.requestParam.chapterID);
@@ -162,7 +165,6 @@ export class DownloadServiceProvider {
           
           var uri = encodeURI(data.chapterSrcArr[0]);
          
-          this.fileTransfer.abort();
           this.fileTransfer.download(uri, fileurl, true).then((fileEntry)=>{
             console.log('下载音频文件: ' + fileEntry.toURL());
             this.downloadingCount --;
@@ -222,7 +224,7 @@ export class DownloadServiceProvider {
         chapterItem.cancelSelf()
         this.downloadList.get(bookid).splice(index, 1)
         this.downloadingCount --;
-        this.startDownLoad();
+        //this.startDownLoad();
         console.log("---------------------书本Length="+this.downloadBooks.length+", 章节="+this.downloadList.get(bookid).length);
       }
     }
@@ -256,6 +258,7 @@ export class DownloadServiceProvider {
     if (index >= 0){
       if (this.downloadList.has(bookitem.ID)){
         this.downloadList.get(bookitem.ID).forEach(element => {
+          this.downloadingCount --;
           element.cancelSelf();
         });
         this.downloadList.delete(bookitem.ID);
@@ -263,7 +266,7 @@ export class DownloadServiceProvider {
       this.downloadBooks.splice(index, 1)
       this.events.publish('book.downloading.cancel', bookitem);
     }
-    if (index == 0) this.startDownLoad()
+    //if (index == 0) this.startDownLoad()
   }
 
   removeDownloadedItem(item, bookid){
@@ -296,6 +299,15 @@ export class DownloadServiceProvider {
         if (item.isEqual(this.curDownloadItem)){
           this.curDownloadItem = item;
         }
+      }else {
+        var path = this.file.documentsDirectory + item.requestParam.title + '/';
+        var filename = item.requestParam.chapterID + '.mp3';
+        this.file.checkFile(path, filename).then((e)=>{
+          if (e){
+            item.downloaded = true;
+            item.audioFile = path + "/" + filename;
+          }
+        });
       }
     }
   }

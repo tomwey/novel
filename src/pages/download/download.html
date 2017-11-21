@@ -10,7 +10,7 @@
     <ion-title>批量下载</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="rightBtnClick();">
-        {{rightBtn}}
+        {{rightTitle}}
       </button>
     </ion-buttons>
   </ion-navbar>
@@ -22,7 +22,17 @@
     <button ion-item *virtualItem="let item" (click)="select(item)" detail-none>
       <h2>{{item.chapterTitle}}</h2>
       <!-- <ion-note item-right class="cb-box"> -->
-        <div class="item-cb" item-right><ion-icon name="ios-checkmark-outline" *ngIf="item.isSelected"></ion-icon></div>
+        <div class="item-cb" item-right *ngIf = "item.iswaiting === 0" (click)="selectItem(item)">
+          <ion-icon name="ios-checkmark-outline" *ngIf="item.isSelected">
+          </ion-icon>
+        </div>
+        <ion-note item-right class="download-box" *ngIf = "item.iswaiting !== 0 && item.isSelected">
+         <button ion-button icon-only clear (click)="handleDownload(item);">
+            <ion-icon name="{{item.icon_name}}"></ion-icon>
+          </button> 
+          
+          <p class="download-state">{{item.status}}</p>
+        </ion-note>
       <!-- </ion-note> -->
       </button>
   </ion-list>
@@ -41,7 +51,7 @@
       <button ion-button outline (click)="selectAll()" class="custom-btn">
         全选
       </button>
-      <button ion-button outline (click)="downloadAll()" class="custom-btn large-btn">
+      <button ion-button outline (click)="downloadSelectitems()" class="custom-btn large-btn">
         下载选中章节
       </button>
     </div>
