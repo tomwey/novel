@@ -126,8 +126,11 @@ export class NewbieService {
               // console.log(old.id);
               for (var j=0; j<items.length; j++) { // 1, 3
                 let del = items[j]; 
-                 
-                if (old.ID === del.ID) {
+                
+                let oldID = old.ID || old.chapterID;
+                let delID = del.ID || del.chapterID;
+
+                if (oldID === delID) {
                   count++;
                 }   
               }
@@ -143,6 +146,26 @@ export class NewbieService {
           } else {
             resolve(true);
           }
+        })
+        .catch(error => reject(error));
+    });
+  }
+
+  updateItem(key: string, item): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getItems(key)
+        .then(data => {
+          if (item && data && data.length > 0) {
+            for (var i=0; i<data.length; i++) {
+              let oldItem = data[i];
+              if (oldItem.ID === item.ID) {
+                data.splice(i, 1, item);
+                break;
+              }
+            }
+          }
+
+          this.saveObject(key, data).then(val => resolve(val)).catch(error => reject(error));
         })
         .catch(error => reject(error));
     });

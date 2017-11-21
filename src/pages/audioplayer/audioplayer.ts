@@ -91,18 +91,20 @@ export class AudioplayerPage {
 
   parseParam(){
     let item = this.paramData.chapters[this.currentIndex]
-    this.requestParams.ID = this.paramData.bookitem.ID;
-    this.requestParams.openID = this.paramData.bookitem.openID;
-    this.requestParams.chapterjs = this.paramData.bookitem.chapterjs;
-    this.requestParams.title = this.paramData.bookitem.title;
-    this.requestParams.chapterID = item.chapterID;
-    this.requestParams.chapterTitle = item.chapterTitle;
-    this.requestParams.chapterHref = this.paramData.bookitem.chapterpre + item.chapterHref;
-    this.requestParams.chapterServer = item.chapterServer;
-
-    // 保存浏览历史
-    this.saveToHistory(item);
-
+    if (item) {
+      this.requestParams.ID = this.paramData.bookitem.ID;
+      this.requestParams.openID = this.paramData.bookitem.openID;
+      this.requestParams.chapterjs = this.paramData.bookitem.chapterjs;
+      this.requestParams.title = this.paramData.bookitem.title;
+      this.requestParams.chapterID = item.chapterID;
+      this.requestParams.chapterTitle = item.chapterTitle;
+      this.requestParams.chapterHref = this.paramData.bookitem.chapterpre + item.chapterHref;
+      this.requestParams.chapterServer = item.chapterServer;
+  
+      // 保存浏览历史
+      this.saveToHistory(item);
+    }
+    
     // 判断当前是否收藏了章节
     // this.nbService.hasAdded(NewbieService.BOOKMARK_KEY, this.saveItem)
     //   .then(yesOrNo => {

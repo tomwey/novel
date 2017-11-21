@@ -8,21 +8,49 @@
 
   <ion-navbar>
     <ion-title>{{book.title}}</ion-title>
+    <ion-buttons end *ngIf="menuID === 'downloaded'">
+      <button ion-button (click)="deleteItems(isEdit);">{{ isEdit ? '确认删除' : '批量删除' }}</button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content>
-  <ion-list [virtualScroll]="chapters" approxItemHeight="60px">
+  <ion-list [virtualScroll]="chapters" approxItemHeight="50px">
     <button ion-item *virtualItem="let item" (click)="playAudio(item)" detail-none>
-      <h2>{{item.chapterTitle}}</h2>
+      <h2>
+        <div class="item-cb" *ngIf="menuID === 'downloaded' && isEdit">
+          <ion-icon name="ios-checkmark-outline" *ngIf="item.selected"></ion-icon>
+        </div> <span class="chapter-title">{{item.chapterTitle}}</span></h2>
       <ion-note item-right class="download-box" *ngIf="!item.downloaded">
         <button ion-button icon-only clear (click)="handleDownload($event,item);">
           <ion-icon name="{{item.icon_name}}"></ion-icon>
         </button>
-        
         <p class="download-state">{{item.status}}</p>
+      </ion-note>
+      <ion-note item-right *ngIf="menuID === 'downloaded'">
+        已下载
       </ion-note>
     </button>
   </ion-list>
 </ion-content>
+
+<ion-footer *ngIf="menuID === 'downloaded' && isEdit">
+  <div class="button-bar"> 
+    <button ion-button outline (click)="cancel()" class="custom-btn">
+      取消
+    </button>
+    <button ion-button outline (click)="reverse()" class="custom-btn">
+      反序
+    </button>
+    <button ion-button outline (click)="unselectAll()" class="custom-btn">
+      反选
+    </button>
+    <button ion-button outline (click)="selectAll()" class="custom-btn">
+      全选
+    </button>
+    <button ion-button outline (click)="deleteAll()" class="custom-btn large-btn">
+      删除选中章节
+    </button>
+  </div>
+</ion-footer>
