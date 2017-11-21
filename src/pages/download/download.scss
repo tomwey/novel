@@ -55,6 +55,13 @@ page-download {
             color: rgb(18,18,18);
         }
     }
+    .download-item {
+        h2 {
+            height: 60px;
+            line-height: 60px;
+        }
+    }
+
     .button-bar {
         width: 100%;
         .custom-btn {

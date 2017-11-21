@@ -18,8 +18,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="!!catalogs" [virtualScroll]="catalogs.chapters" approxItemHeight="50px">
-    <button ion-item *virtualItem="let item" (click)="select(item)" detail-none>
+  <ion-list *ngIf="!!catalogs" [virtualScroll]="catalogs.chapters" approxItemHeight="60px">
+    <button ion-item *virtualItem="let item" (click)="select(item)" detail-none class="download-item">
       <h2>{{item.chapterTitle}}</h2>
       <!-- <ion-note item-right class="cb-box"> -->
         <div class="item-cb" item-right *ngIf = "item.iswaiting === 0" (click)="selectItem(item)">
@@ -28,10 +28,9 @@
         </div>
         <ion-note item-right class="download-box" *ngIf = "item.iswaiting !== 0 && item.isSelected">
          <button ion-button icon-only clear (click)="handleDownload(item);">
-            <ion-icon name="{{item.icon_name}}"></ion-icon>
-          </button> 
-          
-          <p class="download-state">{{item.status}}</p>
+          <ion-icon name="{{item.icon_name}}"></ion-icon>
+         </button> 
+        <p class="download-state">{{item.status}}</p>
         </ion-note>
       <!-- </ion-note> -->
       </button>
