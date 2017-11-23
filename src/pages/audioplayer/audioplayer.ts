@@ -5,6 +5,7 @@ import { ITrackConstraint } from '../../components/audio-player/ionic-audio-inte
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
 import { NewbieService } from '../../providers/newbie-service';
+import { File } from '@ionic-native/file';
 
 // import { WebAudioTrack } from '../../components/audio-player/ionic-audio-web-track';
 /**
@@ -29,7 +30,7 @@ export class AudioplayerPage {
 
   saveItem: any = null;
   hasAddedToBookmark: boolean = false;
-
+  curAudioFile = null;
   requestParams: any = { 
       openID:"e47d16be01ae009dbcdf696e62f9c1ecd5da4559",//设备唯一标识，可随意填一个
       isPlay : "1",
@@ -47,7 +48,8 @@ export class AudioplayerPage {
     private api: ApiService,
     private tool: ToolService,private app: App,
     private nbService: NewbieService,
-    private store: Storage
+    private store: Storage,
+    private file: File
   ) {
     this.paramData = this.navParams.data;
 
@@ -74,9 +76,9 @@ export class AudioplayerPage {
     this.saveItem.progress = 0;
     this.saveItem.type = "audio";
     
-    this.nbService.removeItems(NewbieService.HISTORY_KEY, [this.saveItem])
+    this.nbService.removeItems(NewbieService.PLAYING, [this.saveItem])
       .then(data => {
-        this.nbService.addItem(NewbieService.HISTORY_KEY, this.saveItem);
+        this.nbService.saveObject(NewbieService.PLAYING, this.saveItem);
       })
       .catch(error => {});
   }
@@ -85,7 +87,17 @@ export class AudioplayerPage {
     console.log('ionViewDidLoad AudioplayerPage');
     console.log(window.globalAudioTack)
     this.parseParam()
-    this.loadAudioData()
+    if (this.curAudioFile == null){
+      this.loadAudioData()
+    }
+    setTimeout(() => {
+      //延时一秒钟，处理seek方法
+      if (this.paramData.progress != undefined){
+        if (window.globalAudioTack){
+          window.globalAudioTack.seekTo(this.paramData.progress)
+        }
+      }
+    }, 500);
     console.log("加载数据！！！");
   }
 
@@ -100,7 +112,22 @@ export class AudioplayerPage {
       this.requestParams.chapterTitle = item.chapterTitle;
       this.requestParams.chapterHref = this.paramData.bookitem.chapterpre + item.chapterHref;
       this.requestParams.chapterServer = item.chapterServer;
-  
+      var path = this.file.documentsDirectory + this.paramData.bookitem.title + '/';
+      var filename = item.chapterID + '.mp3';
+      this.file.checkFile(path, filename).then((e)=>{
+        if (e){
+          this.curAudioFile = path + "/" + filename;
+          this.currentTrack = {
+            src: this.curAudioFile,
+            artist: this.paramData.bookitem.title,
+            title: item.chapterTitle,
+            art: this.paramData.bookitem.src,
+            preload: 'metadata' // tell the plugin to preload metadata such as duration for this track, set to 'none' to turn off
+          }
+        }
+      }).catch(()=>{
+        this.curAudioFile = null;
+      })
       // 保存浏览历史
       this.saveToHistory(item);
     }
@@ -186,7 +213,9 @@ export class AudioplayerPage {
     { 
       this.currentIndex = this.currentIndex - 1;
       this.parseParam()
-      this.loadAudioData()
+      if (this.curAudioFile == null){
+        this.loadAudioData()
+      }
     }
   }
 
@@ -198,7 +227,9 @@ export class AudioplayerPage {
     { 
       this.currentIndex = this.currentIndex + 1;
       this.parseParam()
-      this.loadAudioData()
+      if (this.curAudioFile == null){
+        this.loadAudioData()
+      }
       
     }
   }

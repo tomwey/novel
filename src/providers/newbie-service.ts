@@ -11,6 +11,7 @@ export class NewbieService {
   public static HISTORY_KEY  = 'histories';
   public static DOWNLOADED_KEY = 'downloaded';
   public static DOWNLOADING_KEY = 'downloading';
+  public static PLAYING = "playing";
 
   private downloadingBooks: any = []; // 缓存正在下载的小说
 

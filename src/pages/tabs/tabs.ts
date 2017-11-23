@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 import { HomePage } from '../home/home';
 import { NewbieService } from '../../providers/newbie-service';
 import { Events } from 'ionic-angular/util/events';
-declare let window;
-window.globalAudioTack;
 // import { CatalogPage } from '../catalog/catalog';
 // import { PodcastPage } from '../podcast/podcast';
 // import { SearchPage } from '../search/search';
 // import { SettingPage } from '../setting/setting';
+declare let window;
+window.globalEvents;
 
 @Component({
   templateUrl: 'tabs.html'
@@ -26,30 +26,29 @@ export class TabsPage {
   constructor(private nbService: NewbieService,
     private events: Events,
   ) {
-    document.addEventListener("ontimeupdate", ()=>{
-      this.ontimer()
-    })
-
+    window.globalEvents = new Events()
     this.events.subscribe('chapter:downloading', (data) => {
       console.log(data);
       this.badge = data <= 0 ? '' : data.toString();
     });
+
+    window.globalEvents.subscribe("web-track:onTimeUpdate", (d)=>{
+      this.onUpdateTime(d)
+    })
   }
 
   //保存音频播放数据
-  ontimer(){
-    console.log("应用进入后台事件")
+  onUpdateTime(duration){
     //如果正在播放音频，刷新音频播放seek
-    this.nbService.getItems(NewbieService.HISTORY_KEY).then(data => {
+    this.nbService.getItems(NewbieService.PLAYING).then(data => {
       var saveItem = data;
-      if (window.globalAudioTack){
-        saveItem.progress = window.globalAudioTack.current
-        this.nbService.removeItems(NewbieService.HISTORY_KEY, [saveItem])
-        .then(data => {
-          this.nbService.addItem(NewbieService.HISTORY_KEY, saveItem);
-        })
-        .catch(error => {});
-      }
+      saveItem.progress = duration
+      this.nbService.removeItems(NewbieService.PLAYING, [saveItem])
+      .then(data => {
+        this.nbService.saveObject(NewbieService.PLAYING, saveItem);
+      })
+      .catch(error => {});
+      
     });
   }
 

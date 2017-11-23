@@ -186,6 +186,7 @@ export class DownloadServiceProvider {
               console.log(this.curDownloadItem)
               this.downloadList.get(firstBookId).shift()
             }
+            this.downloadingCount --;
             this.downloading = false;
             this.startDownLoad();
           });
@@ -284,32 +285,27 @@ export class DownloadServiceProvider {
     }
   }
 
-  refreshItem(item, bookid){ //判断是否在下载列表中存在
-    if (this.downloadList.has(bookid)){
-      var index = -1;
-      for(var i = 0; i < this.downloadList.get(bookid).length; ++i){
-        if (this.downloadList.get(bookid)[i].isEqual(item)){
-          index = i;
-          break;
-        }
-      } 
-      if (index >= 0){
-        item.refreshItem(this.downloadList.get(bookid)[index]);
-        this.downloadList.get(bookid).splice(index, 1, item);
-        if (item.isEqual(this.curDownloadItem)){
-          this.curDownloadItem = item;
-        }
-      }else {
-        var path = this.file.documentsDirectory + item.requestParam.title + '/';
-        var filename = item.requestParam.chapterID + '.mp3';
-        this.file.checkFile(path, filename).then((e)=>{
-          if (e){
-            item.downloaded = true;
-            item.audioFile = path + "/" + filename;
-          }
-        });
-      }
+  getBookDownloadItem(bookId){
+    if (this.downloadList.has(bookId)){
+      return this.downloadList.get(bookId)
     }
+    return null
   }
+
+  refreshItem(item){ //判断是否在下载列表中存在
+    var path = this.file.documentsDirectory + item.requestParam.title + '/';
+    var filename = item.requestParam.chapterID + '.mp3';
+    this.file.checkFile(path, filename).then((e)=>{
+      if (e){
+        item.downloaded = true;
+        item.iswaiting = 2;
+        item.audioFile = path + "/" + filename;
+      }
+    }).catch(()=>{
+      
+    })
+    
+  }
+  
 
 }

@@ -70,9 +70,9 @@ export class PodcastDetailPage {
     saveItem.browser = this.browser;
     saveItem.type = "podcast";
     
-    this.nbService.removeItems(NewbieService.HISTORY_KEY, [saveItem])
+    this.nbService.removeItems(NewbieService.PLAYING, [saveItem])
       .then(data => {
-        this.nbService.addItem(NewbieService.HISTORY_KEY, saveItem);
+        this.nbService.saveObject(NewbieService.PLAYING, saveItem);
       })
       .catch(error => {});
   }
