@@ -21,11 +21,29 @@ export class CataloggroupProvider {
   private downloadTool : DownloadServiceProvider) {
     console.log('Hello CataloggroupProvider Provider');
     this.book = bookitem;
+    var containItems = [];
+    var downloadItems = this.downloadTool.getBookDownloadItem(this.book.ID)
+    if (downloadItems){
+      downloadItems.forEach(element => {
+        containItems.push(element.requestParam.chapterID)
+      });
+    }
     bookchapters.forEach(element => {
-      var citem = new CatalogitemProvider(element, this.book, file, nbservice, this.downloadTool);
-      this.downloadTool.refreshItem(citem, this.book.ID)
-      this.chapters.push(citem);
+        if (containItems.indexOf(element.chapterID) == -1){
+          var citem = new CatalogitemProvider(element, this.book, file, nbservice, this.downloadTool);
+          this.downloadTool.refreshItem(citem)
+          this.chapters.push(citem);
+        }else {
+          this.chapters.push(downloadItems[containItems.indexOf(element.chapterID)])
+        }
     });
+    // downloadItems.forEach(element => {
+    //   this.chapters.splice(itemIndexes[index++], 0, element)
+    // });
+  }
+
+  freshItems(){
+
   }
 
   downloadSelectItems(){

@@ -206,25 +206,29 @@ export class CatalogitemProvider {
     if (this.downloaded && this.audioFile){
       var path = this.file.documentsDirectory + this.requestParam.title + '/';
       var filename = this.requestParam.chapterID + '.mp3';
-      if (this.file.checkFile(path, filename)){
-        this.file.removeFile(path, filename).then((e:RemoveResult)=>{
-          if (e.success){
-            this.downloaded = false;
-            this.iswaiting = 0;
-            this.isSelected = false;
-            this.isFailed = false;
-            this.total = "0";
-            this.loaded = "0";
-            this.audioFile = null;
-            if (this.downloadTool){
-              this.downloadTool.removeDownloadedItem(this, this.bookId)
+      this.file.checkFile(path, filename).then((e)=>{
+        if (e){
+          this.file.removeFile(path, filename).then((e:RemoveResult)=>{
+            if (e.success){
+              this.downloaded = false;
+              this.iswaiting = 0;
+              this.isSelected = false;
+              this.isFailed = false;
+              this.total = "0";
+              this.loaded = "0";
+              this.audioFile = null;
+              if (this.downloadTool){
+                this.downloadTool.removeDownloadedItem(this, this.bookId)
+              }
+              this.updateStorge()
             }
-            this.updateStorge()
-          }
-        }).catch((error)=>{
-          console.log("删除文件出错")
-        })
-      }
+          }).catch((error)=>{
+            console.log("删除文件出错")
+          })
+        }
+      }).catch(()=>{
+        console.log("文件不存在")
+      })
     }
   }
 

@@ -1,9 +1,10 @@
 import {IAudioTrack} from './ionic-audio-interfaces'; 
 import {Injectable, Optional} from '@angular/core';
+import { Events } from 'ionic-angular/util/events';
 
 declare let window;
 window.AudioContext = window['AudioContext'] || window['webkitAudioContext'];
-
+window.globalEvents;
 /**
  * Creates an HTML5 audio track
  * 
@@ -23,6 +24,7 @@ export class WebAudioTrack implements IAudioTrack {
   private _id: number;
   private _isLoading: boolean;
   private _hasLoaded: boolean;
+  
   constructor(public src: string, @Optional() public preload: string = 'none') {
     // audio context not needed for now
     // @Optional() private ctx: AudioContext = undefined
@@ -75,6 +77,9 @@ export class WebAudioTrack implements IAudioTrack {
     if (this.isPlaying && this.audio.currentTime > 0) {
       this._progress = this.audio.currentTime;
       this._completed = this.audio.duration > 0 ? Math.trunc (this.audio.currentTime / this.audio.duration * 100)/100 : 0;
+      if (window.globalEvents){
+        window.globalEvents.publish("web-track:onTimeUpdate", this.audio.currentTime);
+      }
     }  
   }
   
