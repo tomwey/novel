@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { ITrackConstraint } from '../../components/audio-player/ionic-audio-interfaces';
@@ -16,6 +16,7 @@ import { File } from '@ionic-native/file';
  */
 declare let window;
 window.globalAudioTack;
+window.globalEvents
 
 @IonicPage()
 @Component({
@@ -49,7 +50,8 @@ export class AudioplayerPage {
     private tool: ToolService,private app: App,
     private nbService: NewbieService,
     private store: Storage,
-    private file: File
+    private file: File,
+    private _cdRef: ChangeDetectorRef
   ) {
     this.paramData = this.navParams.data;
 
@@ -99,6 +101,9 @@ export class AudioplayerPage {
       }
     }, 500);
     console.log("加载数据！！！");
+    window.globalEvents.subscribe("web-track:onFinished", ()=>{
+      this.gotoNext()
+    })
   }
 
   parseParam(){
@@ -229,6 +234,7 @@ export class AudioplayerPage {
       this.parseParam()
       if (this.curAudioFile == null){
         this.loadAudioData()
+        this._cdRef.detectChanges()
       }
       
     }
