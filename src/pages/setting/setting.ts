@@ -8,6 +8,7 @@ import { AlertController } from 'ionic-angular/components/alert/alert-controller
 import { Device } from '@ionic-native/device';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Storage } from '@ionic/storage';
+import { ModalController } from 'ionic-angular/components/modal/modal-controller';
 
 /**
  * Generated class for the SettingPage page.
@@ -40,6 +41,7 @@ export class SettingPage {
     private alertCtrl: AlertController,
     private clipboard: Clipboard,
     private storage: Storage,
+    private modalCtrl: ModalController,
   ) {
     this.flag = this.navParams.data.flag && this.navParams.data.flag === 1;
 
@@ -152,7 +154,7 @@ export class SettingPage {
   }
 
   setPassword() {
-
+    this.modalCtrl.create('PasswordPage').present();
   }
 
   sendNotify() {
