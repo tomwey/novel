@@ -29,7 +29,9 @@ import { GlobalPlayService } from '../providers/global-play-service';
 import { DownloadServiceProvider } from '../providers/download-service';
 import { File } from '@ionic-native/file';
 import { FileTransfer } from '@ionic-native/file-transfer';
+import { Device } from '@ionic-native/device';
 import { DownloadService } from '../providers/download';
+import { Clipboard } from '@ionic-native/clipboard';
 
 @NgModule({
   declarations: [
@@ -67,6 +69,8 @@ import { DownloadService } from '../providers/download';
     File,
     FileTransfer,
     StatusBar,
+    Device,
+    Clipboard,
     SplashScreen,
     // Keyboard,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
