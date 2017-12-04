@@ -42,6 +42,8 @@ export class PasswordInputPage {
       } else if (this.mode === 'close') {
         this.title = '关闭密码设置';
       }
+    } else {
+      this.mode = 'normal';
     }
   }
 
@@ -55,6 +57,7 @@ export class PasswordInputPage {
 
   inputChanged() {
     console.log(this.password);
+    console.log(this.mode);
     if (this.password.length === 6) {
       if (this.mode === 'new') {
         if (!this.password1) {
@@ -117,8 +120,17 @@ export class PasswordInputPage {
             });
           }
         }).catch();
-      } else if (this.mode === 'normal') {
-
+      } else if (!this.mode || this.mode === 'normal') {
+        console.log('ddddd');
+        this.storage.get('app.password')
+          .then(data => {
+            if (this.password === data) {
+              console.log(234);
+              this.events.publish('password:right');
+            } else {
+              this.errorDesc = '密码不正确';
+            }
+          })
       }
     }
   }
