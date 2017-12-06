@@ -65,7 +65,7 @@ export class SettingPage {
   {
     this.tool.showLoading('加载中...');
 
-    this.api.get('asdf/more.php', {
+    this.api.get2('asdf/more.php', {
       openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
       ungz: 1,
       VID: this.getAppVersionInfo(),
@@ -117,7 +117,7 @@ export class SettingPage {
   {
     this.tool.showLoading('加载中...');
 
-        this.api.get('asdf/upgrade.php', this.getRequestParams())
+        this.api.get2('asdf/upgrade.php', this.getRequestParams())
         .then(data => {
           this.tool.hideLoading();
           
@@ -174,7 +174,7 @@ export class SettingPage {
      var month = now.getMonth() + 1;     //月
      var day = now.getDate();            //日
 
-        this.api.get('asdf/upgrade.php', {
+        this.api.get2('asdf/upgrade.php', {
           openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
           ungz: 1,
           VID: this.getAppVersionInfo(),
@@ -186,8 +186,8 @@ export class SettingPage {
         .then(data => {
           this.tool.hideLoading();
           
-          if (data.url) {
-            this.clipboard.copy(data.url)
+          if (data.downloadUrl) {
+            this.clipboard.copy(data.downloadUrl)
               .then(data => {
                 this.alertCtrl.create({
                   title: '本软件的下载地址已复制粘贴到系统的粘贴板里，请到QQ、微信、邮件等平台直接粘贴即可！',
@@ -216,7 +216,7 @@ export class SettingPage {
 
   gotoFaq() {
     this.tool.showLoading('正在处理...');
-    this.api.get('you/getHelp.php', this.getRequestParams())
+    this.api.get2('you/getHelp.php', this.getRequestParams())
       .then(data => {
         this.tool.hideLoading();
 
