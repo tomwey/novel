@@ -253,6 +253,7 @@ export class SettingPage {
       .then(data => {
         this.tool.hideLoading();
 
+        // this.iap.create(data.url).show();
         this.app.getRootNavs()[0].push('BrowserPage', { 
           title: '常见问题',
           url: data.url});

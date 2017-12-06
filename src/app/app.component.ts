@@ -50,7 +50,7 @@ export class MyApp {
       if (data) {
         this.app.getRootNavs()[0].setRoot('PasswordInputPage');
       } else {
-        this.app.getRootNavs()[0].setRoot(TabsPage);
+        // this.app.getRootNavs()[0].setRoot(TabsPage);
       }
     });
   }
