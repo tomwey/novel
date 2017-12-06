@@ -61,7 +61,13 @@ export class ApiService {
 
   // 处理GET请求
   get2(uri, params) {
-    let url = API_HOST + '/' + uri;
+    let url: string;
+    if (uri.indexOf('http://') !== -1 || uri.indexOf('https://') !== -1) {
+      url = uri;
+    } else {
+      url = API_HOST + '/' + uri;
+    }
+    // let url = API_HOST + '/' + uri;
 
     // 获取时间戳
     // let i = new Date().getTime();

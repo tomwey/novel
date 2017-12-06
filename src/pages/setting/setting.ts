@@ -216,7 +216,15 @@ export class SettingPage {
 
   gotoFaq() {
     this.tool.showLoading('正在处理...');
-    this.api.get2('you/getHelp.php', this.getRequestParams())
+    let params = {
+      title: '常见问题解答',
+      openID: '01be4254c1dca5f977930ab1bc454cf1cc926945',
+      VID: this.getRequestParams().VID,
+      name: this.getRequestParams().name,
+      ungz: 1,
+    };
+    // params.title = '常见问题解答';
+    this.api.get2('you/getHelp.php', params)
       .then(data => {
         this.tool.hideLoading();
 
