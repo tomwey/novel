@@ -48,49 +48,49 @@
     <button ion-item (click)="gotoFaq()">
       常见问题解答
     </button>
-    <button ion-item>
+    <button ion-item (click)="doShare();">
       分享此软件
     </button>
-    <button ion-item>
+    <!-- <button ion-item>
       清除缓存
       <ion-note item-right>6.2M</ion-note>
-    </button>
-    <button ion-item>
+    </button> -->
+    <button ion-item (click)="setPassword();">
       设置密码
     </button>
-    <button ion-item>
+    <button ion-item (click)="sendNotify();">
       更新提醒
       <ion-note item-right>4</ion-note>
     </button>
-    <button ion-item>
+    <button ion-item (click)="rateus();">
       给个好评吧
     </button>
-    <button ion-item>
+    <button ion-item (click)="checkVersion();">
       检查版本更新
-      <ion-note item-right>v 2.5.0</ion-note>
+      <ion-note item-right>v {{appVersion}}</ion-note>
     </button>
   </ion-list>
 
   <ion-list>
     <ion-item>
       <ion-label>仅WIFI网络在线播放</ion-label>
-      <ion-toggle checked="false" color="secondary"></ion-toggle>
+      <ion-toggle [ngModel]="wifiPlaying" color="secondary" (ionChange)="changePlaySettings();"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>仅WIFI网络下载</ion-label>
-      <ion-toggle checked="false" color="secondary"></ion-toggle>
+      <ion-toggle [ngModel]="wifiDownloaded" color="secondary" (ionChange)="changeDownloadSettings();"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>使用繁体字</ion-label>
       <ion-toggle checked="false" color="secondary"></ion-toggle>
     </ion-item>
   </ion-list>
-  <ion-list>
-    <button ion-item>
+  <ion-list *ngIf="moreApps.length > 0">
+    <button ion-item *ngFor="let app of moreApps">
       <ion-avatar item-left>
-        
+        <img [src]="app.src">
       </ion-avatar>
-      手机铃声专业版(方便快捷设置制定铃声)
+      {{app.title}}
     </button>
   </ion-list>
 </ion-content>
