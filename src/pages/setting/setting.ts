@@ -162,7 +162,32 @@ export class SettingPage {
   }
 
   rateus() {
+    this.tool.showLoading('加载中...');
+    var now = new Date();
+    
+     var year = now.getFullYear();       //年
+     var month = now.getMonth() + 1;     //月
+     var day = now.getDate();            //日
 
+        this.api.get2('asdf/upgrade.php', {
+          openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
+          ungz: 1,
+          VID: this.getAppVersionInfo(),
+          name: Constants.APP_NAME,
+          OSV: this.device.version,
+          PID: `${year}${month}${day}`,
+          isShare: 1,
+        })
+        .then(data => {
+          this.tool.hideLoading();
+
+          if (data.downloadUrl) {
+            window.open(data.downloadUrl);
+          }
+        })
+        .catch(error => {
+          this.tool.hideLoading();
+        });
   }
 
   doShare()
@@ -241,6 +266,10 @@ export class SettingPage {
       });
 
     
+  }
+
+  openApp(app) {
+    window.open(app.downloadUrl);
   }
 
 }
