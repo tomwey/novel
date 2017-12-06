@@ -31,9 +31,12 @@ export class MyApp {
 
       this.checkPassword();
 
-      platform.resume.subscribe(() => {
-        this.checkPassword();
-      });
+      if (platform.is('cordova')) {
+        platform.resume.subscribe(() => {
+          this.checkPassword();
+        });
+      }
+
     });
 
     this.events.subscribe('password:right', () => {
@@ -43,10 +46,11 @@ export class MyApp {
 
   private checkPassword() {
     this.storage.get('app.password').then(data => {
+      // alert(data);
       if (data) {
-        this.rootPage = 'PasswordInputPage';
+        this.app.getRootNavs()[0].setRoot('PasswordInputPage');
       } else {
-        this.rootPage = TabsPage;
+        this.app.getRootNavs()[0].setRoot(TabsPage);
       }
     });
   }
