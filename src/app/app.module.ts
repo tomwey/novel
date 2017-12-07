@@ -32,6 +32,7 @@ import { FileTransfer } from '@ionic-native/file-transfer';
 import { Device } from '@ionic-native/device';
 import { DownloadService } from '../providers/download';
 import { Clipboard } from '@ionic-native/clipboard';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { Clipboard } from '@ionic-native/clipboard';
     StatusBar,
     Device,
     Clipboard,
+    InAppBrowser,
     SplashScreen,
     // Keyboard,
     {provide: ErrorHandler, useClass: IonicErrorHandler},

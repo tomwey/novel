@@ -9,6 +9,7 @@ import { Device } from '@ionic-native/device';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Storage } from '@ionic/storage';
 import { ModalController } from 'ionic-angular/components/modal/modal-controller';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 /**
  * Generated class for the SettingPage page.
@@ -28,8 +29,19 @@ export class SettingPage {
   moreApps: any = [];
   appVersion: string = Constants.APP_VERSION;
 
-  wifiDownloaded: boolean = false;
-  wifiPlaying: boolean = false;
+  // wifiDownloaded: boolean = false;
+  // wifiPlaying: boolean    = false;
+  // playingLoop: boolean    = true;
+  settings: any = {
+    stopTime: null,
+    stopChapter: null,
+    playingLoop: true,
+    allowLineControl: true,
+    pauseWhenOut: false,
+    wifiPlaying: false,
+    wifiDownloading: false,
+    useFanti: false,
+  };
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -42,17 +54,24 @@ export class SettingPage {
     private clipboard: Clipboard,
     private storage: Storage,
     private modalCtrl: ModalController,
+    private iab: InAppBrowser,
   ) {
     this.flag = this.navParams.data.flag && this.navParams.data.flag === 1;
 
-     this.storage.get('wifi.downloaded')
-      .then(data => {
-        this.wifiDownloaded = data || false;
-      });
-      this.storage.get('wifi.playing')
-      .then(data => {
-        this.wifiPlaying = data || false;
-      });
+    this.getSettings();
+  }
+
+  private getSettings() {
+    this.storage.get(`settings.${Constants.APP_TYPE}`)
+    .then(data => {
+      if (data) {
+        this.settings = JSON.parse(data);
+      }
+    });
+  }
+
+  saveSettings() {
+    this.storage.set(`settings.${Constants.APP_TYPE}`, JSON.stringify(this.settings));
   }
 
   ionViewDidLoad() {
@@ -83,17 +102,6 @@ export class SettingPage {
 
   getAppVersionInfo(): string {
     return 'app_' + Constants.APP_VERSION;
-  }
-
-  changePlaySettings() {
-    this.storage.set('wifi.playing', !this.wifiPlaying);
-    this.wifiPlaying = !this.wifiPlaying;
-    console.log(123);
-  }
-
-  changeDownloadSettings() {
-    this.storage.set('wifi.downloaded', !this.wifiDownloaded);
-    this.wifiDownloaded = !this.wifiDownloaded;
   }
 
   getRequestParams(): any {
@@ -132,7 +140,8 @@ export class SettingPage {
                 },
                 {
                 text: '更新', handler: () => {
-                  window.open(data.downloadUrl);
+                  // window.open(data.downloadUrl);
+                  this.openUrl(data.downloadUrl);
                 }
               }]
             }).present();
@@ -180,13 +189,17 @@ export class SettingPage {
         })
         .then(data => {
           this.tool.hideLoading();
-
+          // alert(data.downloadUrl);
           if (data.downloadUrl) {
-            window.open(data.downloadUrl);
+            // window.open(data.downloadUrl);
+            this.openUrl(data.downloadUrl);
           }
         })
         .catch(error => {
           this.tool.hideLoading();
+          setTimeout(() => {
+            this.tool.showToast('获取数据失败');
+          }, 100);
         });
   }
 
@@ -222,9 +235,11 @@ export class SettingPage {
                       handler: () => {}
                     }
                   ]
-                })
+                }).present();
               })
-              .catch(error => {});
+              .catch(error => {
+                // alert(error);
+              });
           } else {
             this.tool.showToast('没有找到分享地址');
           }
@@ -270,7 +285,12 @@ export class SettingPage {
   }
 
   openApp(app) {
-    window.open(app.downloadUrl);
+    this.openUrl(app.downloadUrl);
+    // window.open(app.downloadUrl,'_system','location=no');
+  }
+
+  openUrl(url) {
+    this.iab.create(url).show();
   }
 
 }
