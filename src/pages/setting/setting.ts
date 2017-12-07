@@ -9,6 +9,7 @@ import { Device } from '@ionic-native/device';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Storage } from '@ionic/storage';
 import { ModalController } from 'ionic-angular/components/modal/modal-controller';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 /**
  * Generated class for the SettingPage page.
@@ -28,8 +29,19 @@ export class SettingPage {
   moreApps: any = [];
   appVersion: string = Constants.APP_VERSION;
 
-  wifiDownloaded: boolean = false;
-  wifiPlaying: boolean = false;
+  // wifiDownloaded: boolean = false;
+  // wifiPlaying: boolean    = false;
+  // playingLoop: boolean    = true;
+  settings: any = {
+    stopTime: null,
+    stopChapter: null,
+    playingLoop: true,
+    allowLineControl: true,
+    pauseWhenOut: false,
+    wifiPlaying: false,
+    wifiDownloading: false,
+    useFanti: false,
+  };
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -42,17 +54,24 @@ export class SettingPage {
     private clipboard: Clipboard,
     private storage: Storage,
     private modalCtrl: ModalController,
+    private iab: InAppBrowser,
   ) {
     this.flag = this.navParams.data.flag && this.navParams.data.flag === 1;
 
-     this.storage.get('wifi.downloaded')
-      .then(data => {
-        this.wifiDownloaded = data || false;
-      });
-      this.storage.get('wifi.playing')
-      .then(data => {
-        this.wifiPlaying = data || false;
-      });
+    this.getSettings();
+  }
+
+  private getSettings() {
+    this.storage.get(`settings.${Constants.APP_TYPE}`)
+    .then(data => {
+      if (data) {
+        this.settings = JSON.parse(data);
+      }
+    });
+  }
+
+  saveSettings() {
+    this.storage.set(`settings.${Constants.APP_TYPE}`, JSON.stringify(this.settings));
   }
 
   ionViewDidLoad() {
@@ -65,7 +84,7 @@ export class SettingPage {
   {
     this.tool.showLoading('加载中...');
 
-    this.api.get('asdf/more.php', {
+    this.api.get2('asdf/more.php', {
       openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
       ungz: 1,
       VID: this.getAppVersionInfo(),
@@ -83,17 +102,6 @@ export class SettingPage {
 
   getAppVersionInfo(): string {
     return 'app_' + Constants.APP_VERSION;
-  }
-
-  changePlaySettings() {
-    this.storage.set('wifi.playing', !this.wifiPlaying);
-    this.wifiPlaying = !this.wifiPlaying;
-    console.log(123);
-  }
-
-  changeDownloadSettings() {
-    this.storage.set('wifi.downloaded', !this.wifiDownloaded);
-    this.wifiDownloaded = !this.wifiDownloaded;
   }
 
   getRequestParams(): any {
@@ -117,7 +125,7 @@ export class SettingPage {
   {
     this.tool.showLoading('加载中...');
 
-        this.api.get('asdf/upgrade.php', this.getRequestParams())
+        this.api.get2('asdf/upgrade.php', this.getRequestParams())
         .then(data => {
           this.tool.hideLoading();
           
@@ -132,7 +140,8 @@ export class SettingPage {
                 },
                 {
                 text: '更新', handler: () => {
-                  window.open(data.downloadUrl);
+                  // window.open(data.downloadUrl);
+                  this.openUrl(data.downloadUrl);
                 }
               }]
             }).present();
@@ -162,7 +171,36 @@ export class SettingPage {
   }
 
   rateus() {
+    this.tool.showLoading('加载中...');
+    var now = new Date();
+    
+     var year = now.getFullYear();       //年
+     var month = now.getMonth() + 1;     //月
+     var day = now.getDate();            //日
 
+        this.api.get2('asdf/upgrade.php', {
+          openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
+          ungz: 1,
+          VID: this.getAppVersionInfo(),
+          name: Constants.APP_NAME,
+          OSV: this.device.version,
+          PID: `${year}${month}${day}`,
+          isShare: 1,
+        })
+        .then(data => {
+          this.tool.hideLoading();
+          // alert(data.downloadUrl);
+          if (data.downloadUrl) {
+            // window.open(data.downloadUrl);
+            this.openUrl(data.downloadUrl);
+          }
+        })
+        .catch(error => {
+          this.tool.hideLoading();
+          setTimeout(() => {
+            this.tool.showToast('获取数据失败');
+          }, 100);
+        });
   }
 
   doShare()
@@ -174,7 +212,7 @@ export class SettingPage {
      var month = now.getMonth() + 1;     //月
      var day = now.getDate();            //日
 
-        this.api.get('asdf/upgrade.php', {
+        this.api.get2('asdf/upgrade.php', {
           openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
           ungz: 1,
           VID: this.getAppVersionInfo(),
@@ -186,8 +224,8 @@ export class SettingPage {
         .then(data => {
           this.tool.hideLoading();
           
-          if (data.url) {
-            this.clipboard.copy(data.url)
+          if (data.downloadUrl) {
+            this.clipboard.copy(data.downloadUrl)
               .then(data => {
                 this.alertCtrl.create({
                   title: '本软件的下载地址已复制粘贴到系统的粘贴板里，请到QQ、微信、邮件等平台直接粘贴即可！',
@@ -197,9 +235,11 @@ export class SettingPage {
                       handler: () => {}
                     }
                   ]
-                })
+                }).present();
               })
-              .catch(error => {});
+              .catch(error => {
+                // alert(error);
+              });
           } else {
             this.tool.showToast('没有找到分享地址');
           }
@@ -216,10 +256,19 @@ export class SettingPage {
 
   gotoFaq() {
     this.tool.showLoading('正在处理...');
-    this.api.get('you/getHelp.php', this.getRequestParams())
+    let params = {
+      title: '常见问题解答',
+      openID: '01be4254c1dca5f977930ab1bc454cf1cc926945',
+      VID: this.getRequestParams().VID,
+      name: this.getRequestParams().name,
+      ungz: 1,
+    };
+    // params.title = '常见问题解答';
+    this.api.get2('you/getHelp.php', params)
       .then(data => {
         this.tool.hideLoading();
 
+        // this.iap.create(data.url).show();
         this.app.getRootNavs()[0].push('BrowserPage', { 
           title: '常见问题',
           url: data.url});
@@ -233,6 +282,15 @@ export class SettingPage {
       });
 
     
+  }
+
+  openApp(app) {
+    this.openUrl(app.downloadUrl);
+    // window.open(app.downloadUrl,'_system','location=no');
+  }
+
+  openUrl(url) {
+    this.iab.create(url).show();
   }
 
 }

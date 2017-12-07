@@ -59,6 +59,41 @@ export class ApiService {
       .catch(this.handleError);
   } // end get 
 
+  // 处理GET请求
+  get2(uri, params) {
+    let url: string;
+    if (uri.indexOf('http://') !== -1 || uri.indexOf('https://') !== -1) {
+      url = uri;
+    } else {
+      url = API_HOST + '/' + uri;
+    }
+    // let url = API_HOST + '/' + uri;
+
+    // 获取时间戳
+    // let i = new Date().getTime();
+
+    // 组装参数
+    let searchParams = new URLSearchParams();
+    
+    // // 设置安全参数
+    // searchParams.set('i', i.toString());
+    // searchParams.set('ak', this.generateAccessKey(i));
+
+    // 合并传进来的参数
+    for (let param in params) {
+      searchParams.set(param, params[param]);
+    }
+
+    // this.tool.showLoading('加载中...');
+    // 参数签名
+    // searchParams.set('sign', ApiService.signParams(params));
+    console.log(url)
+    return this.http.get(url, new RequestOptions({ search: searchParams }))
+      .toPromise()
+      .then(this.handleSuccess)
+      .catch(this.handleError);
+  } // end get 
+
   // 处理POST请求
   post(uri, params) {
     let url = this.getAPIHost() + '/' + uri;
@@ -177,7 +212,7 @@ export class ApiService {
   
   private getAPIHost(): string {
     if (Constants.APP_TYPE === 1) {
-      return API_HOST + '/you';
+      return API_HOST + '/xiao';
     } else if (Constants.APP_TYPE === 2) {
       return 'http://14.33.133.79' + '/xiao';
     }

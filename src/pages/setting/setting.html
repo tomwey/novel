@@ -29,15 +29,15 @@
     </button>
     <ion-item>
       <ion-label>自动连续播放</ion-label>
-      <ion-toggle checked="true" color="secondary"></ion-toggle>
+      <ion-toggle [(ngModel)]="settings.playingLoop" color="secondary" (ionChange)="saveSettings();"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>允许线控操作<p class="hint">单击:播放/暂停; 连按两次:下一曲; 连按三次:上一曲</p></ion-label>
-      <ion-toggle checked="true" color="secondary"></ion-toggle>
+      <ion-toggle [(ngModel)]="settings.allowLineControl" color="secondary" (ionChange)="saveSettings();"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>拔出耳机时暂停播放</ion-label>
-      <ion-toggle checked="false" color="secondary"></ion-toggle>
+      <ion-toggle color="secondary" [(ngModel)]="settings.pauseWhenOut" (ionChange)="saveSettings();"></ion-toggle>
     </ion-item>
   </ion-list>
   
@@ -74,19 +74,19 @@
   <ion-list>
     <ion-item>
       <ion-label>仅WIFI网络在线播放</ion-label>
-      <ion-toggle [ngModel]="wifiPlaying" color="secondary" (ionChange)="changePlaySettings();"></ion-toggle>
+      <ion-toggle [(ngModel)]="settings.wifiPlaying" color="secondary" (ionChange)="saveSettings();"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>仅WIFI网络下载</ion-label>
-      <ion-toggle [ngModel]="wifiDownloaded" color="secondary" (ionChange)="changeDownloadSettings();"></ion-toggle>
+      <ion-toggle [(ngModel)]="settings.wifiDownloading" color="secondary" (ionChange)="saveSettings();"></ion-toggle>
     </ion-item>
     <ion-item>
       <ion-label>使用繁体字</ion-label>
-      <ion-toggle checked="false" color="secondary"></ion-toggle>
+      <ion-toggle [(ngModel)]="settings.useFanti" color="secondary" (ionChange)="saveSettings();"></ion-toggle>
     </ion-item>
   </ion-list>
   <ion-list *ngIf="moreApps.length > 0">
-    <button ion-item *ngFor="let app of moreApps">
+    <button ion-item *ngFor="let app of moreApps" (click)="openApp(app);">
       <ion-avatar item-left>
         <img [src]="app.src">
       </ion-avatar>
