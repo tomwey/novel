@@ -75,8 +75,13 @@ export class HomePage {
   sendUpdateNotifyArray(data) {
     let arr = [];
     data.forEach(item => {
-      arr.push({ID: item.ID, pre: item.pre, title: item.title});
+      if (item.notify === true) {
+        arr.push({ID: item.ID, pre: item.pre, title: item.title});
+      }
     });
+
+    if (arr.length === 0) return;
+
     // alert(JSON.stringify(arr));
     let params = {
       openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
