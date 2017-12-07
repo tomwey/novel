@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Events } from 'ionic-angular/util/events';
+import { NewbieService } from '../../providers/newbie-service';
 
 /**
  * Generated class for the BookUpdatePage page.
@@ -20,7 +21,8 @@ export class BookUpdatePage {
   
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
-              private events: Events
+              private events: Events,
+              private nbService: NewbieService
             ) {
     this.favoritesData = this.navParams.data;
   }
@@ -30,9 +32,11 @@ export class BookUpdatePage {
     // alert(JSON.stringify(this.favoritesData));
   }
 
-  changeNotify(ev) {
+  changeNotify(item) {
     // alert(ev);
-    this.events.publish('favorites:changed2');
+    this.nbService.updateItem(item.save_key, item).then(data => {
+      this.events.publish('favorites:changed2');
+    });
   }
 
 }

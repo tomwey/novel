@@ -25,7 +25,7 @@
         <h2>{{item.title}}</h2>
         <p>{{item.name}}</p>
       </div>
-      <ion-toggle item-right [(ngModel)]="item.notify" color="secondary" (ionChange)="changeNotify($event);"></ion-toggle>
+      <ion-toggle item-right [(ngModel)]="item.notify" color="secondary" (ionChange)="changeNotify(item);"></ion-toggle>
     </ion-item>
   </ion-list>
 </ion-content>
