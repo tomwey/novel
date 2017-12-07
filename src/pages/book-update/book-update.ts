@@ -34,9 +34,7 @@ export class BookUpdatePage {
 
   changeNotify(item) {
     // alert(ev);
-    this.nbService.updateItem(item.save_key, item).then(data => {
-      this.events.publish('favorites:changed2');
-    });
+    this.nbService.updateItem('book:notify', item);
   }
 
 }

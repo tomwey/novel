@@ -68,7 +68,7 @@ export class SettingPage {
 
     this.getSettings();
 
-    this.events.subscribe('favorites:changed2', () => {
+    this.events.subscribe('book:notify:changed', () => {
       this.loadFavoritedItems();
     });
 
@@ -77,33 +77,21 @@ export class SettingPage {
 
   private loadFavoritedItems() {
     this.favoritedItems = [];
-    this.nbService.getMenues().then(data => {
-      // let s = '';
-      let promises = [];
-      data.forEach(element => {
-        if (element.id === NewbieService.FAVORITE_KEY || 
-            element.custom) {
-              // s += element.id;
-              promises.push(this.nbService.getItems(element.id)
-                .then(res => {
-                  // alert(data)
-                  // alert(JSON.stringify(res));
-                  this.favoritedItems = this.favoritedItems.concat(res);
-                }));
-            }
-      });
-      Promise.all(promises).then(() => {
-        let total = 0;
+    let total = 0;
+    this.nbService.getItems('book:notify')
+      .then(data => {
+        this.favoritedItems = data;
+
         this.favoritedItems.forEach(item => {
           if (item.notify === true) {
-            total++;
+            total ++;
           }
         });
+
         this.notifyBadge = total;
-        // alert(JSON.stringify(this.favoritedItems));
+
       });
       
-    });
   }
 
   private getSettings() {

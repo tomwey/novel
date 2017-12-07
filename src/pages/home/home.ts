@@ -5,6 +5,7 @@ import { GlobalPlayService } from '../../providers/global-play-service';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
 import { ApiService } from '../../providers/api-service'
+import { Constants } from '../../providers/constants';
 
 @Component({
   selector: 'page-home',
@@ -60,7 +61,40 @@ export class HomePage {
     this.events.subscribe('downloading.book.remove', item => {
       this.nbService.removeItems(NewbieService.DOWNLOADING_KEY, [item]);
     });
+
+    // 监听小说更新通知
+    this.events.subscribe('book:notify:changed', () => {
+      this.nbService.getItems('book:notify')
+        .then(data => {
+          this.sendUpdateNotifyArray(data);
+        });
+    });
     
+  }
+
+  sendUpdateNotifyArray(data) {
+    let arr = [];
+    data.forEach(item => {
+      arr.push({ID: item.ID, pre: item.pre, title: item.title});
+    });
+    // alert(JSON.stringify(arr));
+    let params = {
+      openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
+      name: Constants.APP_NAME,
+      PID: '20171015',
+      token: '',
+      network: 1,
+      VID: `${Constants.APP_NAME}_${Constants.APP_VERSION}`,
+      bookArr: encodeURIComponent(JSON.stringify(arr)),
+    };
+    
+    this.api.get2('asdf/updateNotice.php', params)
+      .then(data => {
+        // alert(JSON.stringify(data));
+      })
+      .catch(error => {
+        // alert(error);
+      });
   }
 
   addSubscribes() {
@@ -338,6 +372,9 @@ export class HomePage {
   removeItems() {
     this.nbService.removeItems(this.selectedMenuID, this.selectedData)
       .then(data => {
+
+        this.nbService.removeItems('book:notify', this.selectedData);
+
         this.selectedData = [];
         this.isEdit = true;
       })
@@ -391,6 +428,8 @@ export class HomePage {
   // 删除某个条目
   deleteItem(menu,item): void {
     this.nbService.removeItems(menu.id,[item]);
+
+    this.nbService.removeItems('book:notify', [item]);
   }
 
   // 跳到播放或者阅读界面

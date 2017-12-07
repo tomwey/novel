@@ -181,20 +181,22 @@ export class BookPage {
           this.hasFavorited = false;
           this.tool.showToast('已取消收藏');
 
-          this.updatedFavorites(-1);
+          this.nbService.removeItems('book:notify', [this.book]);
         })
         .catch(error => {
           this.tool.showToast('取消收藏失败');
         });
     } else {
       this.book.save_key = NewbieService.FAVORITE_KEY;
-      this.book.notify = true;
+      
       this.nbService.addItem(NewbieService.FAVORITE_KEY, this.book)
       .then(data => {
         this.hasFavorited = true;
         this.tool.showToast('收藏成功');
 
-        this.updatedFavorites(1);
+        // this.updatedFavorites(1);
+        this.book.notify = true;
+        this.nbService.addItem('book:notify', this.book);
       })
       .catch(error => {
         this.tool.showToast('收藏失败');
@@ -230,12 +232,13 @@ export class BookPage {
 
     if (!this.hasFavorited) {
       this.book.save_key = NewbieService.FAVORITE_KEY;
-      this.book.notify = true;
+      // this.book.notify = true;
       this.nbService.addItem(NewbieService.FAVORITE_KEY, this.book)
       .then(data => {
         this.hasFavorited = true;
         // this.tool.showToast('收藏成功');
-        this.updatedFavorites(1);
+        this.book.notify = true;
+        this.nbService.addItem('book:notify', this.book);
       })
       .catch(error => {
         // this.tool.showToast('收藏失败');
@@ -251,10 +254,6 @@ export class BookPage {
     // } else { // 取消下载
     //   this._cancelDownload(item);
     // }
-  }
-
-  updatedFavorites(increment) {
-    this.events.publish('favorites:changed2', increment);
   }
 
   private _download(item) {
