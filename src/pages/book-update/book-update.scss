@@ -1,0 +1,20 @@
+page-book-update {
+    .empty-tip {
+        width: 100%;
+        font-size: 18px;
+        text-align: center;
+        margin-top: 50%;
+        color: rgb(168, 168, 168);
+        // background-color: red;
+    }
+
+    .item-ios ion-thumbnail {
+        min-width: 46px !important;
+    }
+    ion-thumbnail img {
+       width: 100% !important;
+       height: 100% !important;
+       max-width: 46px !important;
+       max-height: 60px !important;
+    }
+}

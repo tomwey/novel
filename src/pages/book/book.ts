@@ -9,6 +9,7 @@ import { CataloggroupProvider } from '../../providers/cataloggroup';
 import { DownloadService } from '../../providers/download';
 import { stagger } from '@angular/core/src/animation/dsl';
 import { DownloadServiceProvider } from '../../providers/download-service';
+import { Events } from 'ionic-angular/util/events';
 /**
  * Generated class for the BookPage page.
  *
@@ -44,7 +45,8 @@ export class BookPage {
               private nbService: NewbieService,
               private file:File,
               public downloadService: DownloadService,
-              private downloadTool:DownloadServiceProvider
+              private downloadTool:DownloadServiceProvider,
+              private events: Events,
     ) {
       this.bookItem = this.navParams.data;
       // console.log(this.bookItem);
@@ -178,16 +180,21 @@ export class BookPage {
         .then(data => {
           this.hasFavorited = false;
           this.tool.showToast('已取消收藏');
+
+          this.updatedFavorites(-1);
         })
         .catch(error => {
           this.tool.showToast('取消收藏失败');
         });
     } else {
       this.book.save_key = NewbieService.FAVORITE_KEY;
+      this.book.notify = true;
       this.nbService.addItem(NewbieService.FAVORITE_KEY, this.book)
       .then(data => {
         this.hasFavorited = true;
         this.tool.showToast('收藏成功');
+
+        this.updatedFavorites(1);
       })
       .catch(error => {
         this.tool.showToast('收藏失败');
@@ -223,10 +230,12 @@ export class BookPage {
 
     if (!this.hasFavorited) {
       this.book.save_key = NewbieService.FAVORITE_KEY;
+      this.book.notify = true;
       this.nbService.addItem(NewbieService.FAVORITE_KEY, this.book)
       .then(data => {
         this.hasFavorited = true;
         // this.tool.showToast('收藏成功');
+        this.updatedFavorites(1);
       })
       .catch(error => {
         // this.tool.showToast('收藏失败');
@@ -242,6 +251,10 @@ export class BookPage {
     // } else { // 取消下载
     //   this._cancelDownload(item);
     // }
+  }
+
+  updatedFavorites(increment) {
+    this.events.publish('favorites:changed2', increment);
   }
 
   private _download(item) {

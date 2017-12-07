@@ -1,0 +1,31 @@
+<!--
+  Generated template for the BookUpdatePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>更新提醒</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <div class="empty-tip" *ngIf="favoritesData.length === 0">
+    目前没有更新提醒
+  </div>
+  <ion-list *ngIf="favoritesData.length > 0">
+    <ion-item *ngFor="let item of favoritesData">
+      <ion-thumbnail item-left>
+        <img [src]="item.src">
+      </ion-thumbnail>
+      <div item-content>
+        <h2>{{item.title}}</h2>
+        <p>{{item.name}}</p>
+      </div>
+      <ion-toggle item-right [(ngModel)]="item.notify" color="secondary" (ionChange)="changeNotify($event);"></ion-toggle>
+    </ion-item>
+  </ion-list>
+</ion-content>

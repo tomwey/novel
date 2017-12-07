@@ -10,6 +10,8 @@ import { Clipboard } from '@ionic-native/clipboard';
 import { Storage } from '@ionic/storage';
 import { ModalController } from 'ionic-angular/components/modal/modal-controller';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Events } from 'ionic-angular/util/events';
+import { NewbieService } from '../../providers/newbie-service';
 
 /**
  * Generated class for the SettingPage page.
@@ -43,6 +45,10 @@ export class SettingPage {
     useFanti: false,
   };
 
+  notifyBadge: number = 0;
+  // customMenus: any = [];
+  favoritedItems: any = [];
+
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public globalService: GlobalPlayService,
@@ -55,10 +61,49 @@ export class SettingPage {
     private storage: Storage,
     private modalCtrl: ModalController,
     private iab: InAppBrowser,
+    private events: Events,
+    private nbService: NewbieService,
   ) {
     this.flag = this.navParams.data.flag && this.navParams.data.flag === 1;
 
     this.getSettings();
+
+    this.events.subscribe('favorites:changed2', () => {
+      this.loadFavoritedItems();
+    });
+
+    this.loadFavoritedItems();
+  }
+
+  private loadFavoritedItems() {
+    this.favoritedItems = [];
+    this.nbService.getMenues().then(data => {
+      // let s = '';
+      let promises = [];
+      data.forEach(element => {
+        if (element.id === NewbieService.FAVORITE_KEY || 
+            element.custom) {
+              // s += element.id;
+              promises.push(this.nbService.getItems(element.id)
+                .then(res => {
+                  // alert(data)
+                  // alert(JSON.stringify(res));
+                  this.favoritedItems = this.favoritedItems.concat(res);
+                }));
+            }
+      });
+      Promise.all(promises).then(() => {
+        let total = 0;
+        this.favoritedItems.forEach(item => {
+          if (item.notify === true) {
+            total++;
+          }
+        });
+        this.notifyBadge = total;
+        // alert(JSON.stringify(this.favoritedItems));
+      });
+      
+    });
   }
 
   private getSettings() {
@@ -167,7 +212,7 @@ export class SettingPage {
   }
 
   sendNotify() {
-
+    this.app.getRootNavs()[0].push('BookUpdatePage', this.favoritedItems);
   }
 
   rateus() {
