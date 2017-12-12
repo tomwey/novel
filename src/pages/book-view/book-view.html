@@ -4,16 +4,117 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
+<ion-header [hidden]="tapOutside">
 
   <ion-navbar>
     <ion-title>{{requestParams.chapterTitle}}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="refresh();">
+        <ion-icon name="ios-refresh-outline"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content>
-
+<ion-content class="book-info"   fullscreen="true" tappable (tap)="tapNovel()">
+  <p ng-style="{padding-top:marginTop+'px'}">
+    {{content}}
+  </p>
 </ion-content>
+
+<ion-footer [hidden]="tapOutside">
+  <div class="buttons" *ngIf="selectmenu === 0">
+  <!-- <ion-toolbar> -->
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="gotoMenu()">
+        <p class="icon-container">
+          <ion-icon name="ios-menu-outline"></ion-icon>
+        </p>
+        <p class="label">目录</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="addBookmark()">
+        <p class="icon-container">
+          <ion-icon name="{{hasAddedToBookmark ? 'ios-bookmark' : 'ios-bookmark-outline'}}"></ion-icon>
+        </p>
+        <p class="label">书签</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="gotomarkList()">
+        <p class="icon-container">
+          <ion-icon name="ios-book01-outline"></ion-icon>
+        </p>
+        <p class="label">书签列表</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="changeBg()">
+        <p class="icon-container">
+          <ion-icon name="ios-background-outline"></ion-icon>
+        </p>
+        <p class="label">背景</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="changeFont()">
+        <p class="icon-container">
+          <ion-icon name="ios-font-outline"></ion-icon>
+        </p>
+        <p class="label">字体</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="changeLight()">
+        <p class="icon-container">
+          <ion-icon name="ios-light-outline"></ion-icon>
+        </p>
+        <p class="label">亮度</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="changeNight()">
+        <p class="icon-container">
+          <ion-icon name="ios-circle-outline"></ion-icon>
+        </p>
+        <p class="label">夜间模式</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="changeToAudio()">
+        <p class="icon-container">
+          <ion-icon name="ios-listen-outline"></ion-icon>
+        </p>
+        <p class="label">听书</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="showProgress()">
+        <p class="icon-container">
+          <ion-icon name="ios-progress-outline"></ion-icon>
+        </p>
+        <p class="label">进度</p>
+      </div>
+    </div>
+    <div class="btn-container">
+      <div class="custom-btn" tappable (tap)="autoScroll()">
+        <p class="icon-container">
+          <ion-icon name="ios-autoPlay-outline"></ion-icon>
+        </p>
+        <p class="label">自动翻页</p>
+      </div>
+    </div>
+  </div>
+  <div class="buttons" *ngIf="selectmenu === 1">
+    <ion-item>
+      <ion-range [(ngModel)]="brightness">
+        <ion-icon range-left small name="sunny"></ion-icon>
+        <ion-icon range-right name="sunny"></ion-icon>
+      </ion-range>
+    </ion-item>
+  </div>
+</ion-footer>
 

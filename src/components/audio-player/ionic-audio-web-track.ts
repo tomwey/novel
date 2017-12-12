@@ -64,7 +64,9 @@ export class WebAudioTrack implements IAudioTrack {
       this._progress = 0;
       this._completed = 0;
       this._hasLoaded = false;
-      //this.destroy();
+      if (window.globalEvents){
+        window.globalEvents.publish("web-track:onFinished");
+      }
       console.log('Finished playback');
     }, false);
     

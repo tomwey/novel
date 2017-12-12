@@ -1,0 +1,53 @@
+
+@font-face {font-family: "Ionicons";
+    src: url('../assets/icon/iconfont/iconfont.eot'); /* IE9*/
+    src: url('../assets/icon/iconfont/iconfont.eot#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../assets/icon/iconfont/iconfont.woff') format('woff'),
+    url('../assets/icon/iconfont/iconfont.ttf') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+    url('../assets/icon/iconfont/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+  }
+  
+
+  .ion-md-font:before { content: "\e602"; }
+  .ion-ios-font:before { content: "\e602"; }
+  .ion-ios-font-outline:before { content: "\e602"; }
+  
+  .ion-md-bookmarkoutline:before { content: "\e6cf"; }
+  .ion-ios-bookmarkoutline:before { content: "\e6cf"; }
+  .ion-ios-bookmarkoutline-outline:before { content: "\e6cf"; }
+  
+  .ion-md-autoPlay:before { content: "\e60e"; }
+  .ion-ios-autoPlay:before { content: "\e60e"; }
+  .ion-ios-autoPlay-outline:before { content: "\e60e"; }
+  
+  .ion-md-book01:before { content: "\e61d"; }
+  .ion-ios-book01:before { content: "\e61d"; }
+  .ion-ios-book01-outline:before { content: "\e61d"; }
+  
+  .ion-md-light:before { content: "\e74e"; }
+  .ion-ios-light:before { content: "\e74e"; }
+  .ion-ios-light-outline:before { content: "\e74e"; }
+  
+  .ion-md-background:before { content: "\e600"; }
+  .ion-ios-background:before { content: "\e600"; }
+  .ion-ios-background-outline:before { content: "\e600"; }
+  
+  .ion-md-progress:before { content: "\e60b"; }
+  .ion-ios-progress:before { content: "\e60b"; }
+  .ion-ios-progress-outline:before { content: "\e60b"; }
+  
+  .ion-md-listen:before { content: "\e62b"; }
+  .ion-ios-listen:before { content: "\e62b"; }
+  .ion-ios-listen-outline:before { content: "\e62b"; }
+  
+  .ion-md-menu:before { content: "\e606"; }
+  .ion-ios-menu:before { content: "\e606"; }
+  .ion-ios-menu-outline:before { content: "\e606"; }
+  
+  .ion-md-nightset:before { content: "\e601"; }
+  .ion-ios-nightset:before { content: "\e601"; }
+  .ion-ios-nightset-outline:before { content: "\e601"; }
+
+  .ion-md-circle:before { content: "\e623"; }
+  .ion-ios-circle:before { content: "\e623"; }
+  .ion-ios-circle-outline:before { content: "\e623"; }

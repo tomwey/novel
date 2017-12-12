@@ -211,12 +211,12 @@ export class ApiService {
   } // end handle error
   
   private getAPIHost(): string {
-    if (Constants.APP_TYPE === 1) {
+    // if (Constants.APP_TYPE === 1) {
       return API_HOST + '/xiao';
-    } else if (Constants.APP_TYPE === 2) {
-      return 'http://14.33.133.79' + '/xiao';
-    }
-    return null;
+    // } else if (Constants.APP_TYPE === 2) {
+    //   return 'http://14.33.133.79' + '/xiao';
+    // }
+    // return null;
   }
 
 }

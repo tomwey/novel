@@ -1,12 +1,15 @@
 page-book-view {
-    .book-info {
-        margin-top: -40px;
-        text-align: center;
+    .book-info  ion-content scroll-content {
+        background: url("../assets/imgs/logo.png") no-repeat center center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        margin-top: 0px ;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        clear: both;
+        text-align: left;
         padding: 15px;
-
-        img {
-            max-width: 100%;
-        }
     }
 
     .buttons {
@@ -20,6 +23,7 @@ page-book-view {
         // height: 150px;
         clear: both;
     }
+  
     .btn-container {
         width: 20%;
         float: left;
@@ -48,7 +52,7 @@ page-book-view {
                     font-size: 20px;
                     display: block;
                     width: 100%;
-                    // height: 100%;
+                    height: 100%;
                     height: 40px;
                     line-height: 40px;
                 }
