@@ -25,9 +25,9 @@ page-home {
         height: 40px;
         width: calc(100% - 40px);
 
-        &::-webkit-scrollbar {  
-            display: none !important;  
-          }
+        ::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     .dropdown-btn {
