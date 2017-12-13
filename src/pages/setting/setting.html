@@ -19,10 +19,16 @@
 <ion-content class="content">
   <ion-list></ion-list>
   <ion-list>
-    <button ion-item>
+    <!-- <button ion-item>
       开启定时停止
       <ion-note item-right>未设置</ion-note>
-    </button>
+    </button> -->
+    <ion-item>
+      <ion-label>开启定时停止</ion-label>
+      <ion-multi-picker item-content [(ngModel)]="settings.stopTime" (ionChange)="saveSettings();" 
+        [multiPickerColumns]="timeOptions" 
+        cancelText="取消" doneText="保存" placeholder="未设置"></ion-multi-picker>
+    </ion-item>
     <!-- <button ion-item (click)="setStopChapter();">
       开启定集停止 
       <ion-note item-right>{{settings.stopChapter || '未设置'}}</ion-note>

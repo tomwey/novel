@@ -35,6 +35,31 @@ export class SettingPage {
   // wifiPlaying: boolean    = false;
   // playingLoop: boolean    = true;
 
+  timeOptions = [
+    {
+      name: 'col1',
+      options: [
+        { text: '0小时', value: '0' },
+        { text: '1小时', value: '1' },
+        { text: '2小时', value: '2' },
+        { text: '3小时', value: '3' },
+        { text: '4小时', value: '4' },
+        { text: '5小时', value: '5' },
+      ]
+    },
+    {
+      name: 'col2',
+      options: [
+        { text: '0分钟', value: '0' },
+        { text: '1分钟', value: '1' },
+        { text: '2分钟', value: '2' },
+        { text: '3分钟', value: '3' },
+        { text: '4分钟', value: '4' },
+        { text: '5分钟', value: '5' },
+      ]
+    },
+  ];
+
   settings: any = {
     stopTime: null,         // 定时停止的设置
     stopChapter: null,      // 定集停止的设置
