@@ -23,10 +23,25 @@
       开启定时停止
       <ion-note item-right>未设置</ion-note>
     </button>
-    <button ion-item>
+    <!-- <button ion-item (click)="setStopChapter();">
       开启定集停止 
-      <ion-note item-right>未设置</ion-note>
-    </button>
+      <ion-note item-right>{{settings.stopChapter || '未设置'}}</ion-note>
+    </button> -->
+    <ion-item>
+      <ion-label>开启定集停止</ion-label>
+      <ion-select [(ngModel)]="settings.stopChapter" placeholder="未设置" cancelText="取消" okText="保存" (ionChange)="saveSettings();">
+        <ion-option value="0">0集后停止播放</ion-option>
+        <ion-option value="1">1集后停止播放</ion-option>
+        <ion-option value="2">2集后停止播放</ion-option>
+        <ion-option value="3">3集后停止播放</ion-option>
+        <ion-option value="4">4集后停止播放</ion-option>
+        <ion-option value="5">5集后停止播放</ion-option>
+        <ion-option value="6">6集后停止播放</ion-option>
+        <ion-option value="7">7集后停止播放</ion-option>
+        <ion-option value="8">8集后停止播放</ion-option>
+        <ion-option value="9">9集后停止播放</ion-option>
+      </ion-select>
+    </ion-item>
     <ion-item>
       <ion-label>自动连续播放</ion-label>
       <ion-toggle [(ngModel)]="settings.playingLoop" color="secondary" (ionChange)="saveSettings();"></ion-toggle>

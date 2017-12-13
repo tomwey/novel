@@ -34,15 +34,16 @@ export class SettingPage {
   // wifiDownloaded: boolean = false;
   // wifiPlaying: boolean    = false;
   // playingLoop: boolean    = true;
+
   settings: any = {
-    stopTime: null,
-    stopChapter: null,
-    playingLoop: true,
-    allowLineControl: true,
-    pauseWhenOut: false,
-    wifiPlaying: false,
-    wifiDownloading: false,
-    useFanti: false,
+    stopTime: null,         // 定时停止的设置
+    stopChapter: null,      // 定集停止的设置
+    playingLoop: true,      // 自动连续播放
+    allowLineControl: true, // 允许线控
+    pauseWhenOut: false,    // 拔出耳机暂停
+    wifiPlaying: false,     // WiFi播放
+    wifiDownloading: false, // WiFi下载
+    useFanti: false,        // 使用繁体
   };
 
   notifyBadge: number = 0;
