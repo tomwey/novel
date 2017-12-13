@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, App, Range } from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
 import { NewbieService } from '../../providers/newbie-service';
+import { Content } from 'ionic-angular';
 
 /**
  * Generated class for the BookViewPage page.
@@ -18,6 +19,9 @@ import { NewbieService } from '../../providers/newbie-service';
 })
 
 export class BookViewPage {
+
+  @ViewChild(Content) contentPage: Content;
+
   brightness: number = 50;
   tapOutside : boolean = false;
   content: string = null;
@@ -122,6 +126,8 @@ export class BookViewPage {
       this.tapOutside = !this.tapOutside;
       this.selectmenu = 0;
     }
+
+    this.contentPage.resize();
   }
 
   gotoMenu(){ //目录
