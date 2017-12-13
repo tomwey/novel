@@ -297,7 +297,7 @@ export class SettingPage {
       ungz: 1,
     };
     // params.title = '常见问题解答';
-    this.api.get2('you/getHelp.php', params)
+    this.api.get2('xiao/getHelp.php', params)
       .then(data => {
         this.tool.hideLoading();
 
