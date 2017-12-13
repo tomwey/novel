@@ -33,6 +33,7 @@ import { Device } from '@ionic-native/device';
 import { DownloadService } from '../providers/download';
 import { Clipboard } from '@ionic-native/clipboard';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Brightness } from '@ionic-native/brightness';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
     Clipboard,
     InAppBrowser,
     SplashScreen,
+    Brightness,
     // Keyboard,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ApiService,

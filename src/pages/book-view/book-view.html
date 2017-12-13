@@ -112,7 +112,7 @@
   </div>
   <div class="buttons" *ngIf="selectmenu === 1">
     <ion-item>
-      <ion-range [(ngModel)]="brightness">
+      <ion-range [(ngModel)]="brightness" (ionChange)="changeBrightness();">
         <ion-icon range-left small name="sunny"></ion-icon>
         <ion-icon range-right name="sunny"></ion-icon>
       </ion-range>

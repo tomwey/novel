@@ -4,6 +4,7 @@ import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
 import { NewbieService } from '../../providers/newbie-service';
 import { Content } from 'ionic-angular';
+import { Brightness } from '@ionic-native/brightness';
 
 /**
  * Generated class for the BookViewPage page.
@@ -48,11 +49,16 @@ export class BookViewPage {
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private api: ApiService,
     private tool: ToolService,private app: App,
-    private nbService:NewbieService
+    private nbService:NewbieService,
+    private brightCtrl: Brightness,
   ) {
     this.paramData = this.navParams.data;
-    this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item) 
-    this.brightness = 50;
+    this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item);
+
+    this.brightCtrl.getBrightness().then((val) => {
+      this.brightness = val * 100;
+    });
+
   }
 
   ionViewDidLoad() {
@@ -168,6 +174,12 @@ export class BookViewPage {
 
   changeLight(){  //改变亮度
     this.selectmenu = 1;
+
+    this.contentPage.resize();
+  }
+
+  changeBrightness() {
+    this.brightCtrl.setBrightness(this.brightness / 100.0);
   }
 
   changeNight(){ //白天黑夜切换
