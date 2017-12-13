@@ -214,7 +214,7 @@ export class ApiService {
     if (Constants.APP_TYPE === 1) {
       return API_HOST + '/you';
     } else if (Constants.APP_TYPE === 2) {
-      return 'http://14.33.133.79' + '/xiao';
+      return API_HOST + '/xiao';
     }
     return null;
   }

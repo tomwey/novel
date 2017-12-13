@@ -31,6 +31,8 @@ export class SettingPage {
   moreApps: any = [];
   appVersion: string = Constants.APP_VERSION;
 
+  isAudioNovel: boolean = Constants.APP_TYPE === 1;
+  
   // wifiDownloaded: boolean = false;
   // wifiPlaying: boolean    = false;
   // playingLoop: boolean    = true;
