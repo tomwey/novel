@@ -15,14 +15,14 @@
 <ion-content>
   <div padding>
       <audio-track #audioTrack [track]="currentTrack" [autoplay]="true">
-          <div style="display: flex">
-            <audio-track-progress-bar duration progress [audioTrack]="audioTrack" style="width: 100%; margin: 0 10px"></audio-track-progress-bar>
-          </div>
-          <div style="display: flex; justify-content: center; height: 50px">
-            <div *ngIf="audioTrack && audioTrack.hasLoaded"><em>{{ audioTrack?.title }}</em></div>
-            <ion-spinner *ngIf="audioTrack && audioTrack.isLoading"></ion-spinner>
-          </div>
-        </audio-track>
+        <div style="display: flex">
+          <audio-track-progress-bar duration progress [audioTrack]="audioTrack" style="width: 100%; margin: 0 10px"></audio-track-progress-bar>
+        </div>
+        <div style="display: flex; justify-content: center; height: 50px">
+          <div *ngIf="audioTrack && audioTrack.hasLoaded"><em>{{ audioTrack?.title }}</em></div>
+          <ion-spinner *ngIf="audioTrack && audioTrack.isLoading"></ion-spinner>
+        </div>
+      </audio-track>
   </div>
   <div class="book-info">
     <img [src]="paramData.bookitem.src">
