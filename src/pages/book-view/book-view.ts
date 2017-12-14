@@ -196,7 +196,7 @@ export class BookViewPage {
   }
 
   changeFont(){ //改变字体
-
+    this.app.getRootNavs()[0].push('ReadingConfigPage');
   }
 
   changeLight(){  //改变亮度
@@ -215,7 +215,7 @@ export class BookViewPage {
 
     if (this.isNightMode) {
       this.theme = 'theme2';
-      this.brightCtrl.setBrightness(0.3);
+      this.brightCtrl.setBrightness(0.2);
     } else {
       this.storage.get('theme.2.name').then(val => {
         this.theme = val || 'theme1';

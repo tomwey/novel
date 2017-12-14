@@ -1,0 +1,20 @@
+page-reading-config {
+    .top-sections {
+        height: 30%;
+        overflow-y: scroll;
+
+        background: rgb(237,230,198);
+        .preview-content {
+            width: 100%;
+            font-size: 18px;
+            padding: 10px;
+        }
+    }
+
+    .bottom-sections {
+        padding-top: 20px;
+        background: rgb(247,247,247);
+        height: 70%;
+        overflow-y: scroll;
+    }
+}

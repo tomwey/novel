@@ -94,7 +94,7 @@
 
   <ion-list>
     <ion-item>
-      <ion-label>仅WIFI网络在线播放</ion-label>
+      <ion-label>仅WIFI网络在线{{isAudioNovel ? '播放' : '阅读'}}</ion-label>
       <ion-toggle [(ngModel)]="settings.wifiPlaying" color="secondary" (ionChange)="saveSettings();"></ion-toggle>
     </ion-item>
     <ion-item>
