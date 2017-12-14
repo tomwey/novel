@@ -6,6 +6,7 @@ import { NewbieService } from '../../providers/newbie-service';
 import { Content } from 'ionic-angular';
 import { Brightness } from '@ionic-native/brightness';
 import { Events } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 // import { ElementRef } from '@angular/core/src/linker/element_ref';
 
 /**
@@ -27,6 +28,8 @@ export class BookViewPage {
   // @ViewChild('bodyContent') bodyCotainer: ElementRef;
 
   theme: string = 'theme1';
+  
+  isNightMode: boolean = false;
 
   brightness: number = 50;
   tapOutside : boolean = false;
@@ -57,6 +60,7 @@ export class BookViewPage {
     private nbService:NewbieService,
     private brightCtrl: Brightness,
     private events: Events,
+    private storage: Storage,
   ) {
     this.paramData = this.navParams.data;
     this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item);
@@ -66,8 +70,14 @@ export class BookViewPage {
       this.brightness = val * 100;
     }).catch();
 
+    // 获取已经设置的主题
+    this.storage.get('theme.2.name').then(val => {
+      this.theme = val || 'theme1';
+    })
+
     this.events.subscribe('theme.changed', (data) => {
       this.changeTheme(data);
+      this.storage.set('theme.2.name', data.name);
     });
   }
 
@@ -201,6 +211,18 @@ export class BookViewPage {
 
   changeNight(){ //白天黑夜切换
 
+    this.isNightMode = !this.isNightMode;
+
+    if (this.isNightMode) {
+      this.theme = 'theme2';
+      this.brightCtrl.setBrightness(0.3);
+    } else {
+      this.storage.get('theme.2.name').then(val => {
+        this.theme = val || 'theme1';
+        this.brightCtrl.setBrightness(this.brightness / 100.0);
+      });
+    }
+    
   }
 
   changeToAudio(){ //听书模式
