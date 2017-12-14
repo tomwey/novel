@@ -1,15 +1,45 @@
 page-book-view {
-    .book-info  ion-content scroll-content {
-        background: url("../assets/imgs/logo.png") no-repeat center center fixed; 
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        background-size: cover;
-        margin-top: 0px ;
-        padding-top: 0px;
-        padding-bottom: 0px;
-        clear: both;
-        text-align: left;
-        padding: 15px;
+    // .book-info  ion-content scroll-content {
+    //     background: url("../assets/imgs/logo.png") no-repeat center center fixed; 
+    //     -webkit-background-size: cover;
+    //     -moz-background-size: cover;
+    //     background-size: cover;
+    //     margin-top: 0px ;
+    //     padding-top: 0px;
+    //     padding-bottom: 0px;
+    //     clear: both;
+    //     text-align: left;
+    //     padding: 15px;
+
+    //     font-size: 18px;
+    // }
+    ion-content {
+        font-size: 18px;
+    }
+
+    .theme1 {
+        background: rgb(237,230,198);
+        color: black;
+    }
+    .theme2 {
+        background: rgb(68,68,68);
+        color: rgb(237,237,237);
+    }
+    .theme3 {
+        background: rgb(212,234,208);
+        color: rgb(24,46,44);
+    }
+    .theme4 {
+        background: rgb(24,42,63);
+        color: rgb(90,173,175);
+    }
+    .theme5 {
+        background: rgb(57,50,34);
+        color: rgb(202,191,175);
+    }
+    .theme6 {
+        background: rgb(233,210,214);
+        color: rgb(59,29,37);
     }
 
     .buttons {

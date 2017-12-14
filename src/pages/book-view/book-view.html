@@ -18,9 +18,9 @@
 </ion-header>
 
 
-<ion-content class="book-info" fullscreen="true" tappable (tap)="tapNovel()">
+<ion-content [class]="theme" class="book-info" fullscreen="true" tappable (tap)="tapNovel()">
   <!-- <p ng-style="{padding-top:marginTop+'px'}"> -->
-    <div class="content" padding>
+    <div class="content" padding >
         {{content}}
     </div>
   <!-- </p> -->

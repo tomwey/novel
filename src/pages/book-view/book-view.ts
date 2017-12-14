@@ -1,10 +1,12 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild,ElementRef } from '@angular/core';
 import { IonicPage, NavController, NavParams, App, Range } from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
 import { NewbieService } from '../../providers/newbie-service';
 import { Content } from 'ionic-angular';
 import { Brightness } from '@ionic-native/brightness';
+import { Events } from 'ionic-angular';
+// import { ElementRef } from '@angular/core/src/linker/element_ref';
 
 /**
  * Generated class for the BookViewPage page.
@@ -22,6 +24,9 @@ import { Brightness } from '@ionic-native/brightness';
 export class BookViewPage {
 
   @ViewChild(Content) contentPage: Content;
+  // @ViewChild('bodyContent') bodyCotainer: ElementRef;
+
+  theme: string = 'theme1';
 
   brightness: number = 50;
   tapOutside : boolean = false;
@@ -51,14 +56,26 @@ export class BookViewPage {
     private tool: ToolService,private app: App,
     private nbService:NewbieService,
     private brightCtrl: Brightness,
+    private events: Events,
   ) {
     this.paramData = this.navParams.data;
     this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item);
 
+    // 初始化亮度
     this.brightCtrl.getBrightness().then((val) => {
       this.brightness = val * 100;
-    });
+    }).catch();
 
+    this.events.subscribe('theme.changed', (data) => {
+      this.changeTheme(data);
+    });
+  }
+
+  private changeTheme(themeData) {
+    // let div = this.bodyCotainer.nativeElement as HTMLElement;
+    // div.style.background = theme.background;
+    // div.style.color = theme.color;
+    this.theme = themeData.name;
   }
 
   ionViewDidLoad() {
@@ -165,7 +182,7 @@ export class BookViewPage {
   }
   
   changeBg(){ //改变背景
-
+    this.app.getRootNavs()[0].push('ChangeBackgroundPage');
   }
 
   changeFont(){ //改变字体
