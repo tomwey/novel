@@ -7,6 +7,9 @@ import { App } from 'ionic-angular/components/app/app';
 import { File, RemoveResult } from '@ionic-native/file';
 import { NewbieService } from '../../providers/newbie-service';
 import { CataloggroupProvider } from '../../providers/cataloggroup';
+import { Storage } from '@ionic/storage';
+import { Network } from '@ionic-native/network';
+import { AlertController } from 'ionic-angular/components/alert/alert-controller';
 
 /**
  * Generated class for the ChapterListPage page.
@@ -27,12 +30,16 @@ export class ChapterListPage {
   menuID: any = null;
   isEdit: boolean = false;
   catalogs: CataloggroupProvider;
+  settings : any = null;
   constructor(public navCtrl: NavController, 
               public navParams: NavParams,
               private download: DownloadServiceProvider,
               private app: App,
               private file: File,
               private nbService: NewbieService,
+              private storage: Storage,
+              private network: Network,
+              private alertCtrl: AlertController
             ) {
     this.book = this.navParams.data.book;
     let key = this.navParams.data.key;
@@ -60,12 +67,30 @@ export class ChapterListPage {
     this.download.cancelChapter(item, this.book.ID);
   }
 
+
+  private getSettings(callback) {
+    this.storage.get(`settings.${Constants.APP_TYPE}`)
+    .then(data => {
+      if (data) {
+        this.settings = JSON.parse(data);
+        if (callback){
+          callback()
+        }
+      }
+    }).catch(()=>{
+      if (callback){
+        callback()
+      }
+    });
+  }
+
   playAudio(item): void {
     if (this.isEdit) {
       item.selected = !item.selected;
       return;
     }
-    // alert(JSON.stringify(item));
+
+        // alert(JSON.stringify(item));
     if (Constants.APP_TYPE === 1) {
       // 有声小说
       // alert(JSON.stringify(item.chapterItem));
@@ -76,6 +101,9 @@ export class ChapterListPage {
       this.app.getRootNavs()[0].push('BookViewPage', 
       { bookitem:this.book, chapters: this.chapters, item: item.chapterItem || item });
     }
+
+    
+
     
   }
 
