@@ -131,7 +131,7 @@ export class AudioTrackComponent implements OnChanges, DoCheck {
   }
 
   playOrPauseAudio(){
-    if (this._audioProvider.current == undefined){
+    if (this._audioTrack.isPlaying == false){
       this.play()
     }else{
       this.pause()

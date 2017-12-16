@@ -30,7 +30,7 @@ export class CordovaAudioTrack implements IAudioTrack {
       console.log('Cordova Media is not available');
       return;
     };
-    this._ngZone = new NgZone(false);  
+    this._ngZone = new NgZone({enableLongStackTrace:false});  
     this.createAudio(); 
   }
   

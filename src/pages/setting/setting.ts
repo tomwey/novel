@@ -132,6 +132,7 @@ export class SettingPage {
   }
 
   saveSettings() {
+    console.log(this.settings)
     this.storage.set(`settings.${Constants.APP_TYPE}`, JSON.stringify(this.settings));
   }
 

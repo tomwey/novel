@@ -79,7 +79,7 @@
         <p class="label">上一曲</p>
       </div>
     </div>
-    <div class="btn-container">
+    <div class="btn-container" tappable (tap) = "playOrPause()">
       <div class="custom-btn" tappable (tap)="audioTrack.playOrPauseAudio()">
         <p class="icon-container"><ion-icon [class.play-icon]="!audioTrack.isPlaying" name="{{audioTrack.isPlaying ? 'ios-pause-outline' : 'ios-play-outline'}}"></ion-icon></p>
         <p class="label">播放/暂停</p>

@@ -6,6 +6,7 @@ import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
 import { NewbieService } from '../../providers/newbie-service';
 import { File } from '@ionic-native/file';
+import { Constants } from '../../providers/constants'
 
 // import { WebAudioTrack } from '../../components/audio-player/ionic-audio-web-track';
 /**
@@ -32,6 +33,9 @@ export class AudioplayerPage {
   saveItem: any = null;
   hasAddedToBookmark: boolean = false;
   curAudioFile = null;
+  settings : any = null;
+  loopPlayCount : number = 0;
+  timeoutHandle : number = 0;
   requestParams: any = { 
       openID:"e47d16be01ae009dbcdf696e62f9c1ecd5da4559",//设备唯一标识，可随意填一个
       isPlay : "1",
@@ -49,7 +53,7 @@ export class AudioplayerPage {
     private api: ApiService,
     private tool: ToolService,private app: App,
     private nbService: NewbieService,
-    private store: Storage,
+    private storage: Storage,
     private file: File,
     private _cdRef: ChangeDetectorRef
   ) {
@@ -62,10 +66,7 @@ export class AudioplayerPage {
         break;
       }
     }
-
-    // this.currentIndex = this.paramData.chapters.indexOf(this.paramData.item) 
     
-
     console.log(this.paramData);
     console.log(this.currentIndex);
   }
@@ -102,10 +103,37 @@ export class AudioplayerPage {
     }, 500);
     console.log("加载数据！！！");
     window.globalEvents.subscribe("web-track:onFinished", ()=>{
-      this.gotoNext()
+      this.getSettings(()=>{
+        this.loopPlayCount ++;
+        if (this.settings && this.settings.playingLoop === true){
+          if (this.settings.stopChapter != null){
+            if (parseInt(this.settings.stopChapter) > this.loopPlayCount){
+              this.gotoNext(true)
+            }
+          }else {
+            this.gotoNext(true)
+          }
+          
+        }
+      })
+      
     })
   }
-
+  private getSettings(callback) {
+    this.storage.get(`settings.${Constants.APP_TYPE}`)
+    .then(data => {
+      if (data) {
+        this.settings = JSON.parse(data);
+        if (callback){
+          callback()
+        }
+      }
+    }).catch(()=>{
+      if (callback){
+        callback()
+      }
+    });
+  }
   parseParam(){
     let item = this.paramData.chapters[this.currentIndex]
     if (item) {
@@ -214,6 +242,8 @@ export class AudioplayerPage {
   // 上一曲
   gotoPrev(): void 
   {
+
+    this.resetStatus()
     if (this.currentIndex > 0)
     { 
       this.currentIndex = this.currentIndex - 1;
@@ -225,9 +255,14 @@ export class AudioplayerPage {
   }
 
   // 下一曲
-  gotoNext(): void 
+  gotoNext(autoNext : boolean): void 
   {
     console.log("-------------------"+this.currentIndex)
+    if (autoNext != true){
+      this.resetStatus()
+    }else {
+      this.loopPlayCount ++;
+    }
     if (this.currentIndex < this.paramData.chapters.length - 1)
     { 
       this.currentIndex = this.currentIndex + 1;
@@ -238,6 +273,40 @@ export class AudioplayerPage {
       }
       
     }
+  }
+
+  playOrPause():void{
+    if (window.globalAudioTack && window.globalAudioTack.isPlaying){
+      this.clearStatus()
+    }else{
+      this.resetStatus()
+    }
+  }
+
+  resetStatus(){//恢复定时状态
+    clearTimeout(this.timeoutHandle)
+    this.loopPlayCount = 0;
+    this.getSettings(()=>{
+      if (this.settings.stopTime != null){
+        var arr = this.settings.stopTime.split(" ",2);
+        let tt = parseInt(arr[0]) * 60 * 60 + parseInt(arr[1]) * 60
+        this.timeoutHandle = setTimeout(() => {
+          if (window.globalAudioTack){
+            window.globalAudioTack.pause()
+            // window.globalAudioTack.destroy()
+            // window.globalAudioTack = null 
+          }
+        }, tt*1000);
+      }
+    });
+    
+  }
+
+
+
+  clearStatus(){
+    clearTimeout(this.timeoutHandle)
+    this.loopPlayCount = 0;
   }
 
 }
