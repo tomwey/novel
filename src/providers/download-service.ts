@@ -6,6 +6,10 @@ import { File } from '@ionic-native/file';
 import { ApiService } from './api-service';
 import { CatalogitemProvider } from '../providers/catalogitem';
 import { Events } from 'ionic-angular/util/events';
+import { Constants } from '../providers/constants';
+import { AlertController } from 'ionic-angular';
+import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 /*
   Generated class for the DownloadServiceProvider provider.
 
@@ -23,11 +27,15 @@ export class DownloadServiceProvider {
   fileTransfer : FileTransferObject;
   curDownloadItem :CatalogitemProvider = null;
   curProgress : number;
+  settings : any = null;
   //downloadIndex: number = 0;
   constructor(private api: ApiService, private transfer : FileTransfer, 
               private file: File,
               private events: Events,
+              private storage: Storage,
+              private alertCtrl: AlertController,
               private ngZone: NgZone,
+              private network: Network,
             ) {
     this.fileTransfer = this.transfer.create();
     this.fileTransfer.onProgress((e)=>{
@@ -50,43 +58,80 @@ export class DownloadServiceProvider {
     })
   }
 
-  addtoDownloadList(chapterItem, bookItem):void{
-    var isExist : boolean = false;
-    if (this.downloadList.has(bookItem.ID)){
-      this.downloadList.get(bookItem.ID).forEach(element => {
-        if (element.isEqual(chapterItem)){
-          isExist = true;
-          return false
+  private getSettings(callback) {
+    this.storage.get(`settings.${Constants.APP_TYPE}`)
+    .then(data => {
+      if (data) {
+        this.settings = JSON.parse(data);
+        if (callback){
+          callback()
         }
-      });
-    }
-    var bookExsit :boolean  = false;
-    this.downloadBooks.forEach(element => {
-      if (element.ID == bookItem.ID){
-        bookExsit = true;
-        return false;
+      }
+    }).catch(()=>{
+      if (callback){
+        if (callback){
+          callback()
+        }
       }
     });
-    if (bookExsit == false){
-      bookItem.status = "等待下载"
-      this.downloadBooks.push(bookItem)
-      this.events.publish('book.downloading.add', bookItem);
-      if (!this.downloadList.has(bookItem.ID)){
-        this.downloadList.set(bookItem.ID, []);
-      }
-      if (!this.downloadedList.has(bookItem.ID)){
-         this.downloadedList.set(bookItem.ID, []);
-      }
-    }
-    
-    if (isExist == false){
-      this.downloadingCount ++;
+  }
 
-      chapterItem.iswaiting = 1
-      this.downloadList.get(bookItem.ID).push(chapterItem)
-    }
-    console.log("---------------------书本Length="+this.downloadBooks.length+", 章节="+this.downloadList.get(bookItem.ID).length);
-    this.startDownLoad()
+  addtoDownloadList(chapterItem, bookItem):void{
+    this.getSettings(()=>{
+      console.log("---------------network status----------------"+this.network.type)
+      if (this.settings && this.settings.wifiDownloading != true && this.network.type != `wifi`){
+        this.alertCtrl.create({ // 显示下载进度
+          title: "提示",
+          subTitle: "当前网络状态非wifi状态，您已禁止非wifi状态下载",
+          enableBackdropDismiss: false,
+          buttons: [
+            { 
+              text: '确定', handler:() => {}
+            },
+            ]
+        }).present();
+        return;
+      } 
+      var isExist : boolean = false;
+      if (this.downloadList.has(bookItem.ID)){
+        this.downloadList.get(bookItem.ID).forEach(element => {
+          if (element.isEqual(chapterItem)){
+            isExist = true;
+            return false
+          }
+        });
+      }
+      var bookExsit :boolean  = false;
+      this.downloadBooks.forEach(element => {
+        if (element.ID == bookItem.ID){
+          bookExsit = true;
+          return false;
+        }
+      });
+      if (bookExsit == false){
+        bookItem.status = "等待下载"
+        this.downloadBooks.push(bookItem)
+        this.events.publish('book.downloading.add', bookItem);
+        if (!this.downloadList.has(bookItem.ID)){
+          this.downloadList.set(bookItem.ID, []);
+        }
+        if (!this.downloadedList.has(bookItem.ID)){
+           this.downloadedList.set(bookItem.ID, []);
+        }
+      }
+      
+      if (isExist == false){
+        this.downloadingCount ++;
+  
+        chapterItem.iswaiting = 1
+        this.downloadList.get(bookItem.ID).push(chapterItem)
+      }
+      console.log("---------------------书本Length="+this.downloadBooks.length+", 章节="+this.downloadList.get(bookItem.ID).length);
+      this.startDownLoad()
+    })
+    
+    
+   
   }
 
   get downloadingCount() {
