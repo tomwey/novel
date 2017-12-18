@@ -109,7 +109,8 @@ export class AudioplayerPage {
     })
     this.getSettings(()=>{
       let param = Constants.APP_TYPE == 1 ? "听书" : "读书"
-      if (this.settings && this.settings.wifiPlaying != true && this.network.type != `wifi`){
+      console.log(this.settings);
+      if (this.network.type != 'wifi' && (this.settings && this.settings.wifiPlaying == true)) {
         this.alertCtrl.create({ // 显示下载进度
           title: "提示",
           subTitle: "当前网络状态非wifi状态，您已禁止非wifi状态"+param,

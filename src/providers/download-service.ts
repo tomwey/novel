@@ -79,7 +79,7 @@ export class DownloadServiceProvider {
   addtoDownloadList(chapterItem, bookItem):void{
     this.getSettings(()=>{
       console.log("---------------network status----------------"+this.network.type)
-      if (this.settings && this.settings.wifiDownloading != true && this.network.type != `wifi`){
+      if (this.network.type != 'wifi' && (this.settings && this.settings.wifiPlaying == true)){
         this.alertCtrl.create({ // 显示下载进度
           title: "提示",
           subTitle: "当前网络状态非wifi状态，您已禁止非wifi状态下载",
