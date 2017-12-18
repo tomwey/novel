@@ -51,6 +51,9 @@ export class AudioplayerPage {
       ungz: 1
   };
 
+  volume: number;
+  showVolumeControl: boolean = false;
+
   constructor(public navCtrl: NavController, public navParams: NavParams,  
     private api: ApiService,
     private tool: ToolService,private app: App,
@@ -70,8 +73,6 @@ export class AudioplayerPage {
         break;
       }
     }
-    
-
   }
 
   saveToHistory(item)
@@ -134,6 +135,12 @@ export class AudioplayerPage {
           if (this.paramData.progress != undefined){
             if (window.globalAudioTack){
               window.globalAudioTack.seekTo(this.paramData.progress)
+
+              if (window.globalAudioTack) {
+                this.volume = window.globalAudioTack.volume * 100;
+              } else {
+                this.volume = 0;
+              }
             }
           }
         }, 500);
@@ -328,6 +335,14 @@ export class AudioplayerPage {
   clearStatus(){
     clearTimeout(this.timeoutHandle)
     this.loopPlayCount = 0;
+  }
+
+  changeVolume() {
+    window.globalAudioTack.volume = this.volume / 100.0;
+  }
+
+  toggleVolumeControl() {
+    this.showVolumeControl = !this.showVolumeControl;
   }
 
 }

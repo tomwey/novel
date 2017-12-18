@@ -19,7 +19,19 @@ page-audioplayer {
         background-color: white;
         // height: 150px;
         clear: both;
+
+        // position: relative;
     }
+
+    .slider {
+        background: rgba(0,0,0,0.8);
+        width: 100%;
+        position: absolute;
+        top: -58px;
+        left: 0;
+        width: 100%;
+    }
+
     .btn-container {
         width: 20%;
         float: left;
