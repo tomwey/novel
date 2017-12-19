@@ -89,7 +89,11 @@ export class AudioplayerPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad AudioplayerPage');
     console.log(window.globalAudioTack)
-    this.parseParam()
+
+    setTimeout(() => {
+      this.parseParam()
+    }, 100);
+    
     if (this.curAudioFile == null){
       this.loadAudioData()
     }
