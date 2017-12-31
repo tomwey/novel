@@ -12,7 +12,7 @@
   </ion-navbar>
 
   <div class="menubar">
-    <ion-scroll scrollX="true" class="top-menu">
+    <ion-scroll scrollX="true" scrollbar-x="false" class="top-menu">
       <ul class="menus">
         <li class="menu-item" *ngFor="let menu of menus; let i = index"
           tappable (tap)="selectMenu(i);" [class.menu-active]="selectedMenu === menu.label" >{{menu.label}}</li>

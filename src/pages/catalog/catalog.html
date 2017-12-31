@@ -18,17 +18,17 @@
   <!-- <div class="dropdown-menu"> -->
       <ion-row>
         <ion-col col-4>
-          <ion-select [(ngModel)]="requestParams.server" (ionChange)="getCategories($event);">
+          <ion-select interface="popover" [(ngModel)]="requestParams.server" (click)="toggle(!isDropdown)" (ionChange)="getCategories($event);">
               <ion-option value="{{item}}" *ngFor="let item of servers">{{item}}</ion-option>
             </ion-select>
         </ion-col>
         <ion-col col-4>
-          <ion-select [(ngModel)]="requestParams.category" (ionChange)="fetchData($event);">
+          <ion-select interface="popover" [(ngModel)]="requestParams.category" (click)="toggle(!isDropdown)" (ionChange)="fetchData($event);">
               <ion-option value="{{item}}" *ngFor="let item of categories">{{item}}</ion-option>
             </ion-select>
         </ion-col>
         <ion-col col-4>
-          <ion-select [(ngModel)]="requestParams.order" (ionChange)="fetchData($event);">
+          <ion-select interface="popover" [(ngModel)]="requestParams.order" (click)="toggle(!isDropdown)" (ionChange)="fetchData($event);">
             
             <ion-option value="{{item}}" *ngFor="let item of orders">{{item}}</ion-option>
             <!-- <ion-option value="最近更新">最近更新</ion-option> -->

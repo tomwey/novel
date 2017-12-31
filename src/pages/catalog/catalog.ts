@@ -28,6 +28,8 @@ export class CatalogPage {
   servers: any = [];
   categories: any = [];
 
+  isDropdown: boolean = false;
+
   serverCategories: any = {};
 
   currentCondition: string = null;
@@ -44,6 +46,10 @@ export class CatalogPage {
 
   ionViewDidLoad() {
     this.loadData();
+  }
+
+  toggle(yesOrNo): void {	
+    this.isDropdown = yesOrNo;
   }
 
   gotoBook(book): void {

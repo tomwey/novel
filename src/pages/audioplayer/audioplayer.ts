@@ -84,6 +84,14 @@ export class AudioplayerPage {
         this.nbService.saveObject(NewbieService.PLAYING, this.saveItem);
       })
       .catch(error => {});
+    
+    // 保存到历史中 
+    this.nbService.removeItems(NewbieService.HISTORY_KEY, [this.saveItem])
+      .then(data => {
+        this.nbService.saveObject(NewbieService.HISTORY_KEY, this.saveItem);
+      })
+      .catch(error => {});
+      
   }
 
   ionViewDidLoad() {
@@ -143,11 +151,11 @@ export class AudioplayerPage {
     }
     
     // 判断当前是否收藏了章节
-    // this.nbService.hasAdded(NewbieService.BOOKMARK_KEY, this.saveItem)
-    //   .then(yesOrNo =>  .then(yesOrNo => {
-    //     this.hasAddedToBookmark = yesOrNo;
-    //   })
-    //   .catch();
+    this.nbService.hasAdded(NewbieService.BOOKMARK_KEY, this.saveItem)
+      .then(yesOrNo => {
+        this.hasAddedToBookmark = yesOrNo;
+      })
+      .catch();
   }
 
   loadAudioData(): Promise<any> {
@@ -180,28 +188,28 @@ export class AudioplayerPage {
   {
     // alert(JSON.stringify(this.saveItem));
 
-    // if (this.hasAddedToBookmark) {
-    //   // 删除书签
-    //   this.nbService.removeItems(NewbieService.BOOKMARK_KEY, [this.saveItem])
-    //     .then(data => {
-    //       this.hasAddedToBookmark = false;
-    //       this.tool.showToast('已移除书签');
-    //     }).catch(error => {
-    //       this.tool.showToast('书签删除失败');
-    //     });
-    // } else {
+    if (this.hasAddedToBookmark) {
+      // 删除书签
+      this.nbService.removeItems(NewbieService.BOOKMARK_KEY, [this.saveItem])
+        .then(data => {
+          this.hasAddedToBookmark = false;
+          this.tool.showToast('已移除书签');
+        }).catch(error => {
+          this.tool.showToast('书签删除失败');
+        });
+    } else {
       // 新增书签
       // this.saveItem.progress = this.currentTrack.progress;
 
       this.nbService.addItem(NewbieService.BOOKMARK_KEY, this.saveItem)
         .then(data => {
-          // this.hasAddedToBookmark = true;
+          this.hasAddedToBookmark = true;
           this.tool.showToast('已添加到我的书签');
         })
         .catch(error => {
           this.tool.showToast('添加书签失败');
         });
-    // }
+    }
   }
 
   // 打开章节
