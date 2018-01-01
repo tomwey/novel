@@ -131,6 +131,10 @@ export class SettingPage {
     });
   }
 
+  gotoContact() {
+    this.app.getRootNavs()[0].push('ContactusPage');
+  }
+
   saveSettings() {
     console.log(this.settings)
     this.storage.set(`settings.${Constants.APP_TYPE}`, JSON.stringify(this.settings));
