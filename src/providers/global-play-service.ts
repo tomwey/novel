@@ -33,11 +33,12 @@ export class GlobalPlayService {
     if (Constants.APP_TYPE == 1){
       console.log("----------------playing---------------")
       this.nbService.getItems(NewbieService.PLAYING).then(data => {
-        console.log(data)
-        if (data.type == "audio"){
-          this.app.getRootNavs()[0].push('AudioplayerPage', data);
-        }else if (data.type == "podcast"){
-          this.app.getRootNavs()[0].push('PodcastDetailPage', data);
+        // console.log(data)
+        let item = data[0];
+        if (item.type == "audio"){
+          this.app.getRootNavs()[0].push('AudioplayerPage', item);
+        }else if (item.type == "podcast"){
+          this.app.getRootNavs()[0].push('PodcastDetailPage', item);
         }else {
           this.tool.showToast('没有历史记录');
         }
@@ -47,7 +48,8 @@ export class GlobalPlayService {
     }else if (Constants.APP_TYPE === 2) {
       console.log("----------------reading---------------")
       this.nbService.getItems(NewbieService.HISTORY_KEY).then(data => {
-        if (data.type == "read"){
+        let item = data[0];
+        if (item.type == "read"){
           this.app.getRootNavs()[0].push('BookViewPage', data[0]);
         }else {
           this.tool.showToast('没有历史记录');

@@ -81,14 +81,14 @@ export class AudioplayerPage {
     
     this.nbService.removeItems(NewbieService.PLAYING, [this.saveItem])
       .then(data => {
-        this.nbService.saveObject(NewbieService.PLAYING, this.saveItem);
+        this.nbService.addItem(NewbieService.PLAYING, this.saveItem);
       })
       .catch(error => {});
     
     // 保存到历史中 
     this.nbService.removeItems(NewbieService.HISTORY_KEY, [this.saveItem])
       .then(data => {
-        this.nbService.saveObject(NewbieService.HISTORY_KEY, this.saveItem);
+        this.nbService.addItem(NewbieService.HISTORY_KEY, this.saveItem);
       })
       .catch(error => {});
       
