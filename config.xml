@@ -3,7 +3,7 @@
     <name>Demo</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.0.104:8101" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -91,6 +91,7 @@
     <allow-navigation href="*" />
     <allow-navigation href="http://10.19.0.129:8100" />
     <allow-navigation href="http://10.19.0.139:8100" />
+    <allow-navigation href="http://192.168.0.104:8101" />
     <engine name="browser" spec="^5.0.1" />
     <engine name="ios" spec="^4.4.0" />
     <plugin name="cordova-clipboard" spec="^1.1.1" />

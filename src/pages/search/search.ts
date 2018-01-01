@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { ToolService } from '../../providers/tool-service';
 import { SearchService } from '../../providers/search-service';
 import { GlobalPlayService } from '../../providers/global-play-service';
-// import { Keyboard } from '@ionic-native/keyboard';
+import { Searchbar } from 'ionic-angular';
+import { Keyboard } from '@ionic-native/keyboard';
 
 /**
  * Generated class for the SearchPage page.
@@ -20,6 +21,8 @@ import { GlobalPlayService } from '../../providers/global-play-service';
 })
 export class SearchPage {
 
+  @ViewChild('searchBar') searchBar: Searchbar;
+
   searchType: string = 'hot';
   keyword: string = '';
   hotKeywords: any = [];
@@ -31,7 +34,7 @@ export class SearchPage {
               private app: App,
               private searchService: SearchService,
               public globalService: GlobalPlayService,
-              // private keyboard: Keyboard,
+              private keyboard: Keyboard,
             ) {
     this.loadSearchKeywords();
   }
@@ -57,8 +60,6 @@ export class SearchPage {
   selectKeyword(kw): void {
     console.log(kw);
     this.keyword = kw;
-    
-    // this.keyboard.show();
   }
 
   startSearch(kw): void {

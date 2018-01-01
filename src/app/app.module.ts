@@ -35,6 +35,7 @@ import { Clipboard } from '@ionic-native/clipboard';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Brightness } from '@ionic-native/brightness';
 import { Network } from '@ionic-native/network';
+import { Keyboard } from '@ionic-native/keyboard';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,7 @@ import { Network } from '@ionic-native/network';
     SplashScreen,
     Brightness,
     Network,
-    // Keyboard,
+    Keyboard,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ApiService,
     Constants,

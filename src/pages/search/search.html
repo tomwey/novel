@@ -16,6 +16,7 @@
     <!-- <ion-searchbar [(ngModel)]="keyword" placeholder="搜索"></ion-searchbar> -->
     <form action=".">
       <ion-searchbar
+        #searchBar
         [(ngModel)]="keyword"
         [ngModelOptions]="{standalone: true}"
         [showCancelButton]="true"
