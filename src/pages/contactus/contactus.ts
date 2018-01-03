@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams, Content } from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { Constants } from '../../providers/constants';
+import { ToolService } from '../../providers/tool-service';
 
 /**
  * Generated class for the ContactusPage page.
@@ -16,9 +17,14 @@ import { Constants } from '../../providers/constants';
   templateUrl: 'contactus.html',
 })
 export class ContactusPage {
+  messages: any = [];
+  msg: string = '';
+
+  @ViewChild(Content) content: Content;
 
   constructor(public navCtrl: NavController, 
     private api: ApiService,
+    private tool: ToolService,
     public navParams: NavParams) {
   }
 
@@ -28,8 +34,10 @@ export class ContactusPage {
   }
 
   loadData() {
+    this.tool.showLoading('加载中...');
+
     this.api.get2('asdf/adviseList.php', {
-      openID: 'e47d16be01ae009dbcdf696e62f9c1ecd5da4559',
+      openID: '37806a18a4ddf03192b80851300acbc5d6da60e4',
       ungz: 1,
       VID: this.getAppVersionInfo(),
       name: Constants.APP_NAME,
@@ -39,9 +47,18 @@ export class ContactusPage {
       timestamp: '',
     })
     .then(data => {
-      console.log(data);
+      // console.log(data);
+      this.messages = data.bookArr.reverse();
+      this.tool.hideLoading();
+
+      this.content.scrollToBottom();
     })
-    .catch(error => {});
+    .catch(error => {
+      this.tool.hideLoading();
+      setTimeout(() => {
+        this.tool.showToast('加载失败了');
+      }, 100);
+    });
   }
 
   getAppVersionInfo(): string {
@@ -49,7 +66,35 @@ export class ContactusPage {
   }
 
   send() {
+    if (this.msg.length == 0) return;
 
+    this.tool.showLoading('加载中...');
+
+    this.api.get2('asdf/advise.php', {
+      openID: '37806a18a4ddf03192b80851300acbc5d6da60e4',
+      ungz: 1,
+      VID: this.getAppVersionInfo(),
+      name: Constants.APP_NAME,
+      token: '',
+      icontimestamp: '',
+      PID: '20171015',
+      timestamp: '',
+      subject: '对《'+ Constants.APP_NAME +'》的一些建议',
+      content: this.msg,
+    })
+    .then(data => {
+      // console.log(data);
+      // this.messages = data.bookArr.reverse();
+      this.tool.hideLoading();
+
+      this.loadData();
+    })
+    .catch(error => {
+      this.tool.hideLoading();
+      setTimeout(() => {
+        this.tool.showToast('发送失败');
+      }, 100);
+    });
   }
 
 }

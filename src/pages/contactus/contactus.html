@@ -13,7 +13,12 @@
 </ion-header>
 
 <ion-content>
-  <div class="content-box"></div>
+  <div class="content-box">
+    <div class="msg-box" *ngFor="let msg of messages">
+      <p class="time">{{msg.time}}</p>
+      <p class="content" [class.reply]="msg.isReply === 1">{{msg.content.split(')')[1]}}</p>
+    </div>
+  </div>
 </ion-content>
 <ion-footer>
   <ion-item>
