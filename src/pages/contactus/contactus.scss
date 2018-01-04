@@ -19,4 +19,11 @@ page-contactus {
     .reply {
         text-align: left;
     }
+
+    ion-footer {
+        border-top: 0.55px solid #e6e6e6;
+        .item-inner {
+            border: 0!important;
+        }
+    }
 }

@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, Content } from 'ionic-angular';
 import { ApiService } from '../../providers/api-service';
 import { Constants } from '../../providers/constants';
 import { ToolService } from '../../providers/tool-service';
+import { Keyboard } from '@ionic-native/keyboard';
 
 /**
  * Generated class for the ContactusPage page.
@@ -25,10 +26,12 @@ export class ContactusPage {
   constructor(public navCtrl: NavController, 
     private api: ApiService,
     private tool: ToolService,
+    private keyboard: Keyboard,
     public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
+    // this.keyboard.disableScroll(true);
     // console.log('ionViewDidLoad ContactusPage');
     this.loadData();
   }
@@ -47,7 +50,7 @@ export class ContactusPage {
       timestamp: '',
     })
     .then(data => {
-      // console.log(data);
+      // console.log(data.bookArr);
       this.messages = data.bookArr.reverse();
       this.tool.hideLoading();
 
@@ -87,7 +90,11 @@ export class ContactusPage {
       // this.messages = data.bookArr.reverse();
       this.tool.hideLoading();
 
-      this.loadData();
+      this.msg = '';
+
+      setTimeout(() => {
+        this.loadData();
+      }, 100);
     })
     .catch(error => {
       this.tool.hideLoading();

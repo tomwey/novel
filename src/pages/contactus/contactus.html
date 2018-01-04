@@ -21,8 +21,10 @@
   </div>
 </ion-content>
 <ion-footer>
-  <ion-item>
-    <ion-input placeholder="输入消息" [(ngModel)]="msg"></ion-input>
-    <button ion-button clear item-right (click)="send();">发送</button>
-  </ion-item>
+  <!-- <ion-toolbar> -->
+    <ion-item>
+      <ion-input placeholder="输入消息" [(ngModel)]="msg"></ion-input>
+      <button ion-button clear item-right (click)="send();">发送</button>
+    </ion-item>
+  <!-- </ion-toolbar> -->
 </ion-footer>
