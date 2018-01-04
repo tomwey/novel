@@ -12,7 +12,7 @@
 
 </ion-header>
 
-<ion-content>
+<ion-content (tap)="closeKeyboard();" (ionScrollStart)="closeKeyboard();">
   <div class="content-box">
     <div class="msg-box" *ngFor="let msg of messages">
       <p class="time">{{msg.time}}</p>
@@ -23,7 +23,7 @@
 <ion-footer>
   <!-- <ion-toolbar> -->
     <ion-item>
-      <ion-input placeholder="输入消息" [(ngModel)]="msg"></ion-input>
+      <ion-input type="text" placeholder="输入消息" [(ngModel)]="msg"></ion-input>
       <button ion-button clear item-right (click)="send();">发送</button>
     </ion-item>
   <!-- </ion-toolbar> -->

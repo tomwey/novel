@@ -36,6 +36,10 @@ export class ContactusPage {
     this.loadData();
   }
 
+  closeKeyboard() {
+    this.keyboard.close();
+  }
+
   loadData() {
     this.tool.showLoading('加载中...');
 
